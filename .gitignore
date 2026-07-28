@@ -22,3 +22,5 @@ bot_slack-secret.txt
 .gortex/
 .DS_Store
 Thumbs.db
+.mcp.json
+.mcp.json
