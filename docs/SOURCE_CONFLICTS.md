@@ -9,3 +9,9 @@ This record applies to the current application sprint and preserves conflicts fo
 5. `README.md` lists an `archive/` directory that is not present in the committed tree. This documentation mismatch does not block Phase 1 and is deferred until the README phase, which must describe actual implementation.
 
 No public identity, CV claim, portfolio material, external integration, or unrelated repository is changed by the Phase 1 milestone.
+
+6. The frozen source defines a logical 48-request benchmark and exact 12/12/12/12 decision balance, but no serialized corpus exists in the working tree or Git history. The partial Phase 2 catalog is a transparent local instantiation and must not be described as a recovered pre-existing dataset.
+7. The frozen source provides no complete static-finding or decision reason-code taxonomy and no total precedence for simultaneous findings. Only PAYMENT_ABOVE_AUTONOMOUS_LIMIT is exemplified. Local stable codes and any precedence must be recorded as implementation decisions.
+8. For a payment above USD 10,000 with a missing approval rule, the frozen source explicitly permits CLARIFY or ESCALATE. Fixture CG-CLR-12 selects CLARIFY; this does not establish a global source-defined precedence.
+9. The frozen source does not state a numerical Phase 2 pass threshold. Phase 2 remains incomplete until formal tests, a committed JSONL corpus, generated outputs, and the Phase 2 report exist.
+10. The frozen source describes a live-provider compiler path, while the current user instruction requires the deterministic offline compiler to be the V1 evaluation reference and forbids external model dependence. Only the deterministic partial path is implemented; live-provider work is deferred and no model call occurred.
