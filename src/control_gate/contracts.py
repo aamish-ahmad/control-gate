@@ -5,13 +5,91 @@ from __future__ import annotations
 from datetime import datetime
 from decimal import Decimal
 from enum import Enum
-from typing import Annotated
+from collections.abc import Iterator, Mapping
+from types import MappingProxyType
+from typing import Annotated, TypeAlias, cast
 
-from pydantic import BaseModel, ConfigDict, Field, JsonValue, model_validator
+from pydantic import (
+    AfterValidator,
+    BaseModel,
+    ConfigDict,
+    Field,
+    JsonValue,
+    PlainSerializer,
+    model_validator,
+)
 
 
 NonEmptyString = Annotated[str, Field(min_length=1)]
 PositiveVersion = Annotated[int, Field(ge=1)]
+
+
+class FrozenMapping(Mapping[str, object]):
+    """Recursively read-only mapping with stable equality and deepcopy."""
+
+    __slots__ = ("_data",)
+
+    def __init__(self, data: Mapping[str, object]) -> None:
+        self._data = MappingProxyType(dict(data))
+
+    def __getitem__(self, key: str) -> object:
+        return self._data[key]
+
+    def __iter__(self) -> Iterator[str]:
+        return iter(self._data)
+
+    def __len__(self) -> int:
+        return len(self._data)
+
+    def __deepcopy__(self, memo: dict[int, object]) -> FrozenMapping:
+        return self
+
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, Mapping):
+            return dict(self.items()) == dict(other.items())
+        return NotImplemented
+
+    def __repr__(self) -> str:
+        return f"FrozenMapping({dict(self.items())!r})"
+
+
+def _freeze_json(value: object) -> object:
+    if isinstance(value, FrozenMapping):
+        return value
+    if isinstance(value, Mapping):
+        return FrozenMapping(
+            {str(key): _freeze_json(item) for key, item in value.items()}
+        )
+    if isinstance(value, (list, tuple)):
+        return tuple(_freeze_json(item) for item in value)
+    return value
+
+
+def _thaw_json(value: object) -> object:
+    if isinstance(value, Mapping):
+        return {str(key): _thaw_json(item) for key, item in value.items()}
+    if isinstance(value, tuple):
+        return [_thaw_json(item) for item in value]
+    return value
+
+
+def _freeze_json_object(
+    value: Mapping[str, JsonValue],
+) -> Mapping[str, JsonValue]:
+    return cast(Mapping[str, JsonValue], _freeze_json(value))
+
+
+def _serialize_json_object(
+    value: Mapping[str, JsonValue],
+) -> dict[str, JsonValue]:
+    return cast(dict[str, JsonValue], _thaw_json(value))
+
+
+FrozenJsonObject: TypeAlias = Annotated[
+    Mapping[str, JsonValue],
+    AfterValidator(_freeze_json_object),
+    PlainSerializer(_serialize_json_object, return_type=dict[str, JsonValue]),
+]
 
 
 class StrictModel(BaseModel):
@@ -23,7 +101,7 @@ class StrictModel(BaseModel):
 class FrozenModel(StrictModel):
     """Base for immutable contract records."""
 
-    model_config = ConfigDict(extra="forbid", frozen=True)
+    model_config = ConfigDict(extra="forbid", frozen=True, validate_default=True)
 
 
 class Decision(str, Enum):
@@ -117,10 +195,10 @@ class IntentSpec(FrozenModel):
     source_request: NonEmptyString
     goal: Goal
     actor: IntentActor
-    inputs: dict[str, JsonValue]
+    inputs: FrozenJsonObject
     assumptions: tuple[NonEmptyString, ...]
     requirements: tuple[NonEmptyString, ...]
-    constraints: dict[str, JsonValue]
+    constraints: FrozenJsonObject
     permissions: Permissions
     prohibited_actions: tuple[NonEmptyString, ...]
     approval_rules: tuple[ApprovalRule, ...]
@@ -205,7 +283,7 @@ class TrajectoryEvent(FrozenModel):
     retry_count: Annotated[int, Field(ge=0)] = 0
     latency_ms: Annotated[int, Field(ge=0)] | None = None
     status: NonEmptyString
-    metadata: dict[str, JsonValue] = Field(default_factory=dict)
+    metadata: FrozenJsonObject = Field(default_factory=dict)
 
 
 class HumanIntervention(FrozenModel):
@@ -220,7 +298,7 @@ class HumanIntervention(FrozenModel):
     actor_role: NonEmptyString
     action: HumanAction
     reason: NonEmptyString
-    constraint_changes: dict[str, JsonValue] = Field(default_factory=dict)
+    constraint_changes: FrozenJsonObject = Field(default_factory=dict)
 
 
 TERMINAL_RUN_STATES = frozenset(
