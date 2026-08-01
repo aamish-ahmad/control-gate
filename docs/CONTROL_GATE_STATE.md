@@ -4,8 +4,8 @@ Updated: 2026-08-01 (Asia/Calcutta)
 
 ## Checkpoint identity
 
-- Current branch: `codex/phase-1-contracts`
-- Starting verified checkpoint for this continuation: `de826a6`
+- Current branch: `feat/recruiter-facing-runtime-demo`
+- Starting verified checkpoint for this milestone: `0864d88`
 - Verified CLI checkpoint: `272ee9f` (`feat: add local Control Gate evaluation CLI`)
 - Verified publication checkpoint: `f4ff539` (`docs: polish README scan clarity for metrics and components`)
 - Push, merge, deploy, publish, and external execution status: not performed
@@ -19,16 +19,21 @@ Updated: 2026-08-01 (Asia/Calcutta)
   - `python -m control_gate evaluate --request "<request>"` emits side-effect-free structured JSON.
   - `python -m control_gate benchmark` runs the persisted 48-case Phase 3 benchmark, preserves its JSONL/JSON/report evidence, and returns nonzero on failure.
   - No optional file-input interface was added.
+- Recruiter-facing governed execution handoff:
+  - `examples/governed_execution_handoff.py` calls the real compiler, validator, and admissibility engine.
+  - Only APPROVE reaches one safe, in-memory mock staging function.
+  - CLARIFY, ESCALATE, and REJECT return control information without invoking staging.
+  - Every route reports zero external actions and preserves intent ID/version linkage.
 
 ## Current verified behavior
 
 The local path is:
 
 ```text
-request -> deterministic compiler -> IntentSpec -> validator -> admissibility decision -> structured JSON
+request -> deterministic compiler -> IntentSpec -> validator -> admissibility decision -> structured execution handoff
 ```
 
-The CLI uses the existing deterministic fixture compiler, static validator, and admissibility engine. Its conservative request adapter recognizes only explicit fixture-domain identifiers, amounts, actor marker, and policy phrases; material omissions remain validation findings. It performs no network, model, tool, payment, or external business action.
+The CLI and governed handoff example use the existing deterministic fixture compiler, static validator, and admissibility engine. The conservative request adapter recognizes only explicit fixture-domain identifiers, amounts, actor marker, and policy phrases; material omissions remain validation findings. The handoff example adds one local fictional in-memory staging function after APPROVE. It performs no file write, network, model, payment, supplier modification, or external business action.
 
 ## Verification commands and exact results
 
@@ -43,6 +48,18 @@ Focused CLI suite:
 8 passed in 0.88s
 ```
 
+Focused governed handoff suite:
+
+```powershell
+$env:PYTHONPATH = "$PWD\src"
+.\.venv\Scripts\python.exe -m pytest -q tests\test_governed_execution_handoff.py
+```
+
+```text
+....                                                                     [100%]
+4 passed in 0.78s
+```
+
 Complete suite:
 
 ```powershell
@@ -50,20 +67,20 @@ Complete suite:
 ```
 
 ```text
-.............................                                            [100%]
-29 passed in 1.70s
+.................................                                        [100%]
+33 passed in 6.76s
 ```
 
-Real local CLI decision examples returned:
+Governed handoff route verification:
 
-| Expected decision | Actual decision | Reason code |
-|---|---|---|
-| APPROVE | APPROVE | `REQUEST_ADMISSIBLE` |
-| CLARIFY | CLARIFY | `REQUIRED_FIELD_MISSING` |
-| ESCALATE | ESCALATE | `PAYMENT_ABOVE_AUTONOMOUS_LIMIT` |
-| REJECT | REJECT | `VENDOR_BANK_DETAILS_MODIFICATION_PROHIBITED` |
+| Expected decision | Actual decision | Local staging invoked | Intent link valid | External actions |
+|---|---|---:|---:|---:|
+| APPROVE | APPROVE | yes | yes | 0 |
+| CLARIFY | CLARIFY | no | yes | 0 |
+| ESCALATE | ESCALATE | no | yes | 0 |
+| REJECT | REJECT | no | yes | 0 |
 
-Each example reported `external_actions_performed: 0`. The ESCALATE example reported `required_approver: finance_manager`.
+CLARIFY returned clarification questions, ESCALATE returned `required_approver: finance_manager`, and REJECT returned `VENDOR_BANK_DETAILS_MODIFICATION_PROHIBITED`. Only APPROVE returned the local fictional `stage_invoice_locally` handoff.
 
 Benchmark command:
 
@@ -80,14 +97,16 @@ The cached CLI diff passed `git diff --cached --check` before commit. No externa
 
 ## Documentation checkpoint contents
 
-- `README.md`: measured recruiter-facing runnable checkpoint, commands, real CLI output excerpts, boundaries, and limitations.
+- `README.md`: governed pre-execution framing, runtime boundary, measured handoff example, commands, and honest limitations.
+- `examples/governed_execution_handoff.py`: deterministic local fictional execution handoff.
+- `tests/test_governed_execution_handoff.py`: focused APPROVE/non-APPROVE routing, linkage, JSON, and zero-external-action tests.
 - `DECISIONS.md`: CLI parsing boundary.
 - `ASSUMPTIONS.md`: explicit-only local request syntax.
 - `docs/SOURCE_CONFLICTS.md`: resolved prior README structure mismatch.
 
 ## Incomplete and deferred work
 
-No Phase 4 work was started. The following remain intentionally outside this checkpoint: runtime execution, LangGraph, MCP, FastAPI, Docker, persistence, deployment, frontend, real payments, external integrations, model-backed compilation, and external benchmark validation.
+No generalized or external execution runtime was started. The following remain intentionally outside this checkpoint: LangGraph, MCP, function-calling providers, FastAPI, Docker, persistence, deployment, frontend, real payments, external integrations, model-backed compilation, and external benchmark validation.
 
 ## Known failures
 
@@ -99,4 +118,4 @@ See `ASSUMPTIONS.md` and `docs/SOURCE_CONFLICTS.md`. The frozen V1 specification
 
 ## Next legal milestone
 
-Stop at this runnable checkpoint. No further implementation is authorized without a new explicit request; in particular, do not begin Phase 4 or any runtime, integration, deployment, or execution feature.
+Stop at this recruiter-facing governed handoff checkpoint. No further implementation is authorized without a new explicit request; in particular, do not add a generalized runtime, integration, deployment, or external execution feature.

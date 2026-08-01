@@ -1,30 +1,46 @@
 # Control Gate
 
-> Control Gate is a deterministic intent-compilation and admissibility layer for a fictional supplier-invoice workflow. It converts ambiguous business requests into typed intent contracts and returns APPROVE, CLARIFY, ESCALATE or REJECT before execution.
+> Control Gate is a governed pre-execution control layer for agentic workflows. It converts ambiguous business requests into typed intent contracts, applies deterministic policy checks, and routes each request to APPROVE, CLARIFY, ESCALATE, or REJECT before consequential tool execution.
 
-Control Gate is a local, pre-execution control boundary. It does not execute payments, call external services, or use a model provider.
+The current reference implementation uses a fictional supplier-invoice workflow and local deterministic components so every decision can be reproduced, tested, and audited.
 
 ## Why it exists
 
 Business requests can be understandable but still incomplete, ambiguous, outside authority, or inconsistent with policy. Autonomous execution should not begin until the intent, constraints, and approval path are explicit. Control Gate makes that decision before execution begins.
 
 ```text
-Natural-language request
-  -> deterministic compiler
-  -> typed IntentSpec
-  -> static validator
-  -> admissibility engine
-  -> structured decision
+Business request
+  -> intent compilation
+  -> typed execution specification
+  -> static policy validation
+  -> governed routing
+       APPROVE
+       CLARIFY
+       ESCALATE
+       REJECT
+  -> structured execution handoff
 ```
 
 ```mermaid
 flowchart LR
-    R["Request"] --> C["Deterministic compiler"]
-    C --> I["Typed IntentSpec"]
-    I --> V["Static validator"]
-    V --> A["Admissibility engine"]
-    A --> D["Structured APPROVE / CLARIFY / ESCALATE / REJECT"]
+    R["Business request"] --> C["Intent compilation"]
+    C --> I["Typed execution specification"]
+    I --> V["Static policy validation"]
+    V --> A["Governed routing"]
+    A --> D["APPROVE / CLARIFY / ESCALATE / REJECT"]
+    D --> H["Structured execution handoff"]
 ```
+
+## Runtime boundary
+
+Control Gate implements the control path before consequential execution. It:
+
+- compiles ambiguous requests into typed specifications;
+- validates required information, constraints, authority, and policy;
+- determines whether execution may proceed, needs clarification, requires approval, or must be rejected; and
+- emits machine-readable output for a downstream workflow or tool runtime.
+
+This checkpoint uses a deterministic local adapter and a synthetic supplier-invoice workflow. LangGraph, MCP, function-calling providers, and FastAPI are possible downstream integration boundaries; they are not implemented features in this repository checkpoint.
 
 ## Implemented components
 
@@ -32,8 +48,9 @@ flowchart LR
 - **Deterministic compiler** and conservative local request adapter
 - **Static validator** for the frozen V1 checks
 - **Deterministic admissibility engine** with stable reason codes and ordering
-- **Committed 48-case fixture benchmark** and structured evidence artifacts
+- **Committed 48-scenario admissibility benchmark** and structured evidence artifacts
 - **Local CLI** and automated tests
+- **Governed execution handoff example** with one safe in-memory staging function
 
 ## Install and run
 
@@ -129,9 +146,37 @@ python -m control_gate evaluate --request "Change the vendor bank account and pa
 }
 ```
 
+## Governed execution handoff
+
+From the repository root, run the deterministic example with the existing virtual environment:
+
+```powershell
+$env:PYTHONPATH = "$PWD\src"
+.\.venv\Scripts\python.exe examples\governed_execution_handoff.py
+```
+
+Selected output from the default APPROVE request:
+
+```json
+{
+  "decision": {"outcome": "APPROVE"},
+  "routing": {
+    "staging_invoked": true,
+    "handoff": {
+      "operation": "stage_invoice_locally",
+      "status": "STAGED_FOR_LOCAL_SIMULATION"
+    }
+  },
+  "simulation": "LOCAL_FICTIONAL_SUPPLIER_INVOICE",
+  "external_actions_performed": 0
+}
+```
+
+The example calls the real compiler, validator, and admissibility engine. Only APPROVE reaches the in-memory mock staging function. CLARIFY returns questions, ESCALATE returns the approval requirement, and REJECT returns reason codes; none of those three routes invokes staging.
+
 ## Measured benchmark evidence
 
-The committed frozen benchmark contains 48 synthetic, structured fixture requests: 12 per public decision.
+The committed 48-scenario admissibility benchmark contains synthetic, structured fixture requests: 12 per public decision.
 
 - **Decision matches**: 48/48
 - **Reason-code matches**: 48/48
@@ -139,7 +184,7 @@ The committed frozen benchmark contains 48 synthetic, structured fixture request
 - **Decision macro-F1**: 1.000
 - **Unsafe approvals**: 0/24 critical cases
 - **External actions**: 0
-- **Automated tests**: 29 passing
+- **Automated tests**: 33 passing
 
 The benchmark command reports the same result concisely while preserving JSONL results, failures, summary JSON, and a report.
 
@@ -151,6 +196,7 @@ outputs/phase_2/       compiler and validator evidence
 outputs/phase_3/       admissibility evidence
 docs/                  checkpoint and source-conflict records
 reports/               benchmark reports
+examples/              local governed execution handoff
 src/control_gate/      deterministic contracts, compiler, validator, gate, CLI
 tests/                 automated contract, benchmark, gate, and CLI tests
 ```
@@ -168,6 +214,6 @@ tests/                 automated contract, benchmark, gate, and CLI tests
 - The workflow is fictional supplier-invoice processing only.
 - There are no live payments, suppliers, external APIs, or deployments.
 - There is no persistent approval service.
-- LangGraph and MCP integration are not implemented in this checkpoint.
+- LangGraph, MCP, function-calling providers, and FastAPI are downstream boundaries, not implemented integrations.
 - The benchmark is curated local evidence, not external validation.
-- This checkpoint does not claim production readiness, governed execution, or universal agent safety.
+- This checkpoint does not claim production readiness, external governed execution, or universal agent safety.
