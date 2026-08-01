@@ -7,6 +7,7 @@ Updated: 2026-08-01 (Asia/Calcutta)
 - Current branch: `codex/phase-1-contracts`
 - Starting verified checkpoint for this continuation: `de826a6`
 - Verified CLI checkpoint: `272ee9f` (`feat: add local Control Gate evaluation CLI`)
+- Verified publication checkpoint: `f4ff539` (`docs: polish README scan clarity for metrics and components`)
 - Push, merge, deploy, publish, and external execution status: not performed
 
 ## Completed milestones
