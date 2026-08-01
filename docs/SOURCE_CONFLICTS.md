@@ -24,3 +24,11 @@ No public identity, CV claim, portfolio material, external integration, or unrel
 8. For a payment above USD 10,000 with a missing approval rule, the frozen source explicitly permits CLARIFY or ESCALATE. Fixture CG-CLR-12 selects CLARIFY; this does not establish a global source-defined precedence.
 9. The frozen source does not state a numerical Phase 2 pass threshold. Phase 2 remains incomplete until formal tests, a committed JSONL corpus, generated outputs, and the Phase 2 report exist.
 10. The frozen source describes a live-provider compiler path, while the current user instruction requires the deterministic offline compiler to be the V1 evaluation reference and forbids external model dependence. Only the deterministic partial path is implemented; live-provider work is deferred and no model call occurred.
+
+13. Item 5 is resolved by the runnable checkpoint README: it no longer lists a
+    non-existent `archive/` directory and describes only tracked repository
+    structure and measured local behavior.
+14. The frozen V1 document also describes runtime execution, LangGraph, MCP,
+    and API work. This checkpoint is intentionally limited to the separately
+    authorized deterministic pre-execution CLI; those later features are
+    neither implemented nor claimed.

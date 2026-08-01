@@ -65,3 +65,13 @@ checkpoint will require all 48 fixtures to compile, validate against the exact
 schema, repeat deterministically, match reviewed expected finding families,
 and perform zero external actions. That checkpoint has not yet been run or
 persisted.
+
+## D-010 — The local CLI is explicit-only and pre-execution
+
+The runnable CLI uses deterministic local phrase extraction as an adapter to
+the existing fixture compiler. It accepts only explicit supplier-invoice
+identifiers, amounts, a `finance_agent` actor marker, and selected policy
+phrases; it does not call an LLM or infer missing material facts. This keeps
+the command reproducible and conservative at the cost of a deliberately narrow
+natural-language surface. It returns a decision only and never invokes a tool
+or business action.

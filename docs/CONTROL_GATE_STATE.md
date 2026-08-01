@@ -4,165 +4,98 @@ Updated: 2026-08-01 (Asia/Calcutta)
 
 ## Checkpoint identity
 
-- Current branch: codex/phase-1-contracts
-- Repository base before Phase 1: 4a42e44
-- Starting verified checkpoint for this continuation: abb0823
-- Current verified code checkpoint: ec5e99f
-- Push/merge/deploy status: not performed
+- Current branch: `codex/phase-1-contracts`
+- Starting verified checkpoint for this continuation: `de826a6`
+- Verified CLI checkpoint: `272ee9f` (`feat: add local Control Gate evaluation CLI`)
+- Push, merge, deploy, publish, and external execution status: not performed
 
-## Milestone status
+## Completed milestones
 
-### Phase 1 — complete
+- Phase 1 contracts: `abb0823`
+- Phase 2 deterministic compiler, validator, corpus, evidence, and report: `179513e`
+- Phase 3 deterministic admissibility engine, benchmark evidence, and report: `ec5e99f`, documented at `de826a6`
+- Local evaluation CLI: `272ee9f`
+  - `python -m control_gate evaluate --request "<request>"` emits side-effect-free structured JSON.
+  - `python -m control_gate benchmark` runs the persisted 48-case Phase 3 benchmark, preserves its JSONL/JSON/report evidence, and returns nonzero on failure.
+  - No optional file-input interface was added.
 
-The seven frozen V1 contract entities, exact public enums, finance-v1 policy,
-and Phase 1 acceptance tests were committed at abb0823.
+## Current verified behavior
 
-### Phase 2 — partially implemented, not complete
+The local path is:
 
-Verified foundation committed at dda9bfe:
+```text
+request -> deterministic compiler -> IntentSpec -> validator -> admissibility decision -> structured JSON
+```
 
-- nested JSON carried by immutable contracts is recursively read-only and
-  serializes back to normal JSON objects and arrays;
-- deterministic FixtureContext, RequestFixture, and FixtureCompiler;
-- eleven stable static-validation finding families derived from the frozen
-  V1 checks;
-- an in-memory 48-case request catalog balanced at 12 APPROVE, 12 CLARIFY,
-  12 ESCALATE, and 12 REJECT;
-- deterministic compilation and static finding agreement across that in-memory
-  catalog.
-
-Phase 2 is not declared passed. Formal Phase 2 tests, committed fixture JSONL,
-the benchmark runner, generated outputs, and the Phase 2 report do not exist.
-
-Phases 3 and later were not started.
-
-## Files in the verified code checkpoint
-
-Commit dda9bfe:
-
-- src/control_gate/contracts.py
-- src/control_gate/compiler.py
-- src/control_gate/validation.py
-- src/control_gate/fixtures.py
-
-Commit abb0823:
-
-- docs/SOURCE_CONFLICTS.md
-- pyproject.toml
-- src/control_gate/__init__.py
-- src/control_gate/contracts.py
-- tests/test_contracts.py
+The CLI uses the existing deterministic fixture compiler, static validator, and admissibility engine. Its conservative request adapter recognizes only explicit fixture-domain identifiers, amounts, actor marker, and policy phrases; material omissions remain validation findings. It performs no network, model, tool, payment, or external business action.
 
 ## Verification commands and exact results
 
-All verification was local and offline, using the existing .venv.
+Focused CLI suite:
 
-Command:
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q tests\test_cli.py
+```
 
-    .\.venv\Scripts\python.exe -m py_compile src\control_gate\contracts.py src\control_gate\compiler.py src\control_gate\validation.py src\control_gate\fixtures.py
+```text
+........                                                                 [100%]
+8 passed in 0.88s
+```
 
-Result:
+Complete suite:
 
-    PY_COMPILE=PASS
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q
+```
 
-A local smoke script compiled and validated every object returned by
-build_frozen_request_benchmark() twice, compared expected static finding
-families, attempted root and nested mutation, and performed an IntentSpec JSON
-round trip.
+```text
+.............................                                            [100%]
+29 passed in 1.70s
+```
 
-Exact result:
+Real local CLI decision examples returned:
 
-    FIXTURES 48 {'APPROVE': 12, 'CLARIFY': 12, 'ESCALATE': 12, 'REJECT': 12}
-    FINDING_MISMATCHES 0
-    DETERMINISM_MISMATCHES 0
-    IMMUTABILITY {'root_blocked': True, 'nested_blocked': True, 'json_round_trip': True}
+| Expected decision | Actual decision | Reason code |
+|---|---|---|
+| APPROVE | APPROVE | `REQUEST_ADMISSIBLE` |
+| CLARIFY | CLARIFY | `REQUIRED_FIELD_MISSING` |
+| ESCALATE | ESCALATE | `PAYMENT_ABOVE_AUTONOMOUS_LIMIT` |
+| REJECT | REJECT | `VENDOR_BANK_DETAILS_MODIFICATION_PROHIBITED` |
 
-Command:
+Each example reported `external_actions_performed: 0`. The ESCALATE example reported `required_approver: finance_manager`.
 
-    .\.venv\Scripts\python.exe -m pytest -q tests\test_contracts.py
+Benchmark command:
 
-Exact result:
+```powershell
+.\.venv\Scripts\python.exe -m control_gate benchmark
+```
 
-    ........                                                                 [100%]
-    8 passed in 2.62s
+```text
+Control Gate benchmark: PASS
+Fixtures: 48; decision matches: 48; reason-code matches: 48; deterministic repeats: 48; macro-F1: 1.000; unsafe approvals: 0; external actions: 0
+```
 
-Before each checkpoint, git diff --check and/or
-git diff --cached --check returned exit code 0 with no whitespace errors.
+The cached CLI diff passed `git diff --cached --check` before commit. No external model/API execution was performed.
 
-## Known failures and execution notes
+## Documentation checkpoint contents
 
-- uv run pytest -q tests/test_contracts.py selected a global pytest because
-  pytest is an optional dev dependency; collection failed with
-  ModuleNotFoundError: No module named 'control_gate'.
-- uv run --extra dev pytest -q tests/test_contracts.py timed out while
-  materializing the environment. No dependency change was committed.
-- The normal Windows sandbox patch/file helper failed with
-  helper_sid_resolve_failed for CodexSandboxOffline (error 1332).
-  Narrow elevated PowerShell and Git patch fallbacks were used and every diff
-  was checked.
-- An attempted benchmark.py patch failed before any file was created. No
-  benchmark runner or partial benchmark artifact is present.
-- No external model, paid API, business system, payment, email, push, merge,
+- `README.md`: measured recruiter-facing runnable checkpoint, commands, real CLI output excerpts, boundaries, and limitations.
+- `DECISIONS.md`: CLI parsing boundary.
+- `ASSUMPTIONS.md`: explicit-only local request syntax.
+- `docs/SOURCE_CONFLICTS.md`: resolved prior README structure mismatch.
 
-## Superseding completion record
+## Incomplete and deferred work
 
-- Phase 2 completed and committed at 179513e.
-  - 48 persisted fixtures with exact 12/12/12/12 decision distribution.
-  - compilation success 48; schema-valid intents 48; exact finding agreement 48;
-    deterministic repeats 48; false positives 0; false negatives 0;
-    external actions 0.
-- Phase 3 completed and committed at ec5e99f.
-  - decisions matched 48 of 48; reason codes matched 48 of 48;
-    deterministic repeats 48; intent linkage valid 48.
-  - decision macro-F1 1.000; unsafe approvals 0 of 24 critical cases;
-    clarification recall 1.000; clarification precision 1.000;
-    required-field coverage 1.000; CLARIFY/REJECT tool suppression 1.000;
-    external actions 0.
-- Full local suite after the Phase 3 repair: 21 passed in 2.38s.
-- Git diff --check passed before the Phase 3 checkpoint.
+No Phase 4 work was started. The following remain intentionally outside this checkpoint: runtime execution, LangGraph, MCP, FastAPI, Docker, persistence, deployment, frontend, real payments, external integrations, model-backed compilation, and external benchmark validation.
 
-The Phase 3 precedence is now recorded in DECISIONS.md. The next legal
-milestone is the minimal local CLI only; no execution, external service,
-or broader architecture may be introduced.
+## Known failures
 
-  deployment, or publication action occurred.
+None in the verified local suite or frozen benchmark. The normal Windows sandbox patch helper intermittently fails with `helper_sid_resolve_failed`; Git-based patch/index recovery was used only for local text edits, followed by diff checks.
 
-## Assumptions already embodied in the partial code
+## Assumptions and source conflicts
 
-- The frozen application specification governs this sprint when it conflicts
-  with the broader knowledge base.
-- Materially missing fixture values are represented explicitly as None or an
-  unresolved goal/actor marker; the compiler does not infer them from prose.
-- Fixture amounts use decimal strings and the partial benchmark uses USD; no FX
-  conversion is inferred.
-- The local frozen tool allowlist is invoice.parse, vendor.lookup, po.lookup,
-  payment.submit, and optional audit.write.
-- The local request-role allowlist is the minimum documented in ASSUMPTIONS.md;
-  it is not claimed to be a general authorization model.
-- Static findings are blocking inputs to a later decision engine. They do not
-  themselves implement admissibility precedence.
-
-## Source conflicts and gaps
-
-See docs/SOURCE_CONFLICTS.md. The most important current gaps are:
-
-- no pre-existing serialized 48-request corpus or Git history for one;
-- no frozen complete reason-code taxonomy;
-- no frozen total precedence for simultaneous findings;
-- a high-value request with a missing approval rule is explicitly allowed to
-  become CLARIFY or ESCALATE;
-- no numerical Phase 2 pass threshold.
+See `ASSUMPTIONS.md` and `docs/SOURCE_CONFLICTS.md`. The frozen V1 specification remains authoritative; this checkpoint implements only the user-authorized pre-execution local CLI surface, not the broader runtime described for later V1 phases.
 
 ## Next legal milestone
 
-Resume Phase 2 only:
-
-1. add formal unit and regression tests for the existing compiler, validator,
-   immutability, serialization, malformed inputs, and zero external actions;
-2. serialize and commit the reviewed 48 cases as benchmarks/requests.jsonl;
-3. implement the local Phase 2 runner;
-4. generate outputs/phase_2/ and reports/phase_2_report.md;
-5. run the Phase 2 suite and benchmark, record exact evidence, and commit only
-   if the Phase 2 checkpoint passes.
-
-Do not begin Phase 3 until that Phase 2 checkpoint is complete.
+Stop at this runnable checkpoint. No further implementation is authorized without a new explicit request; in particular, do not begin Phase 4 or any runtime, integration, deployment, or execution feature.

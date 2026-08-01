@@ -40,3 +40,10 @@ partial Phase 2 code. They do not expand the frozen product boundary.
 
 11. Static findings have no total precedence. Phase 3 must record a narrow,
     deterministic precedence decision before implementation.
+
+## CLI checkpoint assumption
+
+15. The local CLI recognizes a deliberately small, explicit request syntax:
+    `INV-*`, `SUP-*`/`VENDOR-*`, `PO-*`, USD/EUR/GBP amounts, the literal
+    `finance_agent`, and documented validation/policy phrases. It does not
+    infer missing identifiers, actor authority, or business facts from prose.
