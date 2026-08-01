@@ -1,103 +1,140 @@
 # Control Gate
 
-> Control Gate is a governed pre-execution control layer for agentic workflows. It converts ambiguous business requests into typed intent contracts, applies deterministic policy checks, and routes each request to APPROVE, CLARIFY, ESCALATE, or REJECT before consequential tool execution.
+Control Gate converts ambiguous business requests into typed intent specifications, applies deterministic policy checks, and decides whether an agent action may proceed, needs clarification, requires human approval, or must be rejected.
 
-The current reference implementation uses a fictional supplier-invoice workflow and local deterministic components so every decision can be reproduced, tested, and audited.
+| Verification / Metric | Result |
+| :--- | :--- |
+| **Automated Tests** | 33 passing tests |
+| **Admissibility Decision Matches** | 48/48 |
+| **Reason-Code Matches** | 48/48 |
+| **Decision Macro-F1** | 1.000 |
+| **Unsafe Approvals** | 0/24 critical cases |
+| **External Actions Performed** | 0 |
 
 ## Why it exists
 
-Business requests can be understandable but still incomplete, ambiguous, outside authority, or inconsistent with policy. Autonomous execution should not begin until the intent, constraints, and approval path are explicit. Control Gate makes that decision before execution begins.
+Business requests can be understandable but still incomplete, ambiguous, outside authority, or inconsistent with policy. Autonomous execution should not begin until the intent, constraints, and approval path are explicit. Control Gate implements a pre-execution safety boundary, resolving these issues before any downstream action is executed.
 
-```text
-Business request
-  -> intent compilation
-  -> typed execution specification
-  -> static policy validation
-  -> governed routing
-       APPROVE
-       CLARIFY
-       ESCALATE
-       REJECT
-  -> structured execution handoff
-```
+The current reference implementation uses a fictional supplier-invoice processing workflow with local deterministic components so that every decision can be reproduced, tested, and audited.
+
+## How it works
+
+Control Gate processes incoming requests through a deterministic pipeline:
 
 ```mermaid
-flowchart LR
-    R["Business request"] --> C["Intent compilation"]
-    C --> I["Typed execution specification"]
-    I --> V["Static policy validation"]
-    V --> A["Governed routing"]
-    A --> D["APPROVE / CLARIFY / ESCALATE / REJECT"]
-    D --> H["Structured execution handoff"]
+flowchart TD
+    A["Business request"] --> B["Intent compilation"]
+    B --> C["Typed intent specification"]
+    C --> D["Static policy validation"]
+    D --> E["Governed routing"]
+    E --> F["APPROVE → local fictional staging handoff"]
+    E --> G["CLARIFY → questions"]
+    E --> H["ESCALATE → approval requirement"]
+    E --> I["REJECT → blocked"]
 ```
 
-## Runtime boundary
+## Quick start
 
-Control Gate implements the control path before consequential execution. It:
-
-- compiles ambiguous requests into typed specifications;
-- validates required information, constraints, authority, and policy;
-- determines whether execution may proceed, needs clarification, requires approval, or must be rejected; and
-- emits machine-readable output for a downstream workflow or tool runtime.
-
-This checkpoint uses a deterministic local adapter and a synthetic supplier-invoice workflow. LangGraph, MCP, function-calling providers, and FastAPI are possible downstream integration boundaries; they are not implemented features in this repository checkpoint.
-
-## Implemented components
-
-- **Pydantic contracts** with immutable intent/version linkage
-- **Deterministic compiler** and conservative local request adapter
-- **Static validator** for the frozen V1 checks
-- **Deterministic admissibility engine** with stable reason codes and ordering
-- **Committed 48-scenario admissibility benchmark** and structured evidence artifacts
-- **Local CLI** and automated tests
-- **Governed execution handoff example** with one safe in-memory staging function
-
-## Install and run
-
-Requires Python 3.10 or later. In PowerShell:
+To install dependencies and run the Control Gate locally in Windows PowerShell, execute:
 
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -e ".[dev]"
-.\.venv\Scripts\Activate.ps1
-python -m control_gate evaluate --request "<request>"
-python -m control_gate benchmark
-python -m pytest -q
+$env:PYTHONPATH = "$PWD\src"
+.\.venv\Scripts\python.exe -m control_gate evaluate --request "<request>"
+.\.venv\Scripts\python.exe -m control_gate benchmark
+.\.venv\Scripts\python.exe examples\governed_execution_handoff.py
+.\.venv\Scripts\python.exe -m pytest -q
 ```
 
-`evaluate` prints valid JSON containing the original request, compiled `IntentSpec`, validation findings, linked decision, reason codes and messages, clarification questions, approval requirements, and intent ID/version. Empty input returns a readable JSON error and exit code 2. `benchmark` writes the existing machine-readable Phase 3 evidence under `outputs/phase_3/` and returns nonzero if the benchmark fails.
+## Governed execution handoff
 
-## CLI examples
-
-These excerpts are selected fields from actual local CLI JSON output; the full output also includes `intent_spec` and `validation_findings`.
-
-### APPROVE
+The reference implementation demonstrates how to route approved actions to downstream code.
+Run the handoff simulation:
 
 ```powershell
-python -m control_gate evaluate --request "finance_agent process invoice INV-9001 from supplier SUP-9001 under PO-9001 for USD 7500.00; supplier exists, valid purchase order, not duplicate, and all validations pass."
+$env:PYTHONPATH = "$PWD\src"
+.\.venv\Scripts\python.exe examples\governed_execution_handoff.py
 ```
 
+### Handoff output for `APPROVE` route
 ```json
 {
-  "decision": {"decision": "APPROVE"},
-  "reason_codes": ["REQUEST_ADMISSIBLE"],
+  "decision": {
+    "approval_requirement": null,
+    "clarification_questions": [],
+    "intent_id": "INT-CLI-43B44A6C253C4FEF",
+    "intent_version": 1,
+    "outcome": "APPROVE",
+    "reason_codes": [
+      "REQUEST_ADMISSIBLE"
+    ]
+  },
+  "external_actions_performed": 0,
+  "intent": {
+    "intent_id": "INT-CLI-43B44A6C253C4FEF",
+    "intent_version": 1
+  },
+  "original_request": "finance_agent process invoice INV-9001 from supplier SUP-9001 under PO-9001 for USD 7500.00; supplier exists, valid purchase order, not duplicate, and all validations pass.",
+  "routing": {
+    "handoff": {
+      "external_actions_performed": 0,
+      "intent_id": "INT-CLI-43B44A6C253C4FEF",
+      "intent_version": 1,
+      "invoice_id": "INV-9001",
+      "operation": "stage_invoice_locally",
+      "simulation": "LOCAL_FICTIONAL_SUPPLIER_INVOICE",
+      "status": "STAGED_FOR_LOCAL_SIMULATION"
+    },
+    "staging_invoked": true
+  },
+  "simulation": "LOCAL_FICTIONAL_SUPPLIER_INVOICE"
+}
+```
+
+*Note: Only `APPROVE` invokes the local fictional in-memory staging handoff function (`stage_invoice_locally`). The `CLARIFY`, `ESCALATE`, and `REJECT` routes return control decisions and routing metadata without execution, performing exactly 0 external actions.*
+
+## Decision examples
+
+These examples show selected fields from the actual local CLI JSON output. Use the following commands to evaluate different scenarios:
+
+### 1. APPROVE
+**Request:**
+```powershell
+.\.venv\Scripts\python.exe -m control_gate evaluate --request "finance_agent process invoice INV-9001 from supplier SUP-9001 under PO-9001 for USD 7500.00; supplier exists, valid purchase order, not duplicate, and all validations pass."
+```
+**JSON output:**
+```json
+{
+  "decision": {
+    "decision": "APPROVE",
+    "intent_id": "INT-CLI-43B44A6C253C4FEF",
+    "intent_version": 1,
+    "reason_codes": ["REQUEST_ADMISSIBLE"]
+  },
   "approval_requirements": null,
+  "clarification_questions": [],
   "intent_id": "INT-CLI-43B44A6C253C4FEF",
   "intent_version": 1,
   "external_actions_performed": 0
 }
 ```
 
-### CLARIFY
-
+### 2. CLARIFY
+**Request:**
 ```powershell
-python -m control_gate evaluate --request "Process this invoice."
+.\.venv\Scripts\python.exe -m control_gate evaluate --request "Process this invoice."
 ```
-
+**JSON output:**
 ```json
 {
-  "decision": {"decision": "CLARIFY"},
-  "reason_codes": ["REQUIRED_FIELD_MISSING"],
+  "decision": {
+    "decision": "CLARIFY",
+    "intent_id": "INT-CLI-96010C6DF2C29864",
+    "intent_version": 1,
+    "reason_codes": ["REQUIRED_FIELD_MISSING"]
+  },
+  "approval_requirements": null,
   "clarification_questions": [
     "Provide actor.",
     "Provide inputs.amount.",
@@ -112,108 +149,105 @@ python -m control_gate evaluate --request "Process this invoice."
 }
 ```
 
-### ESCALATE
-
+### 3. ESCALATE
+**Request:**
 ```powershell
-python -m control_gate evaluate --request "finance_agent process invoice INV-9001 from supplier SUP-9001 under PO-9001 for USD 18400.00; supplier exists, valid purchase order, not duplicate, and all validations pass."
+.\.venv\Scripts\python.exe -m control_gate evaluate --request "finance_agent process invoice INV-9001 from supplier SUP-9001 under PO-9001 for USD 18400.00; supplier exists, valid purchase order, not duplicate, and all validations pass."
 ```
-
+**JSON output:**
 ```json
 {
-  "decision": {"decision": "ESCALATE"},
-  "reason_codes": ["PAYMENT_ABOVE_AUTONOMOUS_LIMIT"],
-  "approval_requirements": {"required_approver": "finance_manager"},
+  "decision": {
+    "decision": "ESCALATE",
+    "intent_id": "INT-CLI-1A1DE0B0758CB016",
+    "intent_version": 1,
+    "reason_codes": ["PAYMENT_ABOVE_AUTONOMOUS_LIMIT"]
+  },
+  "approval_requirements": {
+    "required_approver": "finance_manager"
+  },
+  "clarification_questions": [],
   "intent_id": "INT-CLI-1A1DE0B0758CB016",
   "intent_version": 1,
   "external_actions_performed": 0
 }
 ```
 
-### REJECT
-
+### 4. REJECT
+**Request:**
 ```powershell
-python -m control_gate evaluate --request "Change the vendor bank account and pay immediately without approval."
+.\.venv\Scripts\python.exe -m control_gate evaluate --request "Change the vendor bank account and pay immediately without approval."
 ```
-
+**JSON output:**
 ```json
 {
-  "decision": {"decision": "REJECT"},
-  "reason_codes": ["VENDOR_BANK_DETAILS_MODIFICATION_PROHIBITED"],
+  "decision": {
+    "decision": "REJECT",
+    "intent_id": "INT-CLI-7AEA45ABFFC3E7F6",
+    "intent_version": 1,
+    "reason_codes": ["VENDOR_BANK_DETAILS_MODIFICATION_PROHIBITED"]
+  },
   "approval_requirements": null,
+  "clarification_questions": [],
   "intent_id": "INT-CLI-7AEA45ABFFC3E7F6",
   "intent_version": 1,
   "external_actions_performed": 0
 }
 ```
 
-## Governed execution handoff
+## Benchmark evidence
 
-From the repository root, run the deterministic example with the existing virtual environment:
+The repository includes a committed 48-scenario admissibility benchmark that contains synthetic, structured fixture requests (12 per public decision).
 
+To execute the benchmark evaluation:
 ```powershell
-$env:PYTHONPATH = "$PWD\src"
-.\.venv\Scripts\python.exe examples\governed_execution_handoff.py
+.\.venv\Scripts\python.exe -m control_gate benchmark
 ```
 
-Selected output from the default APPROVE request:
+### Verified Benchmark Performance Metrics
+* **Decision matches**: 48/48
+* **Reason-code matches**: 48/48
+* **Deterministic repeats**: 48/48
+* **Decision macro-F1**: 1.000
+* **Unsafe approvals**: 0/24 critical cases
+* **External actions**: 0
+* **Automated tests**: 33 passing
 
-```json
-{
-  "decision": {"outcome": "APPROVE"},
-  "routing": {
-    "staging_invoked": true,
-    "handoff": {
-      "operation": "stage_invoice_locally",
-      "status": "STAGED_FOR_LOCAL_SIMULATION"
-    }
-  },
-  "simulation": "LOCAL_FICTIONAL_SUPPLIER_INVOICE",
-  "external_actions_performed": 0
-}
-```
+Evaluation evidence is saved under [outputs/phase_3/](outputs/phase_3/) (results, failures, and summary) and the human-readable summary under [reports/phase_3_report.md](reports/phase_3_report.md).
 
-The example calls the real compiler, validator, and admissibility engine. Only APPROVE reaches the in-memory mock staging function. CLARIFY returns questions, ESCALATE returns the approval requirement, and REJECT returns reason codes; none of those three routes invokes staging.
+## Implemented components
 
-## Measured benchmark evidence
-
-The committed 48-scenario admissibility benchmark contains synthetic, structured fixture requests: 12 per public decision.
-
-- **Decision matches**: 48/48
-- **Reason-code matches**: 48/48
-- **Deterministic repeats**: 48/48
-- **Decision macro-F1**: 1.000
-- **Unsafe approvals**: 0/24 critical cases
-- **External actions**: 0
-- **Automated tests**: 33 passing
-
-The benchmark command reports the same result concisely while preserving JSONL results, failures, summary JSON, and a report.
+* **Pydantic contracts**: Immutable intent specifications and schema versioning logic.
+* **Deterministic compiler**: Converts natural language requests to typed intents based on explicit domain identifiers.
+* **Static validator**: Evaluates rules (missing fields, duplicate check, policy conflicts).
+* **Admissibility engine**: Computes admission decisions (APPROVE, CLARIFY, ESCALATE, REJECT) with stable reason codes.
+* **Governed handoff adapter**: Staging function invoked only for approved intents.
+* **CLI & Evaluation tools**: Enables interactive command execution and batch benchmark evaluation.
 
 ## Repository structure
 
 ```text
 benchmarks/            frozen 48-case JSONL corpus
+docs/                  architectural checkpoint documents
+docs/internal/         internal planning, parser, and assumption records
+examples/              local governed execution handoff examples
 outputs/phase_2/       compiler and validator evidence
 outputs/phase_3/       admissibility evidence
-docs/                  checkpoint and source-conflict records
-reports/               benchmark reports
-examples/              local governed execution handoff
-src/control_gate/      deterministic contracts, compiler, validator, gate, CLI
+reports/               benchmark evaluation reports
+src/control_gate/      deterministic contracts, compiler, validator, gate, and CLI
 tests/                 automated contract, benchmark, gate, and CLI tests
 ```
 
 ## Design decisions and trade-offs
 
-- Deterministic rules replace hidden model judgment, so inputs and decisions are reproducible.
-- Typed, immutable contracts link each decision to an exact intent version.
-- Admission is conservative: missing material information clarifies instead of being guessed.
-- Stable reason codes make benchmark outcomes and CLI responses machine-checkable.
-- The CLI is pre-execution only; it deliberately performs no real financial action.
+* **Deterministic rules over LLM-based policy checking**: Ensures 100% reproducibility and clear audit trails for security-critical pathways.
+* **Strict intent specs & versioning**: Every decision is explicitly tied to an immutable schema version and intent ID.
+* **Conservative admissibility**: Missing information always defaults to CLARIFY rather than risk guessing.
+* **No side-effects at gate level**: Evaluates requests in a read-only manner before triggering downstream tool actions.
 
-## Limitations and deferred work
+## Limitations and deferred integrations
 
-- The workflow is fictional supplier-invoice processing only.
-- There are no live payments, suppliers, external APIs, or deployments.
-- There is no persistent approval service.
-- LangGraph, MCP, function-calling providers, and FastAPI are downstream boundaries, not implemented integrations.
-- The benchmark is curated local evidence, not external validation.
-- This checkpoint does not claim production readiness, external governed execution, or universal agent safety.
+* **Fictional supplier-invoice domain**: The current reference implementation operates only on a synthetic invoice domain.
+* **No external state/services**: Does not interact with databases, live payment APIs, or actual vendor systems.
+* **Integrations deferred**: LangGraph, MCP, function-calling frameworks, FastAPI, and production runners are downstream boundary targets and are not implemented.
+* **Pre-execution checkpoint**: This repository is designed as a governable gateway checkpoint, not a production-ready application server.
