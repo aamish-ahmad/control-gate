@@ -1,0 +1,51 @@
+{
+  "actual_finding_counts": {
+    "V_AMBIGUOUS_ENTITY_REFERENCE": 3,
+    "V_APPROVAL_RULE_MISSING": 1,
+    "V_CONTRADICTORY_REQUIREMENTS": 2,
+    "V_NON_REVERSIBLE_HIGH_IMPACT_ACTION": 1,
+    "V_POLICY_CONFLICT": 8,
+    "V_REQUIRED_FIELD_MISSING": 5,
+    "V_SUCCESS_CONDITIONS_MISSING": 1,
+    "V_TOOL_UNKNOWN_OR_DISALLOWED": 3,
+    "V_UNBOUNDED_PERMISSIONS": 2,
+    "V_UNSAFE_ASSUMPTION": 1
+  },
+  "benchmark_integrity": {
+    "balanced_decisions": true,
+    "fixture_ids_unique": true,
+    "requests_unique": true,
+    "required_categories_covered": true,
+    "schema_version_is_v1": true,
+    "total_is_48": true
+  },
+  "compilation_success": 48,
+  "decision_distribution": {
+    "APPROVE": 12,
+    "CLARIFY": 12,
+    "ESCALATE": 12,
+    "REJECT": 12
+  },
+  "deterministic_repeatability": 48,
+  "exact_finding_agreement": 48,
+  "expected_finding_counts": {
+    "V_AMBIGUOUS_ENTITY_REFERENCE": 3,
+    "V_APPROVAL_RULE_MISSING": 1,
+    "V_CONTRADICTORY_REQUIREMENTS": 2,
+    "V_NON_REVERSIBLE_HIGH_IMPACT_ACTION": 1,
+    "V_POLICY_CONFLICT": 8,
+    "V_REQUIRED_FIELD_MISSING": 5,
+    "V_SUCCESS_CONDITIONS_MISSING": 1,
+    "V_TOOL_UNKNOWN_OR_DISALLOWED": 3,
+    "V_UNBOUNDED_PERMISSIONS": 2,
+    "V_UNSAFE_ASSUMPTION": 1
+  },
+  "external_actions_performed": 0,
+  "false_negatives": 0,
+  "false_positives": 0,
+  "fixture_sha256": "4db513e6798f8975ad04aec3c457eeca0ec401d2cc1f02e2d63ce8f7d843f503",
+  "phase": 2,
+  "phase_2_passed": true,
+  "schema_valid_count": 48,
+  "total_fixtures": 48
+}
