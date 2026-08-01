@@ -11,6 +11,15 @@ This record applies to the current application sprint and preserves conflicts fo
 No public identity, CV claim, portfolio material, external integration, or unrelated repository is changed by the Phase 1 milestone.
 
 6. The frozen source defines a logical 48-request benchmark and exact 12/12/12/12 decision balance, but no serialized corpus exists in the working tree or Git history. The partial Phase 2 catalog is a transparent local instantiation and must not be described as a recovered pre-existing dataset.
+
+11. Item 9 is superseded by the committed Phase 2 evidence at 179513e. The
+    source still has no numerical Phase 2 threshold, so the repository uses
+    the recorded structural checkpoint rather than claiming a source metric.
+12. The source lacks total simultaneous-finding precedence. Phase 3 records a
+    narrow deterministic precedence in DECISIONS.md and validates it against
+    the persisted fixture corpus; it is not claimed as a source-defined
+    universal policy.
+
 7. The frozen source provides no complete static-finding or decision reason-code taxonomy and no total precedence for simultaneous findings. Only PAYMENT_ABOVE_AUTONOMOUS_LIMIT is exemplified. Local stable codes and any precedence must be recorded as implementation decisions.
 8. For a payment above USD 10,000 with a missing approval rule, the frozen source explicitly permits CLARIFY or ESCALATE. Fixture CG-CLR-12 selects CLARIFY; this does not establish a global source-defined precedence.
 9. The frozen source does not state a numerical Phase 2 pass threshold. Phase 2 remains incomplete until formal tests, a committed JSONL corpus, generated outputs, and the Phase 2 report exist.

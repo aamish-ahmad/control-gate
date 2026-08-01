@@ -27,5 +27,16 @@ partial Phase 2 code. They do not expand the frozen product boundary.
    FX rate is inferred.
 10. A valid finance-manager approval rule on an amount above USD 10,000 is not
     a static validation error; it is expected to become ESCALATE in Phase 3.
+
+## Superseding checkpoint assumptions
+
+12. A wildcard-bearing unbounded permission is an explicit prohibited request
+    and rejects; an unbounded request with no named requested tool clarifies.
+13. A threshold approval rule using amount > 10000 does not itself require
+    escalation below that threshold. A rule with when equal to always does.
+14. The explicit submit_payment and do_not_submit_payment requirement pair is
+    irreconcilable and rejects; a currency constraint conflict remains
+    clarifiable.
+
 11. Static findings have no total precedence. Phase 3 must record a narrow,
     deterministic precedence decision before implementation.

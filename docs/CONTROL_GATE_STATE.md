@@ -7,7 +7,7 @@ Updated: 2026-08-01 (Asia/Calcutta)
 - Current branch: codex/phase-1-contracts
 - Repository base before Phase 1: 4a42e44
 - Starting verified checkpoint for this continuation: abb0823
-- Current verified code checkpoint: dda9bfe
+- Current verified code checkpoint: ec5e99f
 - Push/merge/deploy status: not performed
 
 ## Milestone status
@@ -103,6 +103,28 @@ git diff --cached --check returned exit code 0 with no whitespace errors.
 - An attempted benchmark.py patch failed before any file was created. No
   benchmark runner or partial benchmark artifact is present.
 - No external model, paid API, business system, payment, email, push, merge,
+
+## Superseding completion record
+
+- Phase 2 completed and committed at 179513e.
+  - 48 persisted fixtures with exact 12/12/12/12 decision distribution.
+  - compilation success 48; schema-valid intents 48; exact finding agreement 48;
+    deterministic repeats 48; false positives 0; false negatives 0;
+    external actions 0.
+- Phase 3 completed and committed at ec5e99f.
+  - decisions matched 48 of 48; reason codes matched 48 of 48;
+    deterministic repeats 48; intent linkage valid 48.
+  - decision macro-F1 1.000; unsafe approvals 0 of 24 critical cases;
+    clarification recall 1.000; clarification precision 1.000;
+    required-field coverage 1.000; CLARIFY/REJECT tool suppression 1.000;
+    external actions 0.
+- Full local suite after the Phase 3 repair: 21 passed in 2.38s.
+- Git diff --check passed before the Phase 3 checkpoint.
+
+The Phase 3 precedence is now recorded in DECISIONS.md. The next legal
+milestone is the minimal local CLI only; no execution, external service,
+or broader architecture may be introduced.
+
   deployment, or publication action occurred.
 
 ## Assumptions already embodied in the partial code

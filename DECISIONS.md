@@ -33,6 +33,24 @@ partial implementation defines an auditable in-memory catalog with the frozen
 12/12/12/12 balance and coverage tags. It is not yet a committed JSONL
 benchmark and Phase 2 is not complete.
 
+
+## D-008 — Phase 2 evidence satisfies the structural checkpoint
+
+The persisted 48-case corpus, formal tests, deterministic rerun, outputs, and
+report satisfy the documented Phase 2 structural checkpoint. This does not
+claim a source-defined numerical Phase 2 threshold.
+
+## D-009 — Phase 3 precedence is narrow and fixture-bound
+
+Pre-execution rejection takes precedence for frozen policy conflicts, unsafe
+assumptions, non-reversible high-impact actions, explicit wildcard permissions,
+and irreconcilable submit/do-not-submit requirements. Material incompleteness,
+ambiguity, missing approval routing, currency contradiction, no-tool unbounded
+permission, and missing success conditions clarify. A complete request above
+the autonomous limit escalates to finance_manager; otherwise it approves.
+Reason selection is stable and uses the recorded precedence order. This choice
+implements the persisted fixtures and is not a general authorization engine.
+
 ## D-006 — Missing approval rule fixture selects CLARIFY
 
 For the documented high-value case with no approval rule, the source permits
