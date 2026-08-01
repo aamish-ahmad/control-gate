@@ -28,12 +28,12 @@ flowchart LR
 
 ## Implemented components
 
-- Pydantic contracts with immutable intent/version linkage
-- Deterministic compiler and conservative local request adapter
-- Static validator for the frozen V1 checks
-- Deterministic admissibility engine with stable reason codes and ordering
-- Committed 48-case fixture benchmark and structured evidence artifacts
-- Local CLI and automated tests
+- **Pydantic contracts** with immutable intent/version linkage
+- **Deterministic compiler** and conservative local request adapter
+- **Static validator** for the frozen V1 checks
+- **Deterministic admissibility engine** with stable reason codes and ordering
+- **Committed 48-case fixture benchmark** and structured evidence artifacts
+- **Local CLI** and automated tests
 
 ## Install and run
 
@@ -133,13 +133,13 @@ python -m control_gate evaluate --request "Change the vendor bank account and pa
 
 The committed frozen benchmark contains 48 synthetic, structured fixture requests: 12 per public decision.
 
-- Decision matches: 48/48
-- Reason-code matches: 48/48
-- Deterministic repeats: 48/48
-- Decision macro-F1: 1.000
-- Unsafe approvals: 0/24 critical cases
-- External actions: 0
-- Automated tests: 29 passing
+- **Decision matches**: 48/48
+- **Reason-code matches**: 48/48
+- **Deterministic repeats**: 48/48
+- **Decision macro-F1**: 1.000
+- **Unsafe approvals**: 0/24 critical cases
+- **External actions**: 0
+- **Automated tests**: 29 passing
 
 The benchmark command reports the same result concisely while preserving JSONL results, failures, summary JSON, and a report.
 
