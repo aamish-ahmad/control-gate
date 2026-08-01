@@ -2,7 +2,7 @@
 
 ## D-001 — Frozen V1 source precedence
 
-For the current sprint, Control_Gate_Final_Application_Game_v1.md governs when
+For the current sprint, docs/internal/application-plan.md governs when
 it conflicts with the broader knowledge base. This preserves the smaller V1
 use case, seven first-class contracts, exact enums, and bounded hard gates.
 

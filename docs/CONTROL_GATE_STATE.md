@@ -100,8 +100,8 @@ The cached CLI diff passed `git diff --cached --check` before commit. No externa
 - `README.md`: governed pre-execution framing, runtime boundary, measured handoff example, commands, and honest limitations.
 - `examples/governed_execution_handoff.py`: deterministic local fictional execution handoff.
 - `tests/test_governed_execution_handoff.py`: focused APPROVE/non-APPROVE routing, linkage, JSON, and zero-external-action tests.
-- `DECISIONS.md`: CLI parsing boundary.
-- `ASSUMPTIONS.md`: explicit-only local request syntax.
+- `docs/internal/decisions.md`: CLI parsing boundary.
+- `docs/internal/assumptions.md`: explicit-only local request syntax.
 - `docs/SOURCE_CONFLICTS.md`: resolved prior README structure mismatch.
 
 ## Incomplete and deferred work
@@ -114,7 +114,7 @@ None in the verified local suite or frozen benchmark. The normal Windows sandbox
 
 ## Assumptions and source conflicts
 
-See `ASSUMPTIONS.md` and `docs/SOURCE_CONFLICTS.md`. The frozen V1 specification remains authoritative; this checkpoint implements only the user-authorized pre-execution local CLI surface, not the broader runtime described for later V1 phases.
+See `docs/internal/assumptions.md` and `docs/SOURCE_CONFLICTS.md`. The frozen V1 specification remains authoritative; this checkpoint implements only the user-authorized pre-execution local CLI surface, not the broader runtime described for later V1 phases.
 
 ## Next legal milestone
 
