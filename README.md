@@ -4,7 +4,7 @@ Control Gate converts ambiguous business requests into typed intent specificatio
 
 | Verification / Metric | Result |
 | :--- | :--- |
-| **Automated Tests** | 33 passing tests |
+| **Automated Tests** | 36 passing tests |
 | **Admissibility Decision Matches** | 48/48 |
 | **Reason-Code Matches** | 48/48 |
 | **Decision Macro-F1** | 1.000 |
