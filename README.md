@@ -197,7 +197,7 @@ These examples show selected fields from the actual local CLI JSON output. Use t
 
 ## Benchmark evidence
 
-The repository includes a committed 48-scenario admissibility benchmark that contains synthetic, structured fixture requests (12 per public decision).
+The repository includes a committed 48-scenario admissibility benchmark that contains synthetic, structured fixture requests (12 per public decision). This benchmark accurately validates the deterministic structured-intent mapping and admissibility behavior; it does not evaluate natural-language compilation, as the compiler directly consumes the structured context rather than the natural-language strings during testing.
 
 To execute the benchmark evaluation:
 ```powershell
@@ -211,9 +211,20 @@ To execute the benchmark evaluation:
 * **Decision macro-F1**: 1.000
 * **Unsafe approvals**: 0/24 critical cases
 * **External actions**: 0
-* **Automated tests**: 33 passing
+* **Automated tests**: 36 passing
 
-Evaluation evidence is saved under [outputs/phase_3/](outputs/phase_3/) (results, failures, and summary) and the human-readable summary under [reports/phase_3_report.md](reports/phase_3_report.md).
+### Dynamic AI/QE Evaluations
+
+In addition to the static baseline, the engine is verified using deterministic dynamic evaluations:
+
+* **Metamorphic Testing (96 cases):** Proves that non-semantic request string mutations (48 cases) and safe assumption additions (12 cases) preserve baseline decisions. Boundary testing (36 cases) proves amounts strictly below ($9999.99) and exactly at ($10000.00) the limit remain `APPROVE`, while amounts strictly above ($10000.01) immediately trigger `ESCALATE`. (0 failures)
+* **Differential / Back-to-Back Testing:** Proves the current runtime identically matches the serialized frozen reference baseline, yielding 48/48 decision agreement, 48/48 reason-code agreement, 0 changed cases, and 0 unsafe regressions.
+* **Controlled Synthetic Drift:**
+  * *Inflation drift* (10x amount multiplier) safely shifted 11 of 12 `APPROVE` cases to `ESCALATE`, correctly leaving the single $250.00 base case as `APPROVE`.
+  * *Vendor attrition drift* (forced `supplier_exists=False`) safely forced all 48 cases to `REJECT` due to strict policy precedence.
+  * *Unexpected regressions:* 0.
+
+Evaluation evidence for the original static benchmark is saved under [outputs/phase_3/](outputs/phase_3/) (results, failures, and summary) and the human-readable summary under [reports/phase_3_report.md](reports/phase_3_report.md); the new metamorphic, differential/back-to-back, and controlled-drift evaluations are currently executable test evidence and are not stored in those Phase 3 artifacts.
 
 ## Implemented components
 
