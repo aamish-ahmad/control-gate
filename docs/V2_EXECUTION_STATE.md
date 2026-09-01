@@ -108,6 +108,7 @@ C0 is PASS. C1 is authorized only after this ledger update is committed and push
 ## C1 execution evidence
 Observed on 2026-09-02 from the C1 candidate worktree:
 
+- verified C1 evidence commit: `7ba31fd49128c16df254db8523f3ca3cbb4ae87c`;
 - implementation: `src/control_gate/tool_environment.py`;
 - focused tests: `tests/test_tool_environment.py`;
 - focused command: `./.venv/Scripts/python.exe -m pytest -q tests/test_tool_environment.py` -> `20 passed in 2.50s`;
