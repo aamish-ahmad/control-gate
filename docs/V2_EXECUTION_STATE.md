@@ -3,9 +3,9 @@
 Updated: 2026-09-02 (Asia/Kolkata)
 
 ## Controller status
-Status: C0_PASS_READY_FOR_C1
-Completed phase: C0 — Freeze and protect V1 / bootstrap shared execution state
-Next authorized phase: C1 — deterministic local supplier/PO/invoice/policy tool environment
+Status: C1_PASS_AWAITING_CONTROLLER
+Completed phase: C1 — deterministic local supplier/PO/invoice/policy tool environment
+Next phase: pending controller verification and explicit authorization
 Execution branch: `v2-closure-execution`
 Frozen baseline `main` SHA: `6c48d6449080b0e036025cb305b2c590b00737a4`
 
@@ -72,7 +72,56 @@ Observed on 2026-09-02 from branch `v2-closure-execution`:
 
 C0 is PASS. C1 is authorized only after this ledger update is committed and pushed as the shared C0 checkpoint.
 
-## Next legal transition
-If C0 PASS: authorize **C1 — deterministic local supplier/PO/invoice/policy tool environment**.
+## C1 phase contract
 
-If any C0 invariant fails: return BLOCKED with evidence and authorize only the smallest repair needed for C0.
+### Entry state
+- C0 shared checkpoint is pushed at `74db7c528198d3fbe2cf63ed4dda0d0617fb8959`;
+- local `v2-closure-execution` matches `origin/v2-closure-execution` at entry;
+- C1 is explicitly authorized by the frozen Notion controller checkpoint;
+- the existing 36-test V1 suite and frozen 48-case benchmark pass at entry.
+
+### Authorized changes
+- deterministic synthetic supplier, purchase-order, invoice, policy, approval-threshold, duplicate-index, and staged-action fixtures;
+- bounded local implementations of `lookup_supplier`, `lookup_purchase_order`, `inspect_invoice`, `check_duplicate`, `retrieve_policy`, `stage_payment`, and `request_human_approval`;
+- focused tool-level tests;
+- this C1 state/evidence update.
+
+### Forbidden changes
+- no agent loop or orchestration framework;
+- no Gate B/runtime admissibility;
+- no human interrupt/resume or approval-resolution runtime;
+- no retry/recovery or memory work;
+- no FastAPI, MCP, Docker, CI, persistence, experiment, dashboard, or external service work;
+- no real financial or other external business side effects;
+- no changes to V1 compiler, validator, admissibility semantics, frozen benchmark inputs, or historical evidence.
+
+### Verification conditions
+- all seven required C1 tools exist and operate only on deterministic local state;
+- records are immutable and fixture instances do not share staged mutable state;
+- missing, malformed, inconsistent, inactive, duplicate, over-limit, or wrong-currency actions fail closed with stable error codes;
+- valid staging is idempotent, fully linked, explicitly local simulation, and records zero external actions;
+- human approval requests are idempotent pending local records and perform zero external actions;
+- focused C1 tests, the complete suite, and the frozen 48-case benchmark pass;
+- protected V1 and benchmark surfaces remain unchanged;
+- independent verification returns `VERIFIED` before C1 is marked PASS.
+
+## C1 execution evidence
+Observed on 2026-09-02 from the C1 candidate worktree:
+
+- implementation: `src/control_gate/tool_environment.py`;
+- focused tests: `tests/test_tool_environment.py`;
+- focused command: `./.venv/Scripts/python.exe -m pytest -q tests/test_tool_environment.py` -> `20 passed in 2.50s`;
+- complete-suite command: `./.venv/Scripts/python.exe -m pytest -q` -> `56 passed in 5.31s`;
+- frozen-benchmark command: `./.venv/Scripts/python.exe -m control_gate benchmark` -> PASS with 48 fixtures, 48/48 decision matches, 48/48 reason-code matches, 48/48 deterministic repeats, macro-F1 1.000, 0 unsafe approvals, and 0 external actions;
+- Python compile check passes for the C1 implementation and focused tests;
+- no protected V1 source, test, benchmark, or evidence file is modified;
+- independent C1 verification returned `VERIFIED` against the precommitted C1 conditions.
+
+C1 is PASS. C2 remains unauthorized until the controller verifies the shared checkpoint and explicitly advances the ledger.
+
+## Next legal transition
+Current authorized transition: finish and checkpoint C1 only.
+
+After C1 PASS, stop for controller verification and authorization. C2 is not self-authorized by the executor.
+
+If any C1 invariant fails: return BLOCKED with evidence and authorize only the smallest repair needed for C1.
