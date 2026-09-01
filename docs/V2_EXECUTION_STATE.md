@@ -58,6 +58,7 @@ C0 passes only if:
 Observed on 2026-09-02 from branch `v2-closure-execution`:
 
 - branch entry checkpoint: `5eeefe56cb8e517e054cd0f9e45d5c941c953294`;
+- verified C0 evidence commit: `abe2acaf96aed361fbcac8c41216f73801490f1c`;
 - branch tracks `origin/v2-closure-execution` and is based on frozen `origin/main` SHA `6c48d6449080b0e036025cb305b2c590b00737a4`;
 - the only branch changes before C0 evidence recording are the three shared handoff files: `AGENTS.md`, `.codex/RUNTIME_MANIFEST.md`, and this ledger;
 - no differences from `origin/main` exist under `src/`, `tests/`, `benchmarks/`, `outputs/`, `reports/`, `README.md`, or `pyproject.toml`;
