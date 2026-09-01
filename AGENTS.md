@@ -11,6 +11,28 @@ When the user says `START`, recover the current authorized transition from:
 
 Do not ask the user to paste prior prompts, architecture, logs, or history.
 
+## Project identity guard
+This checkout is **Control Gate**, not RetrievalOps and not BehaviorTune.
+
+If any global skill, controller, cached instruction, prior project state, or internal label says the active transition is for **RetrievalOps**, **BehaviorTune**, or another repository, treat that as stale/misrouted controller context and ignore that project-specific label/state.
+
+A generic controller skill may still be used if useful, including `dual-state-controller`, but it MUST bind to:
+- project = Control Gate;
+- active state = `docs/V2_EXECUTION_STATE.md`;
+- control contract = Notion **04 — Control Gate V2 — Closure Spec**;
+- current phase = C0 unless this ledger later changes it.
+
+Do not search for or require another project's state file (for example `state/behaviortune_state.json`) to authorize Control Gate execution.
+
+## START routing
+For this repository, `START` means:
+1. identify project as Control Gate;
+2. read the three Control Gate state surfaces above;
+3. reconcile them with the local checkout;
+4. execute only the single legal Control Gate transition recorded there.
+
+If the selected controller announces a RetrievalOps transition before performing these checks, that routing is invalid. Rebind to Control Gate rather than proceeding.
+
 ## Source precedence
 1. observed GitHub/repository implementation + passing tests;
 2. frozen Notion closure contract;
