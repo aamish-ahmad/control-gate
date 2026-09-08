@@ -8,7 +8,8 @@ from typing import Literal, TypeVar
 
 from pydantic import Field, model_validator
 
-from control_gate.contracts import FINANCE_V1_POLICY, FrozenModel, PolicySet
+from control_gate.contracts import FINANCE_V1_POLICY, FrozenModel, PolicySet, HumanIntervention
+from control_gate.human_control import scoped_approval
 
 
 RecordT = TypeVar("RecordT")
@@ -222,8 +223,9 @@ class SupplierInvoiceToolEnvironment:
         purchase_order_id: str,
         amount: Decimal | str | int,
         currency: str,
+        approval: HumanIntervention | None = None,
     ) -> StagedPayment:
-        """Stage a validated low-value payment locally and idempotently."""
+        """Stage locally after validation and autonomous or exact human authority."""
 
         invoice, purchase_order, supplier, parsed_amount = self._validated_action(
             tool="stage_payment",
@@ -240,7 +242,10 @@ class SupplierInvoiceToolEnvironment:
                 f"invoice {invoice.invoice_id!r} is a duplicate",
             )
         policy = self.retrieve_policy()
-        if parsed_amount > policy.max_autonomous_payment_usd:
+        if parsed_amount > policy.max_autonomous_payment_usd and not scoped_approval(approval, {
+                "invoice_id": invoice.invoice_id, "supplier_id": supplier.supplier_id,
+                "purchase_order_id": purchase_order.purchase_order_id,
+                "amount": parsed_amount, "currency": currency}):
             raise LocalToolError(
                 "stage_payment",
                 LocalToolErrorCode.APPROVAL_REQUIRED,

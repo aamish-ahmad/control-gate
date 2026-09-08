@@ -15,6 +15,7 @@ from pydantic import (
     ConfigDict,
     Field,
     JsonValue,
+    PrivateAttr,
     PlainSerializer,
     ValidationInfo,
     field_validator,
@@ -281,6 +282,23 @@ class ExecutionRun(StrictModel):
     observations: tuple[FrozenJsonObject, ...] = ()
     events: tuple[TrajectoryEvent, ...] = ()
     final_outcome: RunOutcome | None = None
+    # C4 links a new version to the consumed pause; the original contract stays frozen.
+    parent_run_id: NonEmptyString | None = Field(default=None, frozen=True)
+    human_approval: HumanIntervention | None = Field(default=None, frozen=True)
+    continuation_run_id: NonEmptyString | None = None
+    _pause_context: object = PrivateAttr(default=None)
+
+    @field_validator("human_approval")
+    @classmethod
+    def require_parent_approval_link(cls, value: HumanIntervention | None,
+                                     info: ValidationInfo) -> HumanIntervention | None:
+        if value is not None and (
+                value.run_id != info.data.get("parent_run_id")
+                or value.intent_id != info.data.get("intent_id")
+                or value.intent_version + 1 != info.data.get("intent_version")
+                or value.action is not HumanAction.APPROVE):
+            raise ValueError("Human approval must link the prior intent version and parent run")
+        return value
 
     @field_validator("intent_spec", "execution_plan", "gate_a", "runtime_decision",
                      "final_outcome", "events")

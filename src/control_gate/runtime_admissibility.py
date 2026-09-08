@@ -14,6 +14,7 @@ from control_gate.tool_environment import (
     DuplicateCheckResult, InvoiceRecord, PurchaseOrderRecord, SupplierRecord,
 )
 from control_gate.validation import AUTHORIZED_REQUEST_ROLES, FROZEN_ACTIONS, UNSAFE_ASSUMPTIONS
+from control_gate.human_control import approved_run
 
 
 # Adapt the frozen V1 permission vocabulary to C1 implementations. Duplicate
@@ -101,9 +102,13 @@ def decide_runtime(run: ExecutionRun, proposal: Mapping[str, object]) -> Runtime
         )
 
     intent, plan = run.intent_spec, run.execution_plan
+    human_approved = approved_run(run)
     if (run.state is not RunState.RUNNING or run.final_outcome is not None
             or intent is None or plan is None or run.gate_a is None
-            or run.gate_a.decision is not Decision.APPROVE):
+            or (run.gate_a.decision is not Decision.APPROVE and not (
+                human_approved and run.gate_a.decision is Decision.ESCALATE
+                and set(run.gate_a.reason_codes) <= {
+                    "PAYMENT_ABOVE_AUTONOMOUS_LIMIT", "FINANCE_MANAGER_APPROVAL_REQUIRED"}))):
         return result("RUNTIME_NOT_AUTHORIZED")
     if set(proposal) != _PROPOSAL_FIELDS:
         return result("RUNTIME_PROPOSAL_INVALID")
@@ -152,9 +157,10 @@ def decide_runtime(run: ExecutionRun, proposal: Mapping[str, object]) -> Runtime
         return result("RUNTIME_RETRY_NOT_AUTHORIZED")
     if run.pending_questions:
         return result("RUNTIME_CLARIFICATION_PENDING", Decision.CLARIFY)
-    # C3 never interprets a supplied human state as new authority. No resolution
-    # mechanism exists until C4; every such state conservatively stops dispatch.
-    if run.approval_state != "NOT_REQUESTED" or any(
+    # A status string alone never conveys authority. C4's immutable scoped
+    # decision is checked afresh; unrecognized human events still stop dispatch.
+    if (run.approval_state != "NOT_REQUESTED" and not (
+            human_approved and run.approval_state == "APPROVED_BY_HUMAN")) or any(
             e.event_type in (EventType.HUMAN_INTERVENTION, EventType.HUMAN_APPROVAL_REQUESTED)
             for e in run.events):
         return result("RUNTIME_HUMAN_AUTHORITY_REQUIRED", Decision.ESCALATE)
@@ -178,7 +184,7 @@ def decide_runtime(run: ExecutionRun, proposal: Mapping[str, object]) -> Runtime
     cap = _amount(intent.constraints.get("max_autonomous_payment_usd"))
     if amount is None or authorized is None or cap is None:
         return result("RUNTIME_AMOUNT_INVALID")
-    if amount != authorized or amount > cap:
+    if amount != authorized or (amount > cap and not human_approved):
         return result("RUNTIME_AMOUNT_OUTSIDE_CONTRACT")
     if args["currency"] != intent.constraints.get("currency"):
         return result("RUNTIME_CURRENCY_OUTSIDE_CONTRACT")
@@ -210,7 +216,7 @@ def decide_runtime(run: ExecutionRun, proposal: Mapping[str, object]) -> Runtime
     # changed observed policy cannot silently widen the authorizing policy.
     if run.model_dump(mode="json", include={"evidence"})["evidence"]["retrieve_policy"] != FINANCE_V1_POLICY.model_dump(mode="json"):
         return result("RUNTIME_POLICY_MISMATCH")
-    if amount > FINANCE_V1_POLICY.max_autonomous_payment_usd or any(
-            rule.when.strip().lower() == "always" for rule in intent.approval_rules):
+    if not human_approved and (amount > FINANCE_V1_POLICY.max_autonomous_payment_usd or any(
+            rule.when.strip().lower() == "always" for rule in intent.approval_rules)):
         return result("RUNTIME_APPROVAL_REQUIRED", Decision.ESCALATE)
     return result("RUNTIME_ACTION_ADMISSIBLE", Decision.APPROVE)
