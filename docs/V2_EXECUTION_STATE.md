@@ -3,11 +3,11 @@
 Updated: 2026-09-08 (Asia/Kolkata)
 
 ## Controller status
-Status: C2_PASS_AWAITING_CONTROLLER
+Status: C3_AUTHORIZED
 Completed phase: C2 — execution state + stateful supplier-invoice loop
 Verified implementation checkpoint: `302887dc2fd87e8e15148b3152cd5fc6030c08a8`
-Active phase: none; C2 execution authority ends at the shared checkpoint
-Next phase: C3 requires separate controller authorization
+Active phase: C3 — Gate B over the existing C2 trajectory
+Next phase: C4 requires separate controller authorization
 Execution branch: `v2-closure-execution`
 Frozen baseline `main` SHA: `6c48d6449080b0e036025cb305b2c590b00737a4`
 
@@ -123,9 +123,9 @@ Observed on 2026-09-02 from the C1 candidate worktree:
 C1 is PASS. C2 remains unauthorized until the controller verifies the shared checkpoint and explicitly advances the ledger.
 
 ## Next legal transition
-Current authorized transition: publish the independently verified C2 evidence checkpoint only. No further implementation phase is authorized.
+Current authorized transition: C3 only, explicitly authorized by the user's 2026-09-08 instruction. Stop at VERIFIED plus PUSHED C3 or a genuine trajectory-changing blocker.
 
-The historical C1 stop above is superseded by this explicit C2 authorization. Stop after independent verification and the pushed C2 checkpoint; do not start C3.
+The historical C1/C2 stops are superseded for C3 only. Do not start C4.
 
 If a gate fails, preserve evidence and return BLOCKED without expanding scope.
 
@@ -187,3 +187,19 @@ If a gate fails, preserve evidence and return BLOCKED without expanding scope.
 - Documented install `python -m pip install -e ".[dev,runtime]"` successfully builds and installs with normal build isolation. An optional attempt without build isolation failed because the pre-existing environment lacked `bdist_wheel`; no build-system changes were needed.
 - Shared handoff: the commit containing this finalized ledger and independent report is pushed to `v2-closure-execution`; its parent is the verified implementation checkpoint above. The exact shared SHA is recoverable from the branch and returned with completion.
 - C2 is PASS only as this verified checkpoint is shared on GitHub. Stop here. C3/Gate B remains unauthorized; no merge to `main` is authorized or performed.
+
+## C3 phase contract — committed before implementation
+
+- SOURCE_SCOPE: new `src/control_gate/runtime_admissibility.py`; the existing tool-dispatch boundary in `src/control_gate/invoice_runtime.py`; existing RuntimeDecision/ExecutionRun contracts only if necessary; focused `tests/test_runtime_admissibility.py`; narrowly superseded C2 assertions in `tests/test_invoice_runtime.py`; this ledger and `reports/c3/`.
+- Entry: clean local and live remote branch both at C2 shared checkpoint `96e8f4ad00ab925d0c47cd521a950afe612e3888`; live main remains `6c48d6449080b0e036025cb305b2c590b00737a4`. Notion sections 7/13 define frozen Gate B requirements. Its section 18 still shows C2; the user's newer explicit C3 authorization supersedes that stale execution-status text without changing the frozen architecture.
+- D: every proposed tool action on the existing C2 trajectory is checked against immutable authorized intent/version/plan and current execution evidence before dispatch. Only an action's fresh APPROVE decision can reach its tool. Unauthorized actions must be observably blocked before tool invocation.
+- ALLOWED: deterministic Gate B decisions using the existing public decision alphabet and RuntimeDecision; a single guarded dispatch boundary; stable runtime reason codes; action/decision/event linkage; adversarial tests with tool spies; local evidence; independent verification; bounded commit/push to `v2-closure-execution`.
+- FORBIDDEN: changes to V1 compiler/validator/Gate A or C1 tools, frozen 48-case inputs, historical reports/C2 trace; new orchestration, dependencies, HITL interrupt/resume or approval resolution, retries/recovery/memory, service/deployment/CI, experiments, real external business effects, main merge, C4.
+- V1: existing V1/C1 tests and frozen benchmark pass unchanged; preserve benchmark SHA-256 `4db513e6798f8975ad04aec3c457eeca0ec401d2cc1f02e2d63ce8f7d843f503`. C2 happy-path tools, order, local outcome, identity, isolation, serialization, and terminal stop behavior remain covered.
+- V2: all six C2 tool calls pass through one guard; each executed action has a preceding fresh APPROVE with matching run/intent/version/plan/action/arguments. Non-APPROVE has no tool-start event or tool invocation. No caller-supplied decision bypass.
+- V3: deterministic tests cover goal/scope expansion, tool/actor/resource permissions, amount/currency/approved cap, prohibited operations, new unsafe assumptions, missing or contradictory required evidence, replay of a denied/failed action, repeated failed action, and non-clear human approval/override state. C3 reads and stops on these states; it does not implement retry or human continuation.
+- V4: actual dispatched argument bytes are those evaluated and recorded, so proposal mutation or a stale decision cannot authorize a different call. Decision reason codes and all intent/run/action links serialize and remain stable.
+- V5: focused adversarial integration tests prove zero calls with spies (not merely zero staging results), complete regression suite and benchmark pass, independent verifier returns VERIFIED, and shared checkpoint is pushed.
+- Narrow verifier evolution: C2 assertions that explicitly required no RuntimeDecision/no Gate B events must now require Gate B evidence. Cases previously rejected inside C1 staging for inactive supplier/insufficient PO amount must now expect rejection before staging and zero staging calls. Preserve all other C2 assertions; have the independent verifier review this exact adaptation before treating it as a verification oracle.
+- OUTPUT: implementation, focused tests, bounded approved/blocked trace evidence, independent verification report, and updated execution ledger on the shared branch.
+- STOP: VERIFIED + PUSHED C3, or genuine trajectory-changing BLOCKER. C4 is not authorized.
