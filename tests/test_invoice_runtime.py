@@ -175,6 +175,23 @@ def test_repeat_request_is_new_run_and_existing_local_staging_is_idempotent():
         execute_invoice(first, environment)
 
 
+@pytest.mark.parametrize("field", ["events", "final_outcome", "runtime_decision"])
+def test_rejected_link_update_leaves_entire_trajectory_unchanged(field):
+    run = execute_invoice(DEMO_REQUEST)
+    before = run.model_dump_json()
+    wrong = {
+        "events": (run.events[0].model_copy(update={"intent_id": "OTHER"}),),
+        "final_outcome": run.final_outcome.model_copy(update={"run_id": "OTHER"}),
+        "runtime_decision": RuntimeDecision(
+            run_id=run.run_id, intent_id=run.intent_id, intent_version=run.intent_version,
+            plan_id="OTHER", action_id="a", decision=Decision.REJECT,
+            reason_codes=("TEST_ONLY",)),
+    }[field]
+    with pytest.raises(ValidationError, match="linkage"):
+        setattr(run, field, wrong)
+    assert run.model_dump_json() == before
+
+
 def test_default_environments_are_isolated():
     first = execute_invoice(DEMO_REQUEST)
     second = execute_invoice(request("INV-9999"))

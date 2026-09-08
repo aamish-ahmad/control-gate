@@ -16,6 +16,8 @@ from pydantic import (
     Field,
     JsonValue,
     PlainSerializer,
+    ValidationInfo,
+    field_validator,
     model_validator,
 )
 
@@ -280,20 +282,24 @@ class ExecutionRun(StrictModel):
     events: tuple[TrajectoryEvent, ...] = ()
     final_outcome: RunOutcome | None = None
 
-    @model_validator(mode="after")
-    def require_consistent_links(self) -> ExecutionRun:
-        for record in (self.intent_spec, self.execution_plan, self.gate_a,
-                       self.runtime_decision, self.final_outcome, *self.events):
+    @field_validator("intent_spec", "execution_plan", "gate_a", "runtime_decision",
+                     "final_outcome", "events")
+    @classmethod
+    def require_consistent_links(cls, value: object, info: ValidationInfo) -> object:
+        # Validate before assignment commits, so a rejected update cannot leave
+        # an otherwise valid run holding another run's evidence or outcome.
+        records = value if info.field_name == "events" else (value,)
+        for record in records:
             if record is None:
                 continue
             version = record.version if isinstance(record, IntentSpec) else record.intent_version
-            if (record.intent_id, version) != (self.intent_id, self.intent_version):
+            if (record.intent_id, version) != (info.data.get("intent_id"), info.data.get("intent_version")):
                 raise ValueError("ExecutionRun intent linkage mismatch")
-            if hasattr(record, "run_id") and record.run_id != self.run_id:
+            if hasattr(record, "run_id") and record.run_id != info.data.get("run_id"):
                 raise ValueError("ExecutionRun run linkage mismatch")
-            if hasattr(record, "plan_id") and record.plan_id != self.plan_id:
+            if hasattr(record, "plan_id") and record.plan_id != info.data.get("plan_id"):
                 raise ValueError("ExecutionRun plan linkage mismatch")
-        return self
+        return value
 
 
 class RuntimeDecision(FrozenModel):

@@ -1,8 +1,8 @@
 {
-  "run_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3",
+  "run_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79",
   "intent_id": "INT-CLI-36EC6961F56A4977",
   "intent_version": 1,
-  "plan_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:plan",
+  "plan_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:plan",
   "state": "COMPLETED",
   "objective": "process_supplier_invoice",
   "intent_spec": {
@@ -78,7 +78,7 @@
     ]
   },
   "execution_plan": {
-    "plan_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:plan",
+    "plan_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:plan",
     "intent_id": "INT-CLI-36EC6961F56A4977",
     "intent_version": 1,
     "steps": [
@@ -263,12 +263,12 @@
     }
   },
   "tool_history": [
-    "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:action:0",
-    "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:action:1",
-    "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:action:2",
-    "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:action:3",
-    "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:action:4",
-    "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:action:5"
+    "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:action:0",
+    "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:action:1",
+    "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:action:2",
+    "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:action:3",
+    "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:action:4",
+    "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:action:5"
   ],
   "pending_questions": [],
   "approval_state": "NOT_REQUESTED",
@@ -278,8 +278,8 @@
   "token_count": 0,
   "cost_usd": "0",
   "proposed_action": {
-    "action_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:action:5",
-    "plan_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:plan",
+    "action_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:action:5",
+    "plan_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:plan",
     "tool": "stage_payment",
     "arguments": {
       "invoice_id": "INV-1001",
@@ -291,7 +291,7 @@
   "runtime_decision": null,
   "observations": [
     {
-      "action_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:action:0",
+      "action_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:action:0",
       "tool": "inspect_invoice",
       "output": {
         "invoice_id": "INV-1001",
@@ -304,7 +304,7 @@
       }
     },
     {
-      "action_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:action:1",
+      "action_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:action:1",
       "tool": "lookup_supplier",
       "output": {
         "supplier_id": "SUP-1001",
@@ -316,7 +316,7 @@
       }
     },
     {
-      "action_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:action:2",
+      "action_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:action:2",
       "tool": "lookup_purchase_order",
       "output": {
         "purchase_order_id": "PO-1001",
@@ -328,7 +328,7 @@
       }
     },
     {
-      "action_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:action:3",
+      "action_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:action:3",
       "tool": "check_duplicate",
       "output": {
         "invoice_id": "INV-1001",
@@ -337,7 +337,7 @@
       }
     },
     {
-      "action_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:action:4",
+      "action_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:action:4",
       "tool": "retrieve_policy",
       "output": {
         "policy_version": "finance-v1",
@@ -366,7 +366,7 @@
       }
     },
     {
-      "action_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:action:5",
+      "action_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:action:5",
       "tool": "stage_payment",
       "output": {
         "stage_id": "STAGE-INV-1001",
@@ -382,11 +382,11 @@
   ],
   "events": [
     {
-      "event_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:event:0",
-      "run_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3",
+      "event_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:event:0",
+      "run_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79",
       "intent_id": "INT-CLI-36EC6961F56A4977",
       "intent_version": 1,
-      "timestamp": "2026-09-08T17:31:55.694022Z",
+      "timestamp": "2026-09-08T17:37:55.530221Z",
       "sequence_number": 0,
       "step_id": null,
       "actor": "finance_agent",
@@ -417,11 +417,11 @@
       }
     },
     {
-      "event_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:event:1",
-      "run_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3",
+      "event_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:event:1",
+      "run_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79",
       "intent_id": "INT-CLI-36EC6961F56A4977",
       "intent_version": 1,
-      "timestamp": "2026-09-08T17:31:55.710026Z",
+      "timestamp": "2026-09-08T17:37:55.531220Z",
       "sequence_number": 1,
       "step_id": null,
       "actor": "finance_agent",
@@ -438,7 +438,7 @@
       "status": "completed",
       "metadata": {
         "plan": {
-          "plan_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:plan",
+          "plan_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:plan",
           "intent_id": "INT-CLI-36EC6961F56A4977",
           "intent_version": 1,
           "steps": [
@@ -546,11 +546,11 @@
       }
     },
     {
-      "event_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:event:2",
-      "run_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3",
+      "event_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:event:2",
+      "run_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79",
       "intent_id": "INT-CLI-36EC6961F56A4977",
       "intent_version": 1,
-      "timestamp": "2026-09-08T17:31:55.711023Z",
+      "timestamp": "2026-09-08T17:37:55.542221Z",
       "sequence_number": 2,
       "step_id": null,
       "actor": "finance_agent",
@@ -566,16 +566,16 @@
       "latency_ms": null,
       "status": "completed",
       "metadata": {
-        "plan_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:plan",
+        "plan_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:plan",
         "gate_b": "NOT_IMPLEMENTED_C2"
       }
     },
     {
-      "event_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:event:3",
-      "run_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3",
+      "event_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:event:3",
+      "run_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79",
       "intent_id": "INT-CLI-36EC6961F56A4977",
       "intent_version": 1,
-      "timestamp": "2026-09-08T17:31:55.913020Z",
+      "timestamp": "2026-09-08T17:37:55.636222Z",
       "sequence_number": 3,
       "step_id": "inspect_invoice",
       "actor": "finance_agent",
@@ -591,8 +591,8 @@
       "latency_ms": null,
       "status": "completed",
       "metadata": {
-        "action_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:action:0",
-        "plan_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:plan",
+        "action_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:action:0",
+        "plan_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:plan",
         "tool": "inspect_invoice",
         "arguments": {
           "invoice_id": "INV-1001"
@@ -602,11 +602,11 @@
       }
     },
     {
-      "event_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:event:4",
-      "run_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3",
+      "event_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:event:4",
+      "run_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79",
       "intent_id": "INT-CLI-36EC6961F56A4977",
       "intent_version": 1,
-      "timestamp": "2026-09-08T17:31:55.914028Z",
+      "timestamp": "2026-09-08T17:37:55.636222Z",
       "sequence_number": 4,
       "step_id": "inspect_invoice",
       "actor": "finance_agent",
@@ -622,8 +622,8 @@
       "latency_ms": 0,
       "status": "completed",
       "metadata": {
-        "action_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:action:0",
-        "plan_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:plan",
+        "action_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:action:0",
+        "plan_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:plan",
         "observation": {
           "invoice_id": "INV-1001",
           "supplier_id": "SUP-1001",
@@ -636,11 +636,11 @@
       }
     },
     {
-      "event_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:event:5",
-      "run_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3",
+      "event_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:event:5",
+      "run_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79",
       "intent_id": "INT-CLI-36EC6961F56A4977",
       "intent_version": 1,
-      "timestamp": "2026-09-08T17:31:55.971020Z",
+      "timestamp": "2026-09-08T17:37:55.645221Z",
       "sequence_number": 5,
       "step_id": "lookup_supplier",
       "actor": "finance_agent",
@@ -656,8 +656,8 @@
       "latency_ms": null,
       "status": "completed",
       "metadata": {
-        "action_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:action:1",
-        "plan_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:plan",
+        "action_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:action:1",
+        "plan_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:plan",
         "tool": "lookup_supplier",
         "arguments": {
           "supplier_id": "SUP-1001"
@@ -667,11 +667,11 @@
       }
     },
     {
-      "event_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:event:6",
-      "run_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3",
+      "event_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:event:6",
+      "run_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79",
       "intent_id": "INT-CLI-36EC6961F56A4977",
       "intent_version": 1,
-      "timestamp": "2026-09-08T17:31:55.972020Z",
+      "timestamp": "2026-09-08T17:37:55.646224Z",
       "sequence_number": 6,
       "step_id": "lookup_supplier",
       "actor": "finance_agent",
@@ -687,8 +687,8 @@
       "latency_ms": 0,
       "status": "completed",
       "metadata": {
-        "action_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:action:1",
-        "plan_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:plan",
+        "action_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:action:1",
+        "plan_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:plan",
         "observation": {
           "supplier_id": "SUP-1001",
           "legal_name": "Northstar Office Supplies",
@@ -700,11 +700,11 @@
       }
     },
     {
-      "event_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:event:7",
-      "run_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3",
+      "event_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:event:7",
+      "run_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79",
       "intent_id": "INT-CLI-36EC6961F56A4977",
       "intent_version": 1,
-      "timestamp": "2026-09-08T17:31:56.016018Z",
+      "timestamp": "2026-09-08T17:37:55.651224Z",
       "sequence_number": 7,
       "step_id": "lookup_purchase_order",
       "actor": "finance_agent",
@@ -720,8 +720,8 @@
       "latency_ms": null,
       "status": "completed",
       "metadata": {
-        "action_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:action:2",
-        "plan_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:plan",
+        "action_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:action:2",
+        "plan_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:plan",
         "tool": "lookup_purchase_order",
         "arguments": {
           "purchase_order_id": "PO-1001"
@@ -731,11 +731,11 @@
       }
     },
     {
-      "event_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:event:8",
-      "run_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3",
+      "event_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:event:8",
+      "run_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79",
       "intent_id": "INT-CLI-36EC6961F56A4977",
       "intent_version": 1,
-      "timestamp": "2026-09-08T17:31:56.017022Z",
+      "timestamp": "2026-09-08T17:37:55.652221Z",
       "sequence_number": 8,
       "step_id": "lookup_purchase_order",
       "actor": "finance_agent",
@@ -751,8 +751,8 @@
       "latency_ms": 0,
       "status": "completed",
       "metadata": {
-        "action_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:action:2",
-        "plan_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:plan",
+        "action_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:action:2",
+        "plan_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:plan",
         "observation": {
           "purchase_order_id": "PO-1001",
           "supplier_id": "SUP-1001",
@@ -764,11 +764,11 @@
       }
     },
     {
-      "event_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:event:9",
-      "run_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3",
+      "event_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:event:9",
+      "run_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79",
       "intent_id": "INT-CLI-36EC6961F56A4977",
       "intent_version": 1,
-      "timestamp": "2026-09-08T17:31:56.062021Z",
+      "timestamp": "2026-09-08T17:37:55.658225Z",
       "sequence_number": 9,
       "step_id": "check_duplicate",
       "actor": "finance_agent",
@@ -784,8 +784,8 @@
       "latency_ms": null,
       "status": "completed",
       "metadata": {
-        "action_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:action:3",
-        "plan_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:plan",
+        "action_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:action:3",
+        "plan_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:plan",
         "tool": "check_duplicate",
         "arguments": {
           "invoice_id": "INV-1001"
@@ -795,11 +795,11 @@
       }
     },
     {
-      "event_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:event:10",
-      "run_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3",
+      "event_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:event:10",
+      "run_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79",
       "intent_id": "INT-CLI-36EC6961F56A4977",
       "intent_version": 1,
-      "timestamp": "2026-09-08T17:31:56.082021Z",
+      "timestamp": "2026-09-08T17:37:55.662221Z",
       "sequence_number": 10,
       "step_id": "check_duplicate",
       "actor": "finance_agent",
@@ -812,11 +812,11 @@
       "policy_checks": [],
       "decision": null,
       "retry_count": 0,
-      "latency_ms": 20,
+      "latency_ms": 0,
       "status": "completed",
       "metadata": {
-        "action_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:action:3",
-        "plan_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:plan",
+        "action_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:action:3",
+        "plan_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:plan",
         "observation": {
           "invoice_id": "INV-1001",
           "is_duplicate": false,
@@ -825,11 +825,11 @@
       }
     },
     {
-      "event_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:event:11",
-      "run_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3",
+      "event_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:event:11",
+      "run_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79",
       "intent_id": "INT-CLI-36EC6961F56A4977",
       "intent_version": 1,
-      "timestamp": "2026-09-08T17:31:56.098032Z",
+      "timestamp": "2026-09-08T17:37:55.669221Z",
       "sequence_number": 11,
       "step_id": "retrieve_policy",
       "actor": "finance_agent",
@@ -845,8 +845,8 @@
       "latency_ms": null,
       "status": "completed",
       "metadata": {
-        "action_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:action:4",
-        "plan_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:plan",
+        "action_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:action:4",
+        "plan_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:plan",
         "tool": "retrieve_policy",
         "arguments": {
           "policy_version": "finance-v1"
@@ -856,11 +856,11 @@
       }
     },
     {
-      "event_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:event:12",
-      "run_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3",
+      "event_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:event:12",
+      "run_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79",
       "intent_id": "INT-CLI-36EC6961F56A4977",
       "intent_version": 1,
-      "timestamp": "2026-09-08T17:31:56.125021Z",
+      "timestamp": "2026-09-08T17:37:55.678220Z",
       "sequence_number": 12,
       "step_id": "retrieve_policy",
       "actor": "finance_agent",
@@ -873,11 +873,11 @@
       "policy_checks": [],
       "decision": null,
       "retry_count": 0,
-      "latency_ms": 1,
+      "latency_ms": 9,
       "status": "completed",
       "metadata": {
-        "action_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:action:4",
-        "plan_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:plan",
+        "action_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:action:4",
+        "plan_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:plan",
         "observation": {
           "policy_version": "finance-v1",
           "rule_ids": [
@@ -906,11 +906,11 @@
       }
     },
     {
-      "event_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:event:13",
-      "run_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3",
+      "event_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:event:13",
+      "run_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79",
       "intent_id": "INT-CLI-36EC6961F56A4977",
       "intent_version": 1,
-      "timestamp": "2026-09-08T17:31:56.148021Z",
+      "timestamp": "2026-09-08T17:37:55.682222Z",
       "sequence_number": 13,
       "step_id": "stage_payment",
       "actor": "finance_agent",
@@ -926,8 +926,8 @@
       "latency_ms": null,
       "status": "completed",
       "metadata": {
-        "action_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:action:5",
-        "plan_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:plan",
+        "action_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:action:5",
+        "plan_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:plan",
         "tool": "stage_payment",
         "arguments": {
           "invoice_id": "INV-1001",
@@ -940,11 +940,11 @@
       }
     },
     {
-      "event_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:event:14",
-      "run_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3",
+      "event_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:event:14",
+      "run_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79",
       "intent_id": "INT-CLI-36EC6961F56A4977",
       "intent_version": 1,
-      "timestamp": "2026-09-08T17:31:56.172021Z",
+      "timestamp": "2026-09-08T17:37:55.683222Z",
       "sequence_number": 14,
       "step_id": "stage_payment",
       "actor": "finance_agent",
@@ -957,11 +957,11 @@
       "policy_checks": [],
       "decision": null,
       "retry_count": 0,
-      "latency_ms": 22,
+      "latency_ms": 1,
       "status": "completed",
       "metadata": {
-        "action_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:action:5",
-        "plan_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:plan",
+        "action_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:action:5",
+        "plan_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:plan",
         "observation": {
           "stage_id": "STAGE-INV-1001",
           "invoice_id": "INV-1001",
@@ -975,11 +975,11 @@
       }
     },
     {
-      "event_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:event:15",
-      "run_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3",
+      "event_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:event:15",
+      "run_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79",
       "intent_id": "INT-CLI-36EC6961F56A4977",
       "intent_version": 1,
-      "timestamp": "2026-09-08T17:31:56.213022Z",
+      "timestamp": "2026-09-08T17:37:55.689218Z",
       "sequence_number": 15,
       "step_id": null,
       "actor": "finance_agent",
@@ -995,11 +995,11 @@
       "latency_ms": null,
       "status": "COMPLETED",
       "metadata": {
-        "plan_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:plan",
+        "plan_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:plan",
         "reason_codes": [],
         "final_outcome": {
-          "outcome_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:outcome",
-          "run_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3",
+          "outcome_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:outcome",
+          "run_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79",
           "intent_id": "INT-CLI-36EC6961F56A4977",
           "intent_version": 1,
           "status": "COMPLETED",
@@ -1009,7 +1009,7 @@
             "audit_event_written"
           ],
           "failure_conditions_triggered": [],
-          "completed_at": "2026-09-08T17:31:56.197018Z",
+          "completed_at": "2026-09-08T17:37:55.689218Z",
           "summary": "Local payment staged; supported intent success conditions satisfied. No payment submitted and no external actions performed."
         },
         "external_actions_performed": 0
@@ -1017,8 +1017,8 @@
     }
   ],
   "final_outcome": {
-    "outcome_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3:outcome",
-    "run_id": "RUN-f83cf475-41d5-44ee-85cb-c395157ba3b3",
+    "outcome_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79:outcome",
+    "run_id": "RUN-240d1e5d-92c7-4912-92e5-1b36890d4a79",
     "intent_id": "INT-CLI-36EC6961F56A4977",
     "intent_version": 1,
     "status": "COMPLETED",
@@ -1028,7 +1028,7 @@
       "audit_event_written"
     ],
     "failure_conditions_triggered": [],
-    "completed_at": "2026-09-08T17:31:56.197018Z",
+    "completed_at": "2026-09-08T17:37:55.689218Z",
     "summary": "Local payment staged; supported intent success conditions satisfied. No payment submitted and no external actions performed."
   }
 }

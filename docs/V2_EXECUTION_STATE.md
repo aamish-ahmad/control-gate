@@ -164,3 +164,14 @@ If a gate fails, preserve evidence and return BLOCKED without expanding scope.
 - Initial focused tests exposed a frozen nested-JSON revalidation error during incremental evidence updates. The runtime now uses the existing serializer before validated reassignment; the final focused/full runs above pass. Existing regression tests and frozen JSON helpers were not changed.
 - Limits: deterministic controller, local fixtures and staging only; RuntimeDecision remains null; no Gate B, human continuation, recovery, service, persistence backend, or experiment claim. Unknown success conditions are not claimed as satisfied.
 - Independent verification and shared push are pending. C3 remains unauthorized.
+
+### C2 independent-review repair evidence — 2026-09-08
+
+- Initial implementation checkpoint: `8cc74eb0a4295c8844b6e0032630986fda563d91`.
+- Independent review reproduced a V3 defect: a rejected after-model link check could leave a mismatched event assigned. This was an implementation defect within the committed C2 target, not a change to its desired state or scope.
+- Repair: link validation now occurs on fields before mutation. Rejected event, outcome, and runtime-decision assignments leave the entire serialized trajectory unchanged. Existing frozen identity fields remain immutable.
+- Focused C2 tests: 26 passed in 41.19s; complete suite: 82 passed in 33.17s. Three new regression cases cover the independently observed integrity defect. Existing V1/C1 tests are unchanged.
+- Regenerated trace after repair: `reports/c2/supplier_invoice_trajectory.json`, SHA-256 `c03230b0fbf7e8e1b25292219c89ee09133a2cad228c160b1852d06a54718083`; COMPLETED, six calls, 16 events, one local stage, zero external actions, successful JSON readback.
+- `python -m pip check` reports no broken requirements.
+- Gate A retains its exact V1 behavior. C2 does not claim per-tool permission enforcement for arbitrary IntentSpec inputs; that remains the explicitly unimplemented C3 Gate B boundary.
+- Independent final certificate and shared push are still required before PASS.
