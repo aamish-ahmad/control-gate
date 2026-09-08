@@ -1,4 +1,4 @@
-"""C2: one stateful local invoice trajectory. Gate B and continuation are absent."""
+"""Stateful local invoice trajectory with C3 Gate B; no human/retry continuation."""
 
 from __future__ import annotations
 
@@ -19,6 +19,7 @@ from control_gate.contracts import (
     PolicySet, RetryRule, RunOutcome, RunState, TrajectoryEvent,
 )
 from control_gate.evaluation import compile_request
+from control_gate.runtime_admissibility import INVOICE_TOOLS, decide_runtime
 from control_gate.tool_environment import (
     DuplicateCheckResult, InvoiceRecord, LocalToolError, PurchaseOrderRecord,
     StagedPayment, SupplierInvoiceToolEnvironment, SupplierRecord, build_local_tool_environment,
@@ -30,10 +31,7 @@ DEMO_REQUEST = (
     "for USD 7500.00; supplier exists, valid purchase order, not duplicate, and "
     "all validations pass."
 )
-_TOOLS = (
-    "inspect_invoice", "lookup_supplier", "lookup_purchase_order",
-    "check_duplicate", "retrieve_policy", "stage_payment",
-)
+_TOOLS = INVOICE_TOOLS
 _RESULT_TYPES = {
     "inspect_invoice": InvoiceRecord, "lookup_supplier": SupplierRecord,
     "lookup_purchase_order": PurchaseOrderRecord, "check_duplicate": DuplicateCheckResult,
@@ -82,7 +80,9 @@ def _finish(run: ExecutionRun, *, reason: str | None = None,
             "invoice_validated": invoice.get("validations_complete") is True
                 and invoice.get("status") == "VALIDATED",
             "payment_authorized": staged is not None
-                and run.gate_a.decision is Decision.APPROVE,
+                and run.gate_a.decision is Decision.APPROVE
+                and run.runtime_decision is not None
+                and run.runtime_decision.decision is Decision.APPROVE,
             "audit_event_written": any(
                 e.event_type is EventType.TOOL_CALL_COMPLETED and e.tool == "stage_payment"
                 for e in run.events
@@ -137,28 +137,61 @@ def _arguments(run: ExecutionRun, tool: str) -> dict[str, object]:
     }
 
 
-def _advance(run: ExecutionRun, environment: SupplierInvoiceToolEnvironment) -> None:
+def _propose(run: ExecutionRun, tool: str) -> dict[str, object]:
+    return {
+        "action_id": f"{run.run_id}:action:{len(run.tool_history)}",
+        "run_id": run.run_id, "intent_id": run.intent_id,
+        "intent_version": run.intent_version, "plan_id": run.plan_id,
+        "goal": run.objective, "actor_id": run.intent_spec.actor.id,
+        "actor_role": run.intent_spec.actor.role,
+        "assumptions": list(run.intent_spec.assumptions),
+        "tool": tool, "arguments": _arguments(run, tool),
+    }
+
+
+def _dispatch(run: ExecutionRun, environment: SupplierInvoiceToolEnvironment,
+              proposal: dict[str, object]) -> None:
+    """The sole tool boundary: freeze, freshly decide, record, then dispatch."""
     if run.state is not RunState.RUNNING or run.final_outcome is not None:
-        raise ValueError("Only a running C2 trajectory can advance")
-    completed = set(run.evidence)
-    step = next((step for step in run.execution_plan.steps
-                 if step.step_id not in completed
-                 and set(step.dependencies) <= completed), None)
-    if step is None:
-        _finish(run)
-        return
-    tool = step.tool_requirements[0]
-    arguments = _arguments(run, tool)
-    action_id = f"{run.run_id}:action:{len(run.tool_history)}"
-    proposal = {"action_id": action_id, "plan_id": run.plan_id,
-                "tool": tool, "arguments": arguments}
-    # Frozen JSON validation keeps observable proposals immutable. This is not
-    # a RuntimeDecision: C3 will own runtime admissibility at this boundary.
+        raise ValueError("Only a running trajectory can dispatch")
     run.proposed_action = proposal
+    snapshot = run.proposed_action
+    payload = run.model_dump(mode="json", include={"proposed_action"})["proposed_action"]
+    decision = decide_runtime(run, snapshot)
+    run.proposed_action = payload
+    run.runtime_decision = decision
+    tool = snapshot.get("tool")
+    event_tool = tool if isinstance(tool, str) and tool else None
+    metadata = {"action_id": decision.action_id, "plan_id": run.plan_id,
+                "proposal": payload, "runtime_decision": decision.model_dump(mode="json")}
+    _event(run, EventType.RUNTIME_POLICY_CHECK, tool=event_tool,
+           decision=decision.decision.value, status=decision.decision.value,
+           metadata=metadata)
+    if decision.decision is not Decision.APPROVE:
+        reason = decision.reason_codes[0]
+        if decision.decision is Decision.REJECT:
+            _finish(run, reason=reason, status=RunState.REJECTED)
+        else:
+            # C3 stops with the decision preserved. Acquiring clarification or
+            # approval and resuming this state are expressly deferred to C4.
+            before = run.state
+            run.state = (RunState.CLARIFICATION_REQUIRED if decision.decision is Decision.CLARIFY
+                         else RunState.ESCALATION_REQUIRED)
+            if decision.decision is Decision.CLARIFY:
+                run.pending_questions = (f"Required execution evidence is missing: {reason}",)
+            else:
+                run.approval_state = "REQUIRED"
+            _event(run, EventType.CONTROL_DECISION, before=before,
+                   decision=decision.decision.value, status=run.state.value, metadata=metadata)
+        return
+    # Dispatch the frozen evaluated arguments, never the caller's mutable dict
+    # or a later proposal. No externally supplied decision is accepted here.
+    arguments = dict(snapshot["arguments"])
+    action_id = decision.action_id
     run.tool_history += (action_id,)
     _event(run, EventType.TOOL_CALL_STARTED, tool=tool,
            tool_input_digest=_digest(arguments), metadata={
-               **proposal, "runtime_decision": None, "gate_b": "NOT_IMPLEMENTED_C2",
+               **payload, **metadata,
            })
     started = perf_counter()
     try:
@@ -193,6 +226,19 @@ def _advance(run: ExecutionRun, environment: SupplierInvoiceToolEnvironment) -> 
             _finish(run, reason="INVOICE_INPUT_MISMATCH")
     elif tool == "check_duplicate" and output["is_duplicate"]:
         _finish(run, reason="DUPLICATE_INVOICE")
+
+
+def _advance(run: ExecutionRun, environment: SupplierInvoiceToolEnvironment) -> None:
+    if run.state is not RunState.RUNNING or run.final_outcome is not None:
+        raise ValueError("Only a running trajectory can advance")
+    completed = set(run.evidence)
+    step = next((step for step in run.execution_plan.steps
+                 if step.step_id not in completed
+                 and set(step.dependencies) <= completed), None)
+    if step is None:
+        _finish(run)
+        return
+    _dispatch(run, environment, _propose(run, step.tool_requirements[0]))
 
 
 def execute_invoice(request: str | IntentSpec,
@@ -237,7 +283,7 @@ def execute_invoice(request: str | IntentSpec,
            metadata={"plan": plan.model_dump(mode="json")})
     run.state = RunState.RUNNING
     _event(run, EventType.RUN_STARTED, before=RunState.PLANNED,
-           metadata={"plan_id": plan_id, "gate_b": "NOT_IMPLEMENTED_C2"})
+           metadata={"plan_id": plan_id, "gate_b": "ENFORCED_C3"})
     local = environment if environment is not None else build_local_tool_environment()
 
     def advance(state: _GraphState) -> _GraphState:

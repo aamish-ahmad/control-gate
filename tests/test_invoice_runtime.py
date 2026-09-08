@@ -43,8 +43,17 @@ def test_real_stateful_trajectory_stages_once_and_links_every_event():
     ]
     for earlier, later in zip(run.events, run.events[1:]):
         assert earlier.state_after == later.state_before
-    assert run.runtime_decision is None
-    assert not any(e.event_type is EventType.RUNTIME_POLICY_CHECK for e in run.events)
+    assert run.runtime_decision.decision is Decision.APPROVE
+    checks = [e for e in run.events if e.event_type is EventType.RUNTIME_POLICY_CHECK]
+    assert len(checks) == len(run.tool_history)
+    for check, action_id in zip(checks, run.tool_history):
+        assert check.decision == "APPROVE"
+        assert check.metadata["action_id"] == action_id
+        start = next(e for e in run.events if e.event_type is EventType.TOOL_CALL_STARTED
+                     and e.metadata["action_id"] == action_id)
+        assert check.sequence_number < start.sequence_number
+        assert check.metadata["proposal"] == start.metadata["proposal"]
+        assert check.metadata["runtime_decision"] == start.metadata["runtime_decision"]
     assert run.retry_state["attempts"] == run.token_count == run.cost_usd == 0
 
 
@@ -71,14 +80,15 @@ def test_gate_a_nonapprove_never_enters_tools(text, decision, status):
 @pytest.mark.parametrize("text,reason,staging_attempts", [
     (request("INV-9999"), "RECORD_NOT_FOUND", 0),
     (request("INV-3001"), "DUPLICATE_INVOICE", 0),
-    (request("INV-3002", "SUP-3001", "PO-3001", "2500.00"), "INACTIVE_SUPPLIER", 1),
-    (request("INV-4001", "SUP-1001", "PO-4001", "4200.00"), "AMOUNT_MISMATCH", 1),
+    (request("INV-3002", "SUP-3001", "PO-3001", "2500.00"), "INACTIVE_SUPPLIER", 0),
+    (request("INV-4001", "SUP-1001", "PO-4001", "4200.00"), "AMOUNT_MISMATCH", 0),
 ])
 def test_observed_failures_stop_without_staging_or_retry(text, reason, staging_attempts):
     environment = build_local_tool_environment()
     run = execute_invoice(text, environment)
     assert run.gate_a.decision is Decision.APPROVE
-    assert run.state is RunState.FAILED
+    assert run.state is (RunState.REJECTED if reason in {"INACTIVE_SUPPLIER", "AMOUNT_MISMATCH"}
+                         else RunState.FAILED)
     assert reason in run.final_outcome.summary
     assert environment.staged_payments == environment.approval_requests == ()
     assert sum(e.tool == "stage_payment" and e.event_type is EventType.TOOL_CALL_STARTED

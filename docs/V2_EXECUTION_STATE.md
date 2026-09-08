@@ -3,7 +3,7 @@
 Updated: 2026-09-08 (Asia/Kolkata)
 
 ## Controller status
-Status: C3_AUTHORIZED
+Status: C3_IMPLEMENTED_AWAITING_INDEPENDENT_VERIFICATION
 Completed phase: C2 — execution state + stateful supplier-invoice loop
 Verified implementation checkpoint: `302887dc2fd87e8e15148b3152cd5fc6030c08a8`
 Active phase: C3 — Gate B over the existing C2 trajectory
@@ -203,3 +203,19 @@ If a gate fails, preserve evidence and return BLOCKED without expanding scope.
 - Narrow verifier evolution: C2 assertions that explicitly required no RuntimeDecision/no Gate B events must now require Gate B evidence. Cases previously rejected inside C1 staging for inactive supplier/insufficient PO amount must now expect rejection before staging and zero staging calls. Preserve all other C2 assertions; have the independent verifier review this exact adaptation before treating it as a verification oracle.
 - OUTPUT: implementation, focused tests, bounded approved/blocked trace evidence, independent verification report, and updated execution ledger on the shared branch.
 - STOP: VERIFIED + PUSHED C3, or genuine trajectory-changing BLOCKER. C4 is not authorized.
+
+### C3 implementation evidence — 2026-09-08
+
+- Precommitted C3 contract and narrow verifier evolution: `86aa672`. Before the existing C2 assertions were edited, the independent verifier confirmed that the exact adaptation strengthens the same trajectory invariants at the newly authorized before-tool boundary.
+- Entry regression: 82 passed in 38.71s; frozen benchmark PASS 48/48 with unchanged hash.
+- Implementation: `src/control_gate/runtime_admissibility.py` plus the existing controller's single `_dispatch` boundary. Every one of the six C2 calls is frozen, freshly evaluated, recorded, and dispatched only on its matching APPROVE. There is no caller-supplied decision or ungated runtime option.
+- Existing contracts and commodity scheduling are unchanged. Gate B reuses RuntimeDecision, TrajectoryEvent, the frozen finance policy, V1 actor/action vocabulary, and C1 record schemas. No dependency was added.
+- Permission mapping: `inspect_invoice`, `check_duplicate`, and `retrieve_policy` are bounded invoice-validation operations under `invoice.parse`; supplier/PO lookup require `vendor.lookup`/`po.lookup`; local staging requires `payment.submit`. This explicit adapter preserves the V1 permission vocabulary.
+- REJECT produces a terminal rejected outcome without dispatch. CLARIFY/ESCALATE stop in their existing states, retaining reasons and required state; C3 does not obtain information, resolve approvals, resume, or retry. Prior control stops, tool failures, pending questions, retry state, and non-clear human authority cannot silently resume execution.
+- Reviewed implementation corrections: captured evaluated proposals are also used for event payloads, actual arguments, and current run.proposed_action; stale/current external proposal mutation cannot relabel an approval. Policy evidence uses matching JSON representations to avoid frozen tuple versus JSON list comparison errors.
+- Focused integrated tests before the final three additions: 82 passed in 9.15s (56 new C3 cases plus 26 adapted C2 cases). Final full suite: `./.venv/Scripts/python.exe -m pytest -q --tb=short` → **141 passed in 32.73s** (56 unchanged V1/C1, 26 C2, 59 new C3 cases).
+- Frozen benchmark: `./.venv/Scripts/python.exe -m control_gate benchmark` → PASS; 48/48 decisions, reason codes and deterministic repeats; macro-F1 1.000; zero unsafe approvals; zero external actions.
+- Frozen input SHA-256: `4db513e6798f8975ad04aec3c457eeca0ec401d2cc1f02e2d63ce8f7d843f503`.
+- Proof packet: `reports/c3/gate_b_proof.json`, SHA-256 `61dd150fbfe910008a83c5ccff52a3d4807eb48b64954715bcbad180937b0b2f`. Approved trajectory: six real calls, 22 linked events, one local stage. Seven injected end-to-end violations: five permitted reads each, zero unauthorized/staging calls, zero staged payments, and a recorded non-APPROVE before dispatch. This is bounded acceptance evidence, not the C7 experiment.
+- `git diff --exit-code 96e8f4a` over V1 compiler/validator/Gate A, existing contracts, C1 tools, benchmark inputs, historical outputs/reports, C2 trace, and dependency manifest is clean. Existing C2 test changes match only the independently reviewed evolution. `git diff --check` passes.
+- Independent final certificate, implementation checkpoint, and shared push remain pending. C4 is unauthorized.
