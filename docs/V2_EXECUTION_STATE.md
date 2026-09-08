@@ -1,13 +1,13 @@
 # Control Gate V2 Execution State
 
-Updated: 2026-09-08 (Asia/Kolkata)
+Updated: 2026-09-09 (Asia/Kolkata)
 
 ## Controller status
-Status: C3_PASS_AWAITING_CONTROLLER
+Status: C4_AUTHORIZED_IN_PROGRESS
 Completed phase: C3 — Gate B over the existing C2 trajectory
 Verified implementation checkpoint: `6ef6f96b88650a192241b85c1148cf4a6142ac9d`
-Active phase: none; C3 authority ends at the shared checkpoint
-Next phase: C4 requires separate controller authorization
+Active phase: C4 — effective human control, explicitly authorized by the user
+Next phase: C5 requires separate controller authorization
 Execution branch: `v2-closure-execution`
 Frozen baseline `main` SHA: `6c48d6449080b0e036025cb305b2c590b00737a4`
 
@@ -229,3 +229,17 @@ If a gate fails, preserve evidence and return BLOCKED without expanding scope.
 - The saved C3 proof packet contains the approved linked trajectory and seven blocked end-to-end proposals, with actual tool-call observations and unchanged hash `61dd150fbfe910008a83c5ccff52a3d4807eb48b64954715bcbad180937b0b2f`.
 - Shared checkpoint: the documentation-only commit containing this final ledger/report, whose parent is the verified implementation commit, is pushed to `v2-closure-execution`. Its exact SHA is returned with completion and recoverable from the branch.
 - C3 is PASS as this verified checkpoint is shared on GitHub. Stop here. C4 is not authorized; no main merge, HITL, recovery, service/deployment, or experiment work is included.
+
+## C4 phase contract — committed before implementation
+
+- Entry: C3 shared checkpoint `0d85f1e06c3e0fd27885aa7823061cfd2c1811b3`, verified against live execution branch; main unchanged. Baseline: 141 tests pass in 63.93s; frozen benchmark 48/48, zero unsafe approvals/external actions. Live Notion closure spec section 8 is authoritative for human control; its older execution-status text is superseded by the user's explicit C4 authorization.
+- D: CLARIFY obtains bounded executable input/constraint changes or requests missing evidence reacquisition before continuation; ESCALATE accepts an explicit, scoped human decision before changing authority; REJECT never resumes. Intervention changes observable tool reachability and state.
+- SOURCE_SCOPE: existing contracts, invoice runtime, Gate B, C1 staging's optional scoped approval guard; new human-control helpers and tests; this ledger and reports/c4. Preserve all 141 existing test cases without edits.
+- ALLOWED: reuse HumanIntervention; immutable parent identity with linked versioned child run/plan; explicit local trusted-human API; single-use live pause handles bound to reviewed state and retained tool environment; narrowly validated manager approval for the exact invoice/PO/supplier/amount/currency; substantive missing-input or narrowing constraint changes; local acceptance evidence, independent verification, commit/push.
+- FORBIDDEN: V1/Gate A changes, benchmark changes, prior report rewrites, new domain machinery, permission widening, approval bypass of validation/resource/prohibition checks, failure retry, persistence/recovery/memory, authentication service, deployment, experiments, external business effects, main merge, C5.
+- V1: all 141 prior tests and frozen 48-case benchmark pass unchanged; input SHA-256 remains `4db513e6798f8975ad04aec3c457eeca0ec401d2cc1f02e2d63ce8f7d843f503`; prior evidence artifacts remain byte-identical.
+- V2: CLARIFY cannot continue on acknowledgement alone. A valid intervention creates substantive executable changes and a new linked intent version; tools reacquire actual observations. Original authorizing intent/run/plan remain immutable and parent is consumed before child dispatch.
+- V3: ESCALATE pauses with action, reasons, evidence and reviewed-state binding; only an explicit authorized human decision enables the exact approved action. Denial/cancellation prevents calls. Gate B and C1 enforce resources, amount/currency, permissions, prohibitions and business validation after approval.
+- V4: malformed, stale, mismatched, wrong-role, no-op, widening or replayed interventions produce zero new tool calls. Serialized/copied handles and terminal runs cannot resume. Accepted decisions are single-use, linked, recorded with the human actor, and observable in parent/child traces.
+- V5: positive clarification and manager approval alter actual tool reachability; narrowing/deny/reject and adversarial late mutations block before unauthorized tools. Complete tests/benchmark, saved trajectory proof, independent VERIFIED verdict, updated ledger and pushed checkpoint are required.
+- STOP: VERIFIED + PUSHED C4, or a genuine trajectory-changing BLOCKER. No C5 authorization.
