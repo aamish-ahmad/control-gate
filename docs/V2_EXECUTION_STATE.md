@@ -3,7 +3,7 @@
 Updated: 2026-09-08 (Asia/Kolkata)
 
 ## Controller status
-Status: C2_AUTHORIZED
+Status: C2_IMPLEMENTED_AWAITING_INDEPENDENT_VERIFICATION
 Completed phase: C1 — deterministic local supplier/PO/invoice/policy tool environment
 Active phase: C2 — execution state + stateful supplier-invoice loop only
 Next phase: C3 requires separate controller authorization
@@ -148,3 +148,19 @@ If a gate fails, preserve evidence and return BLOCKED without expanding scope.
 - `./.venv/Scripts/python.exe -m pytest -q` → 56 passed in 6.00s.
 - `./.venv/Scripts/python.exe -m control_gate benchmark` → PASS; 48 fixtures, 48 decision matches, 48 reason matches, 48 deterministic repeats, macro-F1 1.000, unsafe approvals 0, external actions 0.
 - Six required global skills read and bound to Control Gate; native local execution and Notion read access used. No prior-project state was adopted.
+
+### C2 candidate evidence — 2026-09-08
+
+- Precommitted phase/verification contract: `5386009`.
+- Implementation: additive fields on the existing `ExecutionRun`, linked `RuntimeDecision` interface, and `src/control_gate/invoice_runtime.py`. The existing `IntentSpec`, `ExecutionPlan`, `PlanStep`, `TrajectoryEvent`, and `RunOutcome` are reused. `HumanIntervention` is retained unchanged for C4.
+- Commodity scheduling: LangGraph `1.2.11` (Python >=3.10), pinned in the optional `runtime` extra. Install with `python -m pip install -e ".[dev,runtime]"`. No model or network access is needed for execution; external tracing is disabled.
+- Reproduce: `python -m control_gate.invoice_runtime` emits the complete run as JSON. `--request` accepts a supplier-invoice request through the existing compiler and Gate A. Non-APPROVE invokes no tools; CLARIFY/ESCALATE retain their nonterminal Gate A state with no continuation API.
+- Actual C1 tools: inspect invoice → supplier lookup → PO lookup → duplicate check → policy retrieval → local payment staging. Observations drive later arguments and advancement. Input/record mismatch and duplicate observations stop the fixed workflow. Existing C1 staging enforces its own unchanged guards; no generic Gate B exists.
+- `./.venv/Scripts/python.exe -m pytest -q tests/test_invoice_runtime.py --tb=short` → 23 passed in 60.62s.
+- `./.venv/Scripts/python.exe -m pytest -q --tb=short` → 79 passed in 83.65s (original 56 plus 23 C2 cases).
+- `./.venv/Scripts/python.exe -m control_gate benchmark` → PASS; 48/48 decisions, reasons and deterministic repeats; macro-F1 1.000; unsafe approvals 0; external actions 0.
+- Frozen input SHA-256 remains `4db513e6798f8975ad04aec3c457eeca0ec401d2cc1f02e2d63ce8f7d843f503`.
+- Trace: `reports/c2/supplier_invoice_trajectory.json`; COMPLETED; six tools; 16 events; one staged local payment; zero external actions; serialized run validates back to the same existing contract. SHA-256: `9a216c8bb577efb44dcfe086cf603970b07d291a2036772d55be76fd410bd11d`.
+- Initial focused tests exposed a frozen nested-JSON revalidation error during incremental evidence updates. The runtime now uses the existing serializer before validated reassignment; the final focused/full runs above pass. Existing regression tests and frozen JSON helpers were not changed.
+- Limits: deterministic controller, local fixtures and staging only; RuntimeDecision remains null; no Gate B, human continuation, recovery, service, persistence backend, or experiment claim. Unknown success conditions are not claimed as satisfied.
+- Independent verification and shared push are pending. C3 remains unauthorized.

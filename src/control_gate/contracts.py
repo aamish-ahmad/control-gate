@@ -254,11 +254,58 @@ class ExecutionPlan(FrozenModel):
 class ExecutionRun(StrictModel):
     """Mutable runtime state with an immutable authorizing contract link."""
 
+    model_config = ConfigDict(extra="forbid", validate_assignment=True)
+
     run_id: Annotated[str, Field(min_length=1, frozen=True)]
     intent_id: Annotated[str, Field(min_length=1, frozen=True)]
     intent_version: Annotated[int, Field(ge=1, frozen=True)]
     plan_id: Annotated[str, Field(min_length=1, frozen=True)]
     state: RunState
+
+    # C2 additive state. V1 callers may still construct the original five fields.
+    objective: str = Field(default="", frozen=True)
+    intent_spec: IntentSpec | None = Field(default=None, frozen=True)
+    execution_plan: ExecutionPlan | None = Field(default=None, frozen=True)
+    gate_a: ControlDecision | None = Field(default=None, frozen=True)
+    evidence: FrozenJsonObject = Field(default_factory=dict)
+    tool_history: tuple[str, ...] = ()
+    pending_questions: tuple[NonEmptyString, ...] = ()
+    approval_state: str = "NOT_REQUESTED"
+    retry_state: FrozenJsonObject = Field(default_factory=lambda: {"attempts": 0})
+    token_count: Annotated[int, Field(ge=0)] = 0
+    cost_usd: Annotated[Decimal, Field(ge=0)] = Decimal("0")
+    proposed_action: FrozenJsonObject | None = None
+    runtime_decision: RuntimeDecision | None = None
+    observations: tuple[FrozenJsonObject, ...] = ()
+    events: tuple[TrajectoryEvent, ...] = ()
+    final_outcome: RunOutcome | None = None
+
+    @model_validator(mode="after")
+    def require_consistent_links(self) -> ExecutionRun:
+        for record in (self.intent_spec, self.execution_plan, self.gate_a,
+                       self.runtime_decision, self.final_outcome, *self.events):
+            if record is None:
+                continue
+            version = record.version if isinstance(record, IntentSpec) else record.intent_version
+            if (record.intent_id, version) != (self.intent_id, self.intent_version):
+                raise ValueError("ExecutionRun intent linkage mismatch")
+            if hasattr(record, "run_id") and record.run_id != self.run_id:
+                raise ValueError("ExecutionRun run linkage mismatch")
+            if hasattr(record, "plan_id") and record.plan_id != self.plan_id:
+                raise ValueError("ExecutionRun plan linkage mismatch")
+        return self
+
+
+class RuntimeDecision(FrozenModel):
+    """Intent/run/action-linked C3 interface; C2 does not evaluate Gate B."""
+
+    run_id: NonEmptyString
+    intent_id: NonEmptyString
+    intent_version: PositiveVersion
+    plan_id: NonEmptyString
+    action_id: NonEmptyString
+    decision: Decision
+    reason_codes: tuple[NonEmptyString, ...] = Field(min_length=1)
 
 
 class TrajectoryEvent(FrozenModel):

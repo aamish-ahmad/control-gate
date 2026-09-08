@@ -13,6 +13,9 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+runtime = [
+    "langgraph==1.2.11",
+]
 dev = [
     "pytest>=8,<9",
 ]
