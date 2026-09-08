@@ -3,10 +3,10 @@
 Updated: 2026-09-08 (Asia/Kolkata)
 
 ## Controller status
-Status: C3_IMPLEMENTED_AWAITING_INDEPENDENT_VERIFICATION
-Completed phase: C2 — execution state + stateful supplier-invoice loop
-Verified implementation checkpoint: `302887dc2fd87e8e15148b3152cd5fc6030c08a8`
-Active phase: C3 — Gate B over the existing C2 trajectory
+Status: C3_PASS_AWAITING_CONTROLLER
+Completed phase: C3 — Gate B over the existing C2 trajectory
+Verified implementation checkpoint: `6ef6f96b88650a192241b85c1148cf4a6142ac9d`
+Active phase: none; C3 authority ends at the shared checkpoint
 Next phase: C4 requires separate controller authorization
 Execution branch: `v2-closure-execution`
 Frozen baseline `main` SHA: `6c48d6449080b0e036025cb305b2c590b00737a4`
@@ -123,7 +123,7 @@ Observed on 2026-09-02 from the C1 candidate worktree:
 C1 is PASS. C2 remains unauthorized until the controller verifies the shared checkpoint and explicitly advances the ledger.
 
 ## Next legal transition
-Current authorized transition: C3 only, explicitly authorized by the user's 2026-09-08 instruction. Stop at VERIFIED plus PUSHED C3 or a genuine trajectory-changing blocker.
+Current authorized transition: publish the independently verified C3 evidence checkpoint only. No further implementation phase is authorized.
 
 The historical C1/C2 stops are superseded for C3 only. Do not start C4.
 
@@ -219,3 +219,13 @@ If a gate fails, preserve evidence and return BLOCKED without expanding scope.
 - Proof packet: `reports/c3/gate_b_proof.json`, SHA-256 `61dd150fbfe910008a83c5ccff52a3d4807eb48b64954715bcbad180937b0b2f`. Approved trajectory: six real calls, 22 linked events, one local stage. Seven injected end-to-end violations: five permitted reads each, zero unauthorized/staging calls, zero staged payments, and a recorded non-APPROVE before dispatch. This is bounded acceptance evidence, not the C7 experiment.
 - `git diff --exit-code 96e8f4a` over V1 compiler/validator/Gate A, existing contracts, C1 tools, benchmark inputs, historical outputs/reports, C2 trace, and dependency manifest is clean. Existing C2 test changes match only the independently reviewed evolution. `git diff --check` passes.
 - Independent final certificate, implementation checkpoint, and shared push remain pending. C4 is unauthorized.
+
+### C3 final independent verification and shared handoff — 2026-09-08
+
+- Independent verdict: **VERIFIED** against precommitted C3 V1–V5 and implementation commit `6ef6f96b88650a192241b85c1148cf4a6142ac9d`.
+- Independent report: `reports/c3/INDEPENDENT_VERIFICATION.md`. The separate verifier made no implementation or test edits.
+- Independent full suite: **141 passed in 35.75s**. Independent frozen benchmark used temporary output paths: 48/48 decision, reason, repeat, and intent-linkage matches; macro-F1 1.000; zero unsafe approvals and external actions.
+- Independent adversarial probes confirmed zero staging calls for altered scope, actor, tool, amount, currency, resource, assumptions, human authority, and retry state. Additional coherent evidence substitutions were rejected before any spy call.
+- The saved C3 proof packet contains the approved linked trajectory and seven blocked end-to-end proposals, with actual tool-call observations and unchanged hash `61dd150fbfe910008a83c5ccff52a3d4807eb48b64954715bcbad180937b0b2f`.
+- Shared checkpoint: the documentation-only commit containing this final ledger/report, whose parent is the verified implementation commit, is pushed to `v2-closure-execution`. Its exact SHA is returned with completion and recoverable from the branch.
+- C3 is PASS as this verified checkpoint is shared on GitHub. Stop here. C4 is not authorized; no main merge, HITL, recovery, service/deployment, or experiment work is included.
