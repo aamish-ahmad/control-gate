@@ -1,11 +1,12 @@
 # Control Gate V2 Execution State
 
-Updated: 2026-09-02 (Asia/Kolkata)
+Updated: 2026-09-08 (Asia/Kolkata)
 
 ## Controller status
-Status: C1_PASS_AWAITING_CONTROLLER
+Status: C2_AUTHORIZED
 Completed phase: C1 — deterministic local supplier/PO/invoice/policy tool environment
-Next phase: pending controller verification and explicit authorization
+Active phase: C2 — execution state + stateful supplier-invoice loop only
+Next phase: C3 requires separate controller authorization
 Execution branch: `v2-closure-execution`
 Frozen baseline `main` SHA: `6c48d6449080b0e036025cb305b2c590b00737a4`
 
@@ -121,8 +122,29 @@ Observed on 2026-09-02 from the C1 candidate worktree:
 C1 is PASS. C2 remains unauthorized until the controller verifies the shared checkpoint and explicitly advances the ledger.
 
 ## Next legal transition
-Current authorized transition: finish and checkpoint C1 only.
+Current authorized transition: C2 only, authorized by the user's 2026-09-08 instruction and section 18 of the live frozen Notion contract.
 
-After C1 PASS, stop for controller verification and authorization. C2 is not self-authorized by the executor.
+The historical C1 stop above is superseded by this explicit C2 authorization. Stop after independent verification and the pushed C2 checkpoint; do not start C3.
 
-If any C1 invariant fails: return BLOCKED with evidence and authorize only the smallest repair needed for C1.
+If a gate fails, preserve evidence and return BLOCKED without expanding scope.
+
+## C2 phase contract — committed before implementation
+
+- SOURCE_SCOPE: existing contracts in `src/control_gate/contracts.py`, a bounded runtime in `src/control_gate/invoice_runtime.py`, new focused `tests/test_invoice_runtime.py`, the runtime dependency in `pyproject.toml`, and C2 evidence in this ledger and `reports/c2/`.
+- Entry: clean local HEAD and fetched `origin/v2-closure-execution` both equal `5c79b649e1d3262656bf33d0826bb3abe15a8d86`; frozen `origin/main` remains `6c48d6449080b0e036025cb305b2c590b00737a4`. Live Notion page `3c0d086d-0fe9-81ec-9e0f-c28b316836e1`, section 18, confirms C1 independently verified and C2 authorized. Older closing checkpoints are history.
+- D: an inspectable stateful local supplier-invoice trajectory reusing the existing plan/run/event/outcome contracts, with Gate A controlling entry, actual C1 tool calls, immutable intent/version/plan linkage, observation-driven advancement, and an evidence-backed terminal outcome.
+- ALLOWED: additive runtime-state fields and the missing RuntimeDecision interface; one fixed-domain LangGraph controller; direct C1 tool integration; new C2 tests; bounded dependency installation; evidence recording; independent read-only verification; commit and push to the execution branch. LangGraph supplies scheduling and conditional transitions, with no model, checkpointer, external tracing, or service. Independent verification is build-time separation, not a product multi-agent runtime.
+- FORBIDDEN: changes to existing V1 authorization semantics, existing regression tests, C1 tools, benchmark inputs or historical generated evidence; Gate B enforcement; human interrupt/resume or approval resolution; retry/recovery/memory expansion; service/deployment/CI/experiments; real business side effects; merge to main; C3.
+- OUTPUT: runtime implementation, focused tests, one JSON trajectory in `reports/c2/`, independent verification evidence, and this updated ledger on the pushed branch.
+- V1: existing 56 tests and frozen 48-case benchmark pass unchanged; benchmark SHA-256 remains `4db513e6798f8975ad04aec3c457eeca0ec401d2cc1f02e2d63ce8f7d843f503`.
+- V2: APPROVE executes the real bounded tool trajectory and produces one local staged payment; CLARIFY/ESCALATE/REJECT invoke no tools and retain Gate A reasons/questions without implementing human continuation.
+- V3: plan, run, action/event, observations, and outcome preserve run/intent/version/plan identity; tool evidence and state changes are inspectable and serializable; separate runs do not share mutable state.
+- V4: next actions depend on recorded observations; expected tool failures terminate without staging or retry; terminal outcomes cannot be replayed through the controller; outcomes claim only supported authorized success conditions. RuntimeDecision remains an unused C3 interface, not a fabricated runtime approval.
+- V5: focused C2 tests and full suite pass; a separately instructed verifier checks the committed conditions, protected diff, tests, benchmark, and trace before PASS. New focused tests supplement rather than replace the unchanged regression oracle.
+- STOP: VERIFIED plus pushed C2 checkpoint, or a genuine trajectory-changing blocker. C3 remains unauthorized.
+
+### C2 entry evidence
+
+- `./.venv/Scripts/python.exe -m pytest -q` → 56 passed in 6.00s.
+- `./.venv/Scripts/python.exe -m control_gate benchmark` → PASS; 48 fixtures, 48 decision matches, 48 reason matches, 48 deterministic repeats, macro-F1 1.000, unsafe approvals 0, external actions 0.
+- Six required global skills read and bound to Control Gate; native local execution and Notion read access used. No prior-project state was adopted.
