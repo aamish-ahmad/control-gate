@@ -3,9 +3,10 @@
 Updated: 2026-09-08 (Asia/Kolkata)
 
 ## Controller status
-Status: C2_IMPLEMENTED_AWAITING_INDEPENDENT_VERIFICATION
-Completed phase: C1 — deterministic local supplier/PO/invoice/policy tool environment
-Active phase: C2 — execution state + stateful supplier-invoice loop only
+Status: C2_PASS_AWAITING_CONTROLLER
+Completed phase: C2 — execution state + stateful supplier-invoice loop
+Verified implementation checkpoint: `302887dc2fd87e8e15148b3152cd5fc6030c08a8`
+Active phase: none; C2 execution authority ends at the shared checkpoint
 Next phase: C3 requires separate controller authorization
 Execution branch: `v2-closure-execution`
 Frozen baseline `main` SHA: `6c48d6449080b0e036025cb305b2c590b00737a4`
@@ -122,7 +123,7 @@ Observed on 2026-09-02 from the C1 candidate worktree:
 C1 is PASS. C2 remains unauthorized until the controller verifies the shared checkpoint and explicitly advances the ledger.
 
 ## Next legal transition
-Current authorized transition: C2 only, authorized by the user's 2026-09-08 instruction and section 18 of the live frozen Notion contract.
+Current authorized transition: publish the independently verified C2 evidence checkpoint only. No further implementation phase is authorized.
 
 The historical C1 stop above is superseded by this explicit C2 authorization. Stop after independent verification and the pushed C2 checkpoint; do not start C3.
 
@@ -175,3 +176,14 @@ If a gate fails, preserve evidence and return BLOCKED without expanding scope.
 - `python -m pip check` reports no broken requirements.
 - Gate A retains its exact V1 behavior. C2 does not claim per-tool permission enforcement for arbitrary IntentSpec inputs; that remains the explicitly unimplemented C3 Gate B boundary.
 - Independent final certificate and shared push are still required before PASS.
+
+### C2 final independent verification and shared handoff — 2026-09-08
+
+- Independent verdict: **VERIFIED**, against the precommitted V1–V5 conditions and repaired implementation commit `302887dc2fd87e8e15148b3152cd5fc6030c08a8`.
+- Independent evidence: `reports/c2/INDEPENDENT_VERIFICATION.md`. The verifier made no repository changes and did not build the implementation.
+- Independent full suite: 82 passed in 49.17s. Independent frozen benchmark, using temporary output paths: 48/48 decisions, reasons, repeats, and intent linkage; macro-F1 1.000; zero unsafe approvals and external actions.
+- Independent trace and assignment probes pass: six complete action/observation joins, all intent/run/plan links, contiguous event/state transitions, JSON readback, evidence-backed outcome, and no mutation after rejected linked-state updates.
+- Final executor regression after the repair also passes: 82 tests and frozen benchmark 48/48, unchanged input hash.
+- Documented install `python -m pip install -e ".[dev,runtime]"` successfully builds and installs with normal build isolation. An optional attempt without build isolation failed because the pre-existing environment lacked `bdist_wheel`; no build-system changes were needed.
+- Shared handoff: the commit containing this finalized ledger and independent report is pushed to `v2-closure-execution`; its parent is the verified implementation checkpoint above. The exact shared SHA is recoverable from the branch and returned with completion.
+- C2 is PASS only as this verified checkpoint is shared on GitHub. Stop here. C3/Gate B remains unauthorized; no merge to `main` is authorized or performed.
