@@ -3,11 +3,11 @@
 Updated: 2026-09-09 (Asia/Kolkata)
 
 ## Controller status
-Status: C4_PASS_AWAITING_CONTROLLER
+Status: C5_AUTHORIZED
 Completed phase: C4 — effective human control over the C3 trajectory
 Verified implementation checkpoint: `3853d8b49817d0eebc9b96d3b47c01b718d861f9`
-Active phase: none; C4 authority ends at the shared checkpoint
-Next phase: C5 requires separate controller authorization
+Active phase: C5 — bounded recovery and same-episode memory/context
+Next phase: none; C6 remains unauthorized
 Execution branch: `v2-closure-execution`
 Frozen baseline `main` SHA: `6c48d6449080b0e036025cb305b2c590b00737a4`
 
@@ -266,3 +266,18 @@ If a gate fails, preserve evidence and return BLOCKED without expanding scope.
 - A remote read was temporarily rejected by automatic approval review because of a usage limit. After the user's explicit continuation, the same authorized check succeeded: remote execution branch remained at C3 and main at the frozen baseline. No alternate execution route was used.
 - Shared handoff: this documentation-only checkpoint, whose parent is the verified implementation, is pushed to `v2-closure-execution`. Its exact SHA is returned with completion and recoverable from the branch. C4 is PASS only once that push and exact remote readback succeed.
 - Stop at shared C4. C5 remains unauthorized; no main merge, recovery/memory, service/deployment or experiments are included.
+
+## C5 phase contract — committed before implementation
+
+- Entry: C4 shared checkpoint `4bb886782fd837a7d87929fce0e84a0eb4085119` is the clean local and fetched remote execution-branch HEAD; frozen `origin/main` remains `6c48d6449080b0e036025cb305b2c590b00737a4`. The complete entry suite is 205 passed in 10.95s. The frozen benchmark remains 48/48 decisions, reasons and deterministic repeats, macro-F1 1.000, zero unsafe approvals and zero external actions. Live Notion page `3c0d086d-0fe9-81ec-9e0f-c28b316836e1` explicitly authorizes C5 recovery and episode memory over the verified C4 trajectory.
+- SOURCE_SCOPE: the existing retry fields/events and finance-v1 policy in `src/control_gate/contracts.py`; the fixed dispatch/controller in `src/control_gate/invoice_runtime.py`; Gate B in `src/control_gate/runtime_admissibility.py`; a deterministic local failure-injection adapter in `src/control_gate/tool_environment.py`; new focused C5 tests; this ledger and `reports/c5/`. Existing C0-C4 tests and evidence are protected and remain unedited.
+- D: the existing governed supplier-invoice trajectory safely survives explicitly classified transient read failures using bounded retries and retained same-episode evidence/context, while every attempt is rechecked by Gate B and no retry can cross or weaken Gate A, Gate B, human-control, scope, permission, approval or terminal-state decisions.
+- ALLOWED: set per-step retry rules for the five read-only tools using the existing finance-v1 maximum of two retries; keep `stage_payment` at zero automatic retries; add deterministic timeout, malformed-response and permission-denied injection without external effects; reject malformed observations before evidence admission; record failed observations and retry events in the existing `ExecutionRun` memory; validate retry lineage/current context at Gate B; add focused failure-matrix/adversarial tests and a compact saved proof; independently verify, update this ledger, commit and push C5.
+- FORBIDDEN: changes to V1 compiler/validator/Gate A decisions, C3 authorization semantics except the exact validated retry path, C4 intervention authority, frozen benchmark inputs, prior tests or prior evidence; retry of staging or uncertain writes; retry after any Gate B non-APPROVE or human deny/cancel/unresolved decision; use of stale, forged, cross-run, cross-intent, cross-version or cross-plan memory; persistence/database, RetrievalOps/RAG integration, new domain/framework/dependency, FastAPI/Docker/CI, traces-service work, experiments, packaging, deployment, external business effects, merge to main, or C6.
+- OUTPUT: bounded runtime/failure-injection implementation, additive `tests/test_recovery.py`, `reports/c5/recovery_proof.json` with its deterministic builder, independent `reports/c5/INDEPENDENT_VERIFICATION.md`, and this updated ledger on the pushed execution branch.
+- V1: all 205 entry tests and the frozen 48-case benchmark pass without edits; `benchmarks/requests.jsonl` remains SHA-256 `4db513e6798f8975ad04aec3c457eeca0ec401d2cc1f02e2d63ce8f7d843f503`; C2-C4 evidence files remain byte-identical to their recorded entry hashes.
+- V2: a timeout or malformed response explicitly injected on an idempotent read may be retried at most twice; each attempt has linked policy-check/start/failure-or-completion evidence, and exhaustion ends safely. Missing records, contradictions, duplicates, permission denial, unexpected failures and all staging failures do not auto-retry or stage an action.
+- V3: each retry preserves the exact run, intent ID/version, plan, objective, immutable human approval if any, completed evidence and observation history. Malformed output never enters evidence. Successful recovery continues from the failed step without replaying completed tools; serialized run readback preserves the complete episode evidence.
+- V4: Gate B evaluates every attempt afresh. Forged retry counters, missing/tampered failure or retry events, changed arguments/resources, a prior non-APPROVE runtime decision, unresolved clarification/escalation, human denial/cancellation, terminal state or exhausted cap cannot dispatch a tool. No retry becomes authority.
+- V5: focused C5 tests exercise every required failure-matrix row and positive recovery, complete suite and frozen benchmark pass, the saved proof readbacks and shows zero external actions, protected hashes remain unchanged, an independent verifier returns `VERIFIED`, and the exact C5 checkpoint is pushed/read back from `origin/v2-closure-execution`.
+- STOP: VERIFIED + PUSHED C5, or a genuine trajectory-changing BLOCKER. C6 remains unauthorized.
