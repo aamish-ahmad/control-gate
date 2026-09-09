@@ -3,11 +3,11 @@
 Updated: 2026-09-09 (Asia/Kolkata)
 
 ## Controller status
-Status: C5_CANDIDATE_AWAITING_INDEPENDENT_VERIFICATION
-Completed phase: C4 — effective human control over the C3 trajectory
-Verified implementation checkpoint: `3853d8b49817d0eebc9b96d3b47c01b718d861f9`
-Active phase: C5 — bounded recovery and same-episode memory/context
-Next phase: none; C6 remains unauthorized
+Status: C5_PASS_AWAITING_CONTROLLER
+Completed phase: C5 — bounded recovery and same-episode memory/context
+Verified implementation checkpoint: `51e7b6ef30d85380204ea224592f076e5cd57ab0`
+Active phase: none; C5 authority ends at the shared checkpoint
+Next phase: C6 requires separate controller authorization
 Execution branch: `v2-closure-execution`
 Frozen baseline `main` SHA: `6c48d6449080b0e036025cb305b2c590b00737a4`
 
@@ -294,3 +294,14 @@ If a gate fails, preserve evidence and return BLOCKED without expanding scope.
 - `python reports/c5/build_proof.py` -> ten bounded cases: two recovered completions and eight safe stops, with zero external actions. JSON readback passes. `reports/c5/recovery_proof.json` SHA-256: `de1a67a47fefc5918d76b16869ba409bafebf4830cfe6d5efab308d75e65f1d2`.
 - `python -m pip check` reports no broken requirements; Python compile checks pass. Protected evidence remains byte-identical: C2 trace `c03230b0fbf7e8e1b25292219c89ee09133a2cad228c160b1852d06a54718083`, C2 certificate `36581ba53d06dfaa7c437a6154406090f1b89b91dec51bb3615f038a7ddcdcbc`, C3 proof `61dd150fbfe910008a83c5ccff52a3d4807eb48b64954715bcbad180937b0b2f`, C3 certificate `4bb1ba998cc6a049c383d2285b9d967c053cf0b5df6b14030bc5df7dde03a9ed`, C4 proof `fc279503808d8946825b463bef5ca7efbb66a65afde32b4195333c6fc9241d60`, and C4 certificate `4aaba5f1136d66b2766c74db62d8f9f53e8dbf0d52914fcb416bda7ca19ce49e`.
 - No persistence/database, RetrievalOps/RAG, new dependency, service/deployment/CI, experiment, packaging, external business action, main merge or C6 work is included. Independent verification and the shared final C5 checkpoint remain pending.
+
+### C5 final independent verification and shared handoff — 2026-09-09
+
+- Independent verdict: **VERIFIED**, against precommitted C5 V1–V5 at `e04e9954fad1b99e3110e1ac13a96ec9b38881dd` and implementation candidate `51e7b6ef30d85380204ea224592f076e5cd57ab0`. The verifier did not build or modify the implementation, tests, proof or ledger.
+- Certificate: `reports/c5/INDEPENDENT_VERIFICATION.md`, SHA-256 `0d4023e6dcb688fbd21df7c95204001cfb190b7ffe2e63c2e08149febf06472e`. Independently tested Git blobs are recorded in the certificate.
+- Independent focused suite: 24 passed in 4.04s. Independent complete suite: 229 passed in 14.68s. Independently redirected frozen benchmark: 48/48 decisions, reasons, repeats and intent links; macro-F1 1.000; zero unsafe approvals and zero external actions.
+- Independent source and adversarial review confirms fresh Gate B evaluation for every retry, exact attempt/failure/retry lineage, retained same-episode context, typed evidence admission, no completed-step replay, rejection of forged/missing/tampered retry state, and zero retry authority after a prior control or human stop.
+- Independent maximum-cap probe recovered after two injected timeouts on each of five reads: one run/intent version/plan, 16 attempts, 10 retries, six completed tools, one local staged record and zero external actions. Unclassified timeouts and all write/staging, permission, business-rule, exhausted, terminal and non-APPROVE paths fail closed without automatic retry.
+- Frozen benchmark input and all C2-C4 evidence hashes remain byte-identical to the C5 entry record. No existing test, prior evidence, dependency, README, service/deployment/CI surface, experiment or packaging file changed.
+- Shared handoff: this documentation/certificate checkpoint has verified implementation `51e7b6ef30d85380204ea224592f076e5cd57ab0` as its parent and is pushed to `v2-closure-execution`; its exact SHA is recoverable from the branch and returned at completion.
+- Stop at shared C5. C6 remains unauthorized; no main merge, persistence/service, experiment, packaging or deployment work is included.
