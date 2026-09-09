@@ -1,13 +1,13 @@
 # Control Gate V2 Execution State
 
-Updated: 2026-09-09 (Asia/Kolkata)
+Updated: 2026-09-10 (Asia/Kolkata)
 
 ## Controller status
-Status: C6_AUTHORIZED_IN_PROGRESS
-Completed phase: C5 — bounded recovery and same-episode memory/context
-Verified implementation checkpoint: `51e7b6ef30d85380204ea224592f076e5cd57ab0`
-Active phase: C6 — structured trajectory persistence and engineering-proof service boundary
-Next phase: none; C7 is not authorized
+Status: C6_PASS_AWAITING_CONTROLLER
+Completed phase: C6 — structured trajectory persistence and engineering-proof service boundary
+Verified implementation checkpoint: `8e16b498656a24d18e8fc055a35d42a211b8d480`
+Active phase: none; C6 authority ends at the shared checkpoint
+Next phase: C7 requires separate controller authorization
 Execution branch: `v2-closure-execution`
 Frozen baseline `main` SHA: `6c48d6449080b0e036025cb305b2c590b00737a4`
 
@@ -320,3 +320,23 @@ If a gate fails, preserve evidence and return BLOCKED without expanding scope.
 - V4: the service exposes no resume/authorization bypass and no external business operation. SQLite state is configurable outside the image, the container runs the FastAPI application as a non-root user with a persistent `/data` boundary, and CI executes tests, the frozen benchmark and Docker build.
 - V5: focused C6 tests, complete suite, frozen benchmark, deterministic proof readback, protected-hash checks, Python compile/import checks, Docker build when locally available, and independent verifier review all pass; the exact C6 shared checkpoint is pushed and read back from `origin/v2-closure-execution`.
 - STOP: VERIFIED + PUSHED C6, or a genuine trajectory-changing BLOCKER. C7 is not authorized.
+
+### C6 implementation evidence — 2026-09-10
+
+- Precommitted bounded C6 contract: `76de5505124a9084b2965ed3937fd8a269e3af75`; it was pushed and read back from `origin/v2-closure-execution` before implementation.
+- `SQLiteRunStore` persists the complete validated `ExecutionRun` and each existing `TrajectoryEvent` in one transaction. Exact repeated writes are idempotent; changed reuse of a run ID, non-contiguous or duplicate events, invalid payloads, and run/event index divergence fail closed. Connections close deterministically, including on Windows.
+- `control_gate.service` adds only health, create-run, get-run and get-events endpoints over the unchanged C5 `execute_invoice` path. The OpenAPI surface exposes no resume route or persisted-pause authority. The default SQLite path is configurable with `CONTROL_GATE_DB_PATH`; the service performs no external business action.
+- Focused executor suite: `python -m pytest -q tests/test_persistence.py tests/test_service.py --tb=short` -> **11 passed**. Complete executor suite: `python -m pytest -q --tb=short` -> **240 passed in 68.70s**, with one dependency deprecation warning.
+- Frozen benchmark: PASS; 48/48 decision matches, reason-code matches and deterministic repeats; macro-F1 1.000; zero unsafe approvals and zero external actions. Input SHA-256 remains `4db513e6798f8975ad04aec3c457eeca0ec401d2cc1f02e2d63ce8f7d843f503`.
+- `python reports/c6/build_proof.py` proves HTTP creation, SQLite persistence, process/store recreation readback, 22 contiguous event rows, SQLite integrity `ok`, exact event/run equality and zero external actions. Committed proof SHA-256: `378412fc7ebad4956cb97429fb67a6df081f9137319de567e951d0736d32ab0c`.
+- A live local Uvicorn process returned `{"status":"ok"}` from `/health`; Python compile/import checks and `pip check` pass. Docker is not installed locally, so no local container-build claim is made.
+- Implementation candidate `8e16b498656a24d18e8fc055a35d42a211b8d480` is pushed. Public GitHub Actions run `34405797475` completed successfully for dependency installation, the complete tests, frozen benchmark and `docker build --tag control-gate:c6 .`.
+- C2-C5 evidence hashes remain byte-identical to the C6 entry record. No pre-existing source/test, benchmark input, prior output/evidence/certificate, README, runtime semantics, external business integration, experiment or C7 surface changed.
+
+### C6 final independent verification and shared handoff — 2026-09-10
+
+- Independent verdict: **VERIFIED**, against precommitted C6 V1-V5 at `76de5505124a9084b2965ed3937fd8a269e3af75` and immutable implementation candidate `8e16b498656a24d18e8fc055a35d42a211b8d480`. The verifier modified only the C6 certificate.
+- Certificate: `reports/c6/INDEPENDENT_VERIFICATION.md`, SHA-256 `9bfdd085f64660d09414c00752de6bf5a5ca24c8f3f21aaa24885699538b83f3`. Independent focused and complete suites passed 11 and 240 tests; frozen benchmark remained 48/48 with macro-F1 1.000 and zero unsafe approvals/external actions.
+- Independent proof, blob, protected-hash and adversarial review confirms transactional exact-idempotent persistence, contiguous ordered events, restart readback, corruption/conflict rejection, fail-closed HTTP behavior, no resume/authority bypass, non-root container configuration and an external successful CI/Docker build bound to the candidate SHA.
+- Shared handoff: this documentation/certificate checkpoint has verified implementation `8e16b498656a24d18e8fc055a35d42a211b8d480` as its parent and is pushed to `v2-closure-execution`; its exact SHA is returned at completion and recoverable from the branch.
+- Stop at shared C6. C7 remains unauthorized; no experiment episodes, comparison metrics/charts, README packaging/closure, deployment/publication or main merge is included.
