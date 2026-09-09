@@ -1,0 +1,1631 @@
+{
+  "case": "fastapi_sqlite_restart_readback",
+  "event_count": 22,
+  "event_readback_equal": true,
+  "event_rows": 22,
+  "event_sequence": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+  ],
+  "events_sha256": "c276e249caeb52c640a5baef2e95e99bfc6067bfad4ea4c1ac0ede0be8b5a7d5",
+  "external_actions_performed": 0,
+  "intent_id": "INT-CLI-36EC6961F56A4977",
+  "intent_version": 1,
+  "phase": "C6",
+  "restart_readback_equal": true,
+  "run": {
+    "approval_state": "NOT_REQUESTED",
+    "continuation_run_id": null,
+    "cost_usd": "0",
+    "events": [
+      {
+        "actor": "finance_agent",
+        "decision": "APPROVE",
+        "event_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:event:0",
+        "event_type": "control_decision",
+        "intent_id": "INT-CLI-36EC6961F56A4977",
+        "intent_version": 1,
+        "latency_ms": null,
+        "metadata": {
+          "gate_a": {
+            "blocking_fields": [],
+            "decision": "APPROVE",
+            "intent_id": "INT-CLI-36EC6961F56A4977",
+            "intent_version": 1,
+            "policy_version": "finance-v1",
+            "questions": [],
+            "reason_codes": [
+              "REQUEST_ADMISSIBLE"
+            ],
+            "required_approver": null
+          },
+          "human_approval": null,
+          "parent_run_id": null
+        },
+        "policy_checks": [],
+        "retry_count": 0,
+        "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+        "sequence_number": 0,
+        "state_after": "APPROVED",
+        "state_before": "AWAITING_DECISION",
+        "status": "completed",
+        "step_id": null,
+        "timestamp": "2026-09-09T21:04:33.052148Z",
+        "tool": null,
+        "tool_input_digest": null,
+        "tool_output_digest": null
+      },
+      {
+        "actor": "finance_agent",
+        "decision": null,
+        "event_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:event:1",
+        "event_type": "plan_created",
+        "intent_id": "INT-CLI-36EC6961F56A4977",
+        "intent_version": 1,
+        "latency_ms": null,
+        "metadata": {
+          "plan": {
+            "intent_id": "INT-CLI-36EC6961F56A4977",
+            "intent_version": 1,
+            "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan",
+            "steps": [
+              {
+                "approval_checkpoints": [],
+                "dependencies": [],
+                "policy_checkpoints": [],
+                "retry_rule": {
+                  "max_retries": 2,
+                  "retryable_conditions": [
+                    "TOOL_TIMEOUT",
+                    "MALFORMED_TOOL_RESPONSE"
+                  ]
+                },
+                "step_id": "inspect_invoice",
+                "terminal_state": null,
+                "tool_requirements": [
+                  "inspect_invoice"
+                ]
+              },
+              {
+                "approval_checkpoints": [],
+                "dependencies": [
+                  "inspect_invoice"
+                ],
+                "policy_checkpoints": [],
+                "retry_rule": {
+                  "max_retries": 2,
+                  "retryable_conditions": [
+                    "TOOL_TIMEOUT",
+                    "MALFORMED_TOOL_RESPONSE"
+                  ]
+                },
+                "step_id": "lookup_supplier",
+                "terminal_state": null,
+                "tool_requirements": [
+                  "lookup_supplier"
+                ]
+              },
+              {
+                "approval_checkpoints": [],
+                "dependencies": [
+                  "lookup_supplier"
+                ],
+                "policy_checkpoints": [],
+                "retry_rule": {
+                  "max_retries": 2,
+                  "retryable_conditions": [
+                    "TOOL_TIMEOUT",
+                    "MALFORMED_TOOL_RESPONSE"
+                  ]
+                },
+                "step_id": "lookup_purchase_order",
+                "terminal_state": null,
+                "tool_requirements": [
+                  "lookup_purchase_order"
+                ]
+              },
+              {
+                "approval_checkpoints": [],
+                "dependencies": [
+                  "lookup_purchase_order"
+                ],
+                "policy_checkpoints": [],
+                "retry_rule": {
+                  "max_retries": 2,
+                  "retryable_conditions": [
+                    "TOOL_TIMEOUT",
+                    "MALFORMED_TOOL_RESPONSE"
+                  ]
+                },
+                "step_id": "check_duplicate",
+                "terminal_state": null,
+                "tool_requirements": [
+                  "check_duplicate"
+                ]
+              },
+              {
+                "approval_checkpoints": [],
+                "dependencies": [
+                  "check_duplicate"
+                ],
+                "policy_checkpoints": [],
+                "retry_rule": {
+                  "max_retries": 2,
+                  "retryable_conditions": [
+                    "TOOL_TIMEOUT",
+                    "MALFORMED_TOOL_RESPONSE"
+                  ]
+                },
+                "step_id": "retrieve_policy",
+                "terminal_state": null,
+                "tool_requirements": [
+                  "retrieve_policy"
+                ]
+              },
+              {
+                "approval_checkpoints": [],
+                "dependencies": [
+                  "retrieve_policy"
+                ],
+                "policy_checkpoints": [],
+                "retry_rule": {
+                  "max_retries": 0,
+                  "retryable_conditions": []
+                },
+                "step_id": "stage_payment",
+                "terminal_state": null,
+                "tool_requirements": [
+                  "stage_payment"
+                ]
+              }
+            ],
+            "terminal_failure_states": [
+              "FAILED",
+              "REJECTED"
+            ],
+            "terminal_success_state": "COMPLETED"
+          }
+        },
+        "policy_checks": [],
+        "retry_count": 0,
+        "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+        "sequence_number": 1,
+        "state_after": "PLANNED",
+        "state_before": "APPROVED",
+        "status": "completed",
+        "step_id": null,
+        "timestamp": "2026-09-09T21:04:33.053150Z",
+        "tool": null,
+        "tool_input_digest": null,
+        "tool_output_digest": null
+      },
+      {
+        "actor": "finance_agent",
+        "decision": null,
+        "event_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:event:2",
+        "event_type": "run_started",
+        "intent_id": "INT-CLI-36EC6961F56A4977",
+        "intent_version": 1,
+        "latency_ms": null,
+        "metadata": {
+          "gate_b": "ENFORCED_C3",
+          "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan"
+        },
+        "policy_checks": [],
+        "retry_count": 0,
+        "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+        "sequence_number": 2,
+        "state_after": "RUNNING",
+        "state_before": "PLANNED",
+        "status": "completed",
+        "step_id": null,
+        "timestamp": "2026-09-09T21:04:33.053150Z",
+        "tool": null,
+        "tool_input_digest": null,
+        "tool_output_digest": null
+      },
+      {
+        "actor": "finance_agent",
+        "decision": "APPROVE",
+        "event_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:event:3",
+        "event_type": "runtime_policy_check",
+        "intent_id": "INT-CLI-36EC6961F56A4977",
+        "intent_version": 1,
+        "latency_ms": null,
+        "metadata": {
+          "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:0",
+          "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan",
+          "proposal": {
+            "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:0",
+            "actor_id": "finance_agent",
+            "actor_role": "automated_finance_operator",
+            "arguments": {
+              "invoice_id": "INV-1001"
+            },
+            "assumptions": [],
+            "goal": "process_supplier_invoice",
+            "intent_id": "INT-CLI-36EC6961F56A4977",
+            "intent_version": 1,
+            "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan",
+            "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+            "tool": "inspect_invoice"
+          },
+          "runtime_decision": {
+            "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:0",
+            "decision": "APPROVE",
+            "intent_id": "INT-CLI-36EC6961F56A4977",
+            "intent_version": 1,
+            "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan",
+            "reason_codes": [
+              "RUNTIME_ACTION_ADMISSIBLE"
+            ],
+            "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6"
+          }
+        },
+        "policy_checks": [],
+        "retry_count": 0,
+        "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+        "sequence_number": 3,
+        "state_after": "RUNNING",
+        "state_before": "RUNNING",
+        "status": "APPROVE",
+        "step_id": "inspect_invoice",
+        "timestamp": "2026-09-09T21:04:33.079153Z",
+        "tool": "inspect_invoice",
+        "tool_input_digest": null,
+        "tool_output_digest": null
+      },
+      {
+        "actor": "finance_agent",
+        "decision": null,
+        "event_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:event:4",
+        "event_type": "tool_call_started",
+        "intent_id": "INT-CLI-36EC6961F56A4977",
+        "intent_version": 1,
+        "latency_ms": null,
+        "metadata": {
+          "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:0",
+          "actor_id": "finance_agent",
+          "actor_role": "automated_finance_operator",
+          "arguments": {
+            "invoice_id": "INV-1001"
+          },
+          "assumptions": [],
+          "goal": "process_supplier_invoice",
+          "intent_id": "INT-CLI-36EC6961F56A4977",
+          "intent_version": 1,
+          "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan",
+          "proposal": {
+            "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:0",
+            "actor_id": "finance_agent",
+            "actor_role": "automated_finance_operator",
+            "arguments": {
+              "invoice_id": "INV-1001"
+            },
+            "assumptions": [],
+            "goal": "process_supplier_invoice",
+            "intent_id": "INT-CLI-36EC6961F56A4977",
+            "intent_version": 1,
+            "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan",
+            "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+            "tool": "inspect_invoice"
+          },
+          "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+          "runtime_decision": {
+            "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:0",
+            "decision": "APPROVE",
+            "intent_id": "INT-CLI-36EC6961F56A4977",
+            "intent_version": 1,
+            "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan",
+            "reason_codes": [
+              "RUNTIME_ACTION_ADMISSIBLE"
+            ],
+            "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6"
+          },
+          "tool": "inspect_invoice"
+        },
+        "policy_checks": [],
+        "retry_count": 0,
+        "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+        "sequence_number": 4,
+        "state_after": "RUNNING",
+        "state_before": "RUNNING",
+        "status": "completed",
+        "step_id": "inspect_invoice",
+        "timestamp": "2026-09-09T21:04:33.080151Z",
+        "tool": "inspect_invoice",
+        "tool_input_digest": "bbb5130f1e1a14150ca0ddcfbdf9f829b29e4b3a6921a187a27c3516d9a2e793",
+        "tool_output_digest": null
+      },
+      {
+        "actor": "finance_agent",
+        "decision": null,
+        "event_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:event:5",
+        "event_type": "tool_call_completed",
+        "intent_id": "INT-CLI-36EC6961F56A4977",
+        "intent_version": 1,
+        "latency_ms": 0,
+        "metadata": {
+          "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:0",
+          "observation": {
+            "amount": "7500.00",
+            "currency": "USD",
+            "invoice_id": "INV-1001",
+            "purchase_order_id": "PO-1001",
+            "status": "VALIDATED",
+            "supplier_id": "SUP-1001",
+            "validations_complete": true
+          },
+          "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan"
+        },
+        "policy_checks": [],
+        "retry_count": 0,
+        "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+        "sequence_number": 5,
+        "state_after": "RUNNING",
+        "state_before": "RUNNING",
+        "status": "completed",
+        "step_id": "inspect_invoice",
+        "timestamp": "2026-09-09T21:04:33.080151Z",
+        "tool": "inspect_invoice",
+        "tool_input_digest": null,
+        "tool_output_digest": "221af6835f2e088c4cda086c148148a0b38aeae02692f4040235cfef182a0306"
+      },
+      {
+        "actor": "finance_agent",
+        "decision": "APPROVE",
+        "event_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:event:6",
+        "event_type": "runtime_policy_check",
+        "intent_id": "INT-CLI-36EC6961F56A4977",
+        "intent_version": 1,
+        "latency_ms": null,
+        "metadata": {
+          "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:1",
+          "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan",
+          "proposal": {
+            "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:1",
+            "actor_id": "finance_agent",
+            "actor_role": "automated_finance_operator",
+            "arguments": {
+              "supplier_id": "SUP-1001"
+            },
+            "assumptions": [],
+            "goal": "process_supplier_invoice",
+            "intent_id": "INT-CLI-36EC6961F56A4977",
+            "intent_version": 1,
+            "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan",
+            "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+            "tool": "lookup_supplier"
+          },
+          "runtime_decision": {
+            "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:1",
+            "decision": "APPROVE",
+            "intent_id": "INT-CLI-36EC6961F56A4977",
+            "intent_version": 1,
+            "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan",
+            "reason_codes": [
+              "RUNTIME_ACTION_ADMISSIBLE"
+            ],
+            "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6"
+          }
+        },
+        "policy_checks": [],
+        "retry_count": 0,
+        "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+        "sequence_number": 6,
+        "state_after": "RUNNING",
+        "state_before": "RUNNING",
+        "status": "APPROVE",
+        "step_id": "lookup_supplier",
+        "timestamp": "2026-09-09T21:04:33.084149Z",
+        "tool": "lookup_supplier",
+        "tool_input_digest": null,
+        "tool_output_digest": null
+      },
+      {
+        "actor": "finance_agent",
+        "decision": null,
+        "event_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:event:7",
+        "event_type": "tool_call_started",
+        "intent_id": "INT-CLI-36EC6961F56A4977",
+        "intent_version": 1,
+        "latency_ms": null,
+        "metadata": {
+          "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:1",
+          "actor_id": "finance_agent",
+          "actor_role": "automated_finance_operator",
+          "arguments": {
+            "supplier_id": "SUP-1001"
+          },
+          "assumptions": [],
+          "goal": "process_supplier_invoice",
+          "intent_id": "INT-CLI-36EC6961F56A4977",
+          "intent_version": 1,
+          "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan",
+          "proposal": {
+            "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:1",
+            "actor_id": "finance_agent",
+            "actor_role": "automated_finance_operator",
+            "arguments": {
+              "supplier_id": "SUP-1001"
+            },
+            "assumptions": [],
+            "goal": "process_supplier_invoice",
+            "intent_id": "INT-CLI-36EC6961F56A4977",
+            "intent_version": 1,
+            "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan",
+            "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+            "tool": "lookup_supplier"
+          },
+          "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+          "runtime_decision": {
+            "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:1",
+            "decision": "APPROVE",
+            "intent_id": "INT-CLI-36EC6961F56A4977",
+            "intent_version": 1,
+            "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan",
+            "reason_codes": [
+              "RUNTIME_ACTION_ADMISSIBLE"
+            ],
+            "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6"
+          },
+          "tool": "lookup_supplier"
+        },
+        "policy_checks": [],
+        "retry_count": 0,
+        "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+        "sequence_number": 7,
+        "state_after": "RUNNING",
+        "state_before": "RUNNING",
+        "status": "completed",
+        "step_id": "lookup_supplier",
+        "timestamp": "2026-09-09T21:04:33.085151Z",
+        "tool": "lookup_supplier",
+        "tool_input_digest": "3389fbb6c92cb13af1023e6a0b83305f26007be8f1fbf77b7c5af519b2cc5790",
+        "tool_output_digest": null
+      },
+      {
+        "actor": "finance_agent",
+        "decision": null,
+        "event_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:event:8",
+        "event_type": "tool_call_completed",
+        "intent_id": "INT-CLI-36EC6961F56A4977",
+        "intent_version": 1,
+        "latency_ms": 0,
+        "metadata": {
+          "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:1",
+          "observation": {
+            "active": true,
+            "approved_currencies": [
+              "USD"
+            ],
+            "legal_name": "Northstar Office Supplies",
+            "supplier_id": "SUP-1001"
+          },
+          "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan"
+        },
+        "policy_checks": [],
+        "retry_count": 0,
+        "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+        "sequence_number": 8,
+        "state_after": "RUNNING",
+        "state_before": "RUNNING",
+        "status": "completed",
+        "step_id": "lookup_supplier",
+        "timestamp": "2026-09-09T21:04:33.085151Z",
+        "tool": "lookup_supplier",
+        "tool_input_digest": null,
+        "tool_output_digest": "184fca59fc7b36b5270d747f386003e5f9a4644ed232023a4dfd14266305c262"
+      },
+      {
+        "actor": "finance_agent",
+        "decision": "APPROVE",
+        "event_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:event:9",
+        "event_type": "runtime_policy_check",
+        "intent_id": "INT-CLI-36EC6961F56A4977",
+        "intent_version": 1,
+        "latency_ms": null,
+        "metadata": {
+          "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:2",
+          "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan",
+          "proposal": {
+            "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:2",
+            "actor_id": "finance_agent",
+            "actor_role": "automated_finance_operator",
+            "arguments": {
+              "purchase_order_id": "PO-1001"
+            },
+            "assumptions": [],
+            "goal": "process_supplier_invoice",
+            "intent_id": "INT-CLI-36EC6961F56A4977",
+            "intent_version": 1,
+            "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan",
+            "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+            "tool": "lookup_purchase_order"
+          },
+          "runtime_decision": {
+            "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:2",
+            "decision": "APPROVE",
+            "intent_id": "INT-CLI-36EC6961F56A4977",
+            "intent_version": 1,
+            "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan",
+            "reason_codes": [
+              "RUNTIME_ACTION_ADMISSIBLE"
+            ],
+            "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6"
+          }
+        },
+        "policy_checks": [],
+        "retry_count": 0,
+        "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+        "sequence_number": 9,
+        "state_after": "RUNNING",
+        "state_before": "RUNNING",
+        "status": "APPROVE",
+        "step_id": "lookup_purchase_order",
+        "timestamp": "2026-09-09T21:04:33.090152Z",
+        "tool": "lookup_purchase_order",
+        "tool_input_digest": null,
+        "tool_output_digest": null
+      },
+      {
+        "actor": "finance_agent",
+        "decision": null,
+        "event_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:event:10",
+        "event_type": "tool_call_started",
+        "intent_id": "INT-CLI-36EC6961F56A4977",
+        "intent_version": 1,
+        "latency_ms": null,
+        "metadata": {
+          "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:2",
+          "actor_id": "finance_agent",
+          "actor_role": "automated_finance_operator",
+          "arguments": {
+            "purchase_order_id": "PO-1001"
+          },
+          "assumptions": [],
+          "goal": "process_supplier_invoice",
+          "intent_id": "INT-CLI-36EC6961F56A4977",
+          "intent_version": 1,
+          "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan",
+          "proposal": {
+            "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:2",
+            "actor_id": "finance_agent",
+            "actor_role": "automated_finance_operator",
+            "arguments": {
+              "purchase_order_id": "PO-1001"
+            },
+            "assumptions": [],
+            "goal": "process_supplier_invoice",
+            "intent_id": "INT-CLI-36EC6961F56A4977",
+            "intent_version": 1,
+            "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan",
+            "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+            "tool": "lookup_purchase_order"
+          },
+          "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+          "runtime_decision": {
+            "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:2",
+            "decision": "APPROVE",
+            "intent_id": "INT-CLI-36EC6961F56A4977",
+            "intent_version": 1,
+            "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan",
+            "reason_codes": [
+              "RUNTIME_ACTION_ADMISSIBLE"
+            ],
+            "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6"
+          },
+          "tool": "lookup_purchase_order"
+        },
+        "policy_checks": [],
+        "retry_count": 0,
+        "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+        "sequence_number": 10,
+        "state_after": "RUNNING",
+        "state_before": "RUNNING",
+        "status": "completed",
+        "step_id": "lookup_purchase_order",
+        "timestamp": "2026-09-09T21:04:33.090152Z",
+        "tool": "lookup_purchase_order",
+        "tool_input_digest": "0c6bafdb312431e02ebf22b7cf4089d4b92627373a19a312d8421481f74cd4c3",
+        "tool_output_digest": null
+      },
+      {
+        "actor": "finance_agent",
+        "decision": null,
+        "event_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:event:11",
+        "event_type": "tool_call_completed",
+        "intent_id": "INT-CLI-36EC6961F56A4977",
+        "intent_version": 1,
+        "latency_ms": 0,
+        "metadata": {
+          "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:2",
+          "observation": {
+            "currency": "USD",
+            "purchase_order_id": "PO-1001",
+            "remaining_amount": "7500.00",
+            "status": "OPEN",
+            "supplier_id": "SUP-1001",
+            "total_amount": "7500.00"
+          },
+          "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan"
+        },
+        "policy_checks": [],
+        "retry_count": 0,
+        "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+        "sequence_number": 11,
+        "state_after": "RUNNING",
+        "state_before": "RUNNING",
+        "status": "completed",
+        "step_id": "lookup_purchase_order",
+        "timestamp": "2026-09-09T21:04:33.091153Z",
+        "tool": "lookup_purchase_order",
+        "tool_input_digest": null,
+        "tool_output_digest": "94b8adae0c6bf3643c90c92da4984d73af8ff8af3ccfcb7723085fb4ca7ca7bc"
+      },
+      {
+        "actor": "finance_agent",
+        "decision": "APPROVE",
+        "event_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:event:12",
+        "event_type": "runtime_policy_check",
+        "intent_id": "INT-CLI-36EC6961F56A4977",
+        "intent_version": 1,
+        "latency_ms": null,
+        "metadata": {
+          "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:3",
+          "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan",
+          "proposal": {
+            "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:3",
+            "actor_id": "finance_agent",
+            "actor_role": "automated_finance_operator",
+            "arguments": {
+              "invoice_id": "INV-1001"
+            },
+            "assumptions": [],
+            "goal": "process_supplier_invoice",
+            "intent_id": "INT-CLI-36EC6961F56A4977",
+            "intent_version": 1,
+            "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan",
+            "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+            "tool": "check_duplicate"
+          },
+          "runtime_decision": {
+            "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:3",
+            "decision": "APPROVE",
+            "intent_id": "INT-CLI-36EC6961F56A4977",
+            "intent_version": 1,
+            "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan",
+            "reason_codes": [
+              "RUNTIME_ACTION_ADMISSIBLE"
+            ],
+            "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6"
+          }
+        },
+        "policy_checks": [],
+        "retry_count": 0,
+        "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+        "sequence_number": 12,
+        "state_after": "RUNNING",
+        "state_before": "RUNNING",
+        "status": "APPROVE",
+        "step_id": "check_duplicate",
+        "timestamp": "2026-09-09T21:04:33.096151Z",
+        "tool": "check_duplicate",
+        "tool_input_digest": null,
+        "tool_output_digest": null
+      },
+      {
+        "actor": "finance_agent",
+        "decision": null,
+        "event_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:event:13",
+        "event_type": "tool_call_started",
+        "intent_id": "INT-CLI-36EC6961F56A4977",
+        "intent_version": 1,
+        "latency_ms": null,
+        "metadata": {
+          "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:3",
+          "actor_id": "finance_agent",
+          "actor_role": "automated_finance_operator",
+          "arguments": {
+            "invoice_id": "INV-1001"
+          },
+          "assumptions": [],
+          "goal": "process_supplier_invoice",
+          "intent_id": "INT-CLI-36EC6961F56A4977",
+          "intent_version": 1,
+          "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan",
+          "proposal": {
+            "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:3",
+            "actor_id": "finance_agent",
+            "actor_role": "automated_finance_operator",
+            "arguments": {
+              "invoice_id": "INV-1001"
+            },
+            "assumptions": [],
+            "goal": "process_supplier_invoice",
+            "intent_id": "INT-CLI-36EC6961F56A4977",
+            "intent_version": 1,
+            "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan",
+            "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+            "tool": "check_duplicate"
+          },
+          "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+          "runtime_decision": {
+            "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:3",
+            "decision": "APPROVE",
+            "intent_id": "INT-CLI-36EC6961F56A4977",
+            "intent_version": 1,
+            "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan",
+            "reason_codes": [
+              "RUNTIME_ACTION_ADMISSIBLE"
+            ],
+            "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6"
+          },
+          "tool": "check_duplicate"
+        },
+        "policy_checks": [],
+        "retry_count": 0,
+        "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+        "sequence_number": 13,
+        "state_after": "RUNNING",
+        "state_before": "RUNNING",
+        "status": "completed",
+        "step_id": "check_duplicate",
+        "timestamp": "2026-09-09T21:04:33.096151Z",
+        "tool": "check_duplicate",
+        "tool_input_digest": "bbb5130f1e1a14150ca0ddcfbdf9f829b29e4b3a6921a187a27c3516d9a2e793",
+        "tool_output_digest": null
+      },
+      {
+        "actor": "finance_agent",
+        "decision": null,
+        "event_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:event:14",
+        "event_type": "tool_call_completed",
+        "intent_id": "INT-CLI-36EC6961F56A4977",
+        "intent_version": 1,
+        "latency_ms": 0,
+        "metadata": {
+          "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:3",
+          "observation": {
+            "invoice_id": "INV-1001",
+            "is_duplicate": false,
+            "matching_invoice_id": null
+          },
+          "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan"
+        },
+        "policy_checks": [],
+        "retry_count": 0,
+        "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+        "sequence_number": 14,
+        "state_after": "RUNNING",
+        "state_before": "RUNNING",
+        "status": "completed",
+        "step_id": "check_duplicate",
+        "timestamp": "2026-09-09T21:04:33.097150Z",
+        "tool": "check_duplicate",
+        "tool_input_digest": null,
+        "tool_output_digest": "0750ef6130c63288165d77c3409cf76208f5f7b07cdb39b3a7d838c0bdedb007"
+      },
+      {
+        "actor": "finance_agent",
+        "decision": "APPROVE",
+        "event_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:event:15",
+        "event_type": "runtime_policy_check",
+        "intent_id": "INT-CLI-36EC6961F56A4977",
+        "intent_version": 1,
+        "latency_ms": null,
+        "metadata": {
+          "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:4",
+          "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan",
+          "proposal": {
+            "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:4",
+            "actor_id": "finance_agent",
+            "actor_role": "automated_finance_operator",
+            "arguments": {
+              "policy_version": "finance-v1"
+            },
+            "assumptions": [],
+            "goal": "process_supplier_invoice",
+            "intent_id": "INT-CLI-36EC6961F56A4977",
+            "intent_version": 1,
+            "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan",
+            "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+            "tool": "retrieve_policy"
+          },
+          "runtime_decision": {
+            "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:4",
+            "decision": "APPROVE",
+            "intent_id": "INT-CLI-36EC6961F56A4977",
+            "intent_version": 1,
+            "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan",
+            "reason_codes": [
+              "RUNTIME_ACTION_ADMISSIBLE"
+            ],
+            "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6"
+          }
+        },
+        "policy_checks": [],
+        "retry_count": 0,
+        "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+        "sequence_number": 15,
+        "state_after": "RUNNING",
+        "state_before": "RUNNING",
+        "status": "APPROVE",
+        "step_id": "retrieve_policy",
+        "timestamp": "2026-09-09T21:04:33.102152Z",
+        "tool": "retrieve_policy",
+        "tool_input_digest": null,
+        "tool_output_digest": null
+      },
+      {
+        "actor": "finance_agent",
+        "decision": null,
+        "event_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:event:16",
+        "event_type": "tool_call_started",
+        "intent_id": "INT-CLI-36EC6961F56A4977",
+        "intent_version": 1,
+        "latency_ms": null,
+        "metadata": {
+          "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:4",
+          "actor_id": "finance_agent",
+          "actor_role": "automated_finance_operator",
+          "arguments": {
+            "policy_version": "finance-v1"
+          },
+          "assumptions": [],
+          "goal": "process_supplier_invoice",
+          "intent_id": "INT-CLI-36EC6961F56A4977",
+          "intent_version": 1,
+          "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan",
+          "proposal": {
+            "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:4",
+            "actor_id": "finance_agent",
+            "actor_role": "automated_finance_operator",
+            "arguments": {
+              "policy_version": "finance-v1"
+            },
+            "assumptions": [],
+            "goal": "process_supplier_invoice",
+            "intent_id": "INT-CLI-36EC6961F56A4977",
+            "intent_version": 1,
+            "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan",
+            "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+            "tool": "retrieve_policy"
+          },
+          "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+          "runtime_decision": {
+            "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:4",
+            "decision": "APPROVE",
+            "intent_id": "INT-CLI-36EC6961F56A4977",
+            "intent_version": 1,
+            "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan",
+            "reason_codes": [
+              "RUNTIME_ACTION_ADMISSIBLE"
+            ],
+            "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6"
+          },
+          "tool": "retrieve_policy"
+        },
+        "policy_checks": [],
+        "retry_count": 0,
+        "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+        "sequence_number": 16,
+        "state_after": "RUNNING",
+        "state_before": "RUNNING",
+        "status": "completed",
+        "step_id": "retrieve_policy",
+        "timestamp": "2026-09-09T21:04:33.102152Z",
+        "tool": "retrieve_policy",
+        "tool_input_digest": "9ab300ed7159609be0d74229b11729b8bea55fc141246c929022d638dc45caed",
+        "tool_output_digest": null
+      },
+      {
+        "actor": "finance_agent",
+        "decision": null,
+        "event_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:event:17",
+        "event_type": "tool_call_completed",
+        "intent_id": "INT-CLI-36EC6961F56A4977",
+        "intent_version": 1,
+        "latency_ms": 3,
+        "metadata": {
+          "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:4",
+          "observation": {
+            "agent_may_modify_vendor_bank_details": false,
+            "bypass_approval_decision": "REJECT",
+            "duplicate_invoice_decision": "REJECT",
+            "max_autonomous_payment_usd": "10000",
+            "payment_requires_all_validations": true,
+            "policy_version": "finance-v1",
+            "required_approver_above_limit": "finance_manager",
+            "rule_ids": [
+              "P1",
+              "P2",
+              "P3",
+              "P4",
+              "P5",
+              "P6",
+              "P7",
+              "P8",
+              "P9",
+              "P10"
+            ],
+            "transient_read_max_retries": 2,
+            "uncertain_payment_auto_retry": false,
+            "valid_purchase_order_required": true,
+            "vendor_must_exist": true
+          },
+          "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan"
+        },
+        "policy_checks": [],
+        "retry_count": 0,
+        "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+        "sequence_number": 17,
+        "state_after": "RUNNING",
+        "state_before": "RUNNING",
+        "status": "completed",
+        "step_id": "retrieve_policy",
+        "timestamp": "2026-09-09T21:04:33.107156Z",
+        "tool": "retrieve_policy",
+        "tool_input_digest": null,
+        "tool_output_digest": "f5ae82e55b68dfebeab29f2609f341fe141d1d3de5ad181d4f06f54f1c2b46dc"
+      },
+      {
+        "actor": "finance_agent",
+        "decision": "APPROVE",
+        "event_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:event:18",
+        "event_type": "runtime_policy_check",
+        "intent_id": "INT-CLI-36EC6961F56A4977",
+        "intent_version": 1,
+        "latency_ms": null,
+        "metadata": {
+          "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:5",
+          "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan",
+          "proposal": {
+            "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:5",
+            "actor_id": "finance_agent",
+            "actor_role": "automated_finance_operator",
+            "arguments": {
+              "amount": "7500.00",
+              "currency": "USD",
+              "invoice_id": "INV-1001",
+              "purchase_order_id": "PO-1001"
+            },
+            "assumptions": [],
+            "goal": "process_supplier_invoice",
+            "intent_id": "INT-CLI-36EC6961F56A4977",
+            "intent_version": 1,
+            "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan",
+            "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+            "tool": "stage_payment"
+          },
+          "runtime_decision": {
+            "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:5",
+            "decision": "APPROVE",
+            "intent_id": "INT-CLI-36EC6961F56A4977",
+            "intent_version": 1,
+            "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan",
+            "reason_codes": [
+              "RUNTIME_ACTION_ADMISSIBLE"
+            ],
+            "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6"
+          }
+        },
+        "policy_checks": [],
+        "retry_count": 0,
+        "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+        "sequence_number": 18,
+        "state_after": "RUNNING",
+        "state_before": "RUNNING",
+        "status": "APPROVE",
+        "step_id": "stage_payment",
+        "timestamp": "2026-09-09T21:04:33.116153Z",
+        "tool": "stage_payment",
+        "tool_input_digest": null,
+        "tool_output_digest": null
+      },
+      {
+        "actor": "finance_agent",
+        "decision": null,
+        "event_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:event:19",
+        "event_type": "tool_call_started",
+        "intent_id": "INT-CLI-36EC6961F56A4977",
+        "intent_version": 1,
+        "latency_ms": null,
+        "metadata": {
+          "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:5",
+          "actor_id": "finance_agent",
+          "actor_role": "automated_finance_operator",
+          "arguments": {
+            "amount": "7500.00",
+            "currency": "USD",
+            "invoice_id": "INV-1001",
+            "purchase_order_id": "PO-1001"
+          },
+          "assumptions": [],
+          "goal": "process_supplier_invoice",
+          "intent_id": "INT-CLI-36EC6961F56A4977",
+          "intent_version": 1,
+          "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan",
+          "proposal": {
+            "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:5",
+            "actor_id": "finance_agent",
+            "actor_role": "automated_finance_operator",
+            "arguments": {
+              "amount": "7500.00",
+              "currency": "USD",
+              "invoice_id": "INV-1001",
+              "purchase_order_id": "PO-1001"
+            },
+            "assumptions": [],
+            "goal": "process_supplier_invoice",
+            "intent_id": "INT-CLI-36EC6961F56A4977",
+            "intent_version": 1,
+            "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan",
+            "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+            "tool": "stage_payment"
+          },
+          "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+          "runtime_decision": {
+            "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:5",
+            "decision": "APPROVE",
+            "intent_id": "INT-CLI-36EC6961F56A4977",
+            "intent_version": 1,
+            "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan",
+            "reason_codes": [
+              "RUNTIME_ACTION_ADMISSIBLE"
+            ],
+            "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6"
+          },
+          "tool": "stage_payment"
+        },
+        "policy_checks": [],
+        "retry_count": 0,
+        "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+        "sequence_number": 19,
+        "state_after": "RUNNING",
+        "state_before": "RUNNING",
+        "status": "completed",
+        "step_id": "stage_payment",
+        "timestamp": "2026-09-09T21:04:33.117155Z",
+        "tool": "stage_payment",
+        "tool_input_digest": "c30a5bda7f69a585c65cd2ebaac3b76f9c3d8bdf39c2490f99ac550aadd8f906",
+        "tool_output_digest": null
+      },
+      {
+        "actor": "finance_agent",
+        "decision": null,
+        "event_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:event:20",
+        "event_type": "tool_call_completed",
+        "intent_id": "INT-CLI-36EC6961F56A4977",
+        "intent_version": 1,
+        "latency_ms": 1,
+        "metadata": {
+          "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:5",
+          "observation": {
+            "amount": "7500.00",
+            "currency": "USD",
+            "external_actions_performed": 0,
+            "invoice_id": "INV-1001",
+            "purchase_order_id": "PO-1001",
+            "stage_id": "STAGE-INV-1001",
+            "status": "STAGED_FOR_LOCAL_SIMULATION",
+            "supplier_id": "SUP-1001"
+          },
+          "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan"
+        },
+        "policy_checks": [],
+        "retry_count": 0,
+        "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+        "sequence_number": 20,
+        "state_after": "RUNNING",
+        "state_before": "RUNNING",
+        "status": "completed",
+        "step_id": "stage_payment",
+        "timestamp": "2026-09-09T21:04:33.118153Z",
+        "tool": "stage_payment",
+        "tool_input_digest": null,
+        "tool_output_digest": "f9b5842732bd8849e9af7a0f855191a3fcc4c14a820655f849db2876af613dcc"
+      },
+      {
+        "actor": "finance_agent",
+        "decision": null,
+        "event_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:event:21",
+        "event_type": "run_completed",
+        "intent_id": "INT-CLI-36EC6961F56A4977",
+        "intent_version": 1,
+        "latency_ms": null,
+        "metadata": {
+          "external_actions_performed": 0,
+          "final_outcome": {
+            "completed_at": "2026-09-09T21:04:33.126152Z",
+            "failure_conditions_triggered": [],
+            "intent_id": "INT-CLI-36EC6961F56A4977",
+            "intent_version": 1,
+            "outcome_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:outcome",
+            "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+            "status": "COMPLETED",
+            "success_conditions_satisfied": [
+              "invoice_validated",
+              "payment_authorized",
+              "audit_event_written"
+            ],
+            "summary": "Local payment staged; supported intent success conditions satisfied. No payment submitted and no external actions performed."
+          },
+          "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan",
+          "reason_codes": []
+        },
+        "policy_checks": [],
+        "retry_count": 0,
+        "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+        "sequence_number": 21,
+        "state_after": "COMPLETED",
+        "state_before": "RUNNING",
+        "status": "COMPLETED",
+        "step_id": null,
+        "timestamp": "2026-09-09T21:04:33.126152Z",
+        "tool": null,
+        "tool_input_digest": null,
+        "tool_output_digest": null
+      }
+    ],
+    "evidence": {
+      "check_duplicate": {
+        "invoice_id": "INV-1001",
+        "is_duplicate": false,
+        "matching_invoice_id": null
+      },
+      "inspect_invoice": {
+        "amount": "7500.00",
+        "currency": "USD",
+        "invoice_id": "INV-1001",
+        "purchase_order_id": "PO-1001",
+        "status": "VALIDATED",
+        "supplier_id": "SUP-1001",
+        "validations_complete": true
+      },
+      "lookup_purchase_order": {
+        "currency": "USD",
+        "purchase_order_id": "PO-1001",
+        "remaining_amount": "7500.00",
+        "status": "OPEN",
+        "supplier_id": "SUP-1001",
+        "total_amount": "7500.00"
+      },
+      "lookup_supplier": {
+        "active": true,
+        "approved_currencies": [
+          "USD"
+        ],
+        "legal_name": "Northstar Office Supplies",
+        "supplier_id": "SUP-1001"
+      },
+      "retrieve_policy": {
+        "agent_may_modify_vendor_bank_details": false,
+        "bypass_approval_decision": "REJECT",
+        "duplicate_invoice_decision": "REJECT",
+        "max_autonomous_payment_usd": "10000",
+        "payment_requires_all_validations": true,
+        "policy_version": "finance-v1",
+        "required_approver_above_limit": "finance_manager",
+        "rule_ids": [
+          "P1",
+          "P2",
+          "P3",
+          "P4",
+          "P5",
+          "P6",
+          "P7",
+          "P8",
+          "P9",
+          "P10"
+        ],
+        "transient_read_max_retries": 2,
+        "uncertain_payment_auto_retry": false,
+        "valid_purchase_order_required": true,
+        "vendor_must_exist": true
+      },
+      "stage_payment": {
+        "amount": "7500.00",
+        "currency": "USD",
+        "external_actions_performed": 0,
+        "invoice_id": "INV-1001",
+        "purchase_order_id": "PO-1001",
+        "stage_id": "STAGE-INV-1001",
+        "status": "STAGED_FOR_LOCAL_SIMULATION",
+        "supplier_id": "SUP-1001"
+      }
+    },
+    "execution_plan": {
+      "intent_id": "INT-CLI-36EC6961F56A4977",
+      "intent_version": 1,
+      "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan",
+      "steps": [
+        {
+          "approval_checkpoints": [],
+          "dependencies": [],
+          "policy_checkpoints": [],
+          "retry_rule": {
+            "max_retries": 2,
+            "retryable_conditions": [
+              "TOOL_TIMEOUT",
+              "MALFORMED_TOOL_RESPONSE"
+            ]
+          },
+          "step_id": "inspect_invoice",
+          "terminal_state": null,
+          "tool_requirements": [
+            "inspect_invoice"
+          ]
+        },
+        {
+          "approval_checkpoints": [],
+          "dependencies": [
+            "inspect_invoice"
+          ],
+          "policy_checkpoints": [],
+          "retry_rule": {
+            "max_retries": 2,
+            "retryable_conditions": [
+              "TOOL_TIMEOUT",
+              "MALFORMED_TOOL_RESPONSE"
+            ]
+          },
+          "step_id": "lookup_supplier",
+          "terminal_state": null,
+          "tool_requirements": [
+            "lookup_supplier"
+          ]
+        },
+        {
+          "approval_checkpoints": [],
+          "dependencies": [
+            "lookup_supplier"
+          ],
+          "policy_checkpoints": [],
+          "retry_rule": {
+            "max_retries": 2,
+            "retryable_conditions": [
+              "TOOL_TIMEOUT",
+              "MALFORMED_TOOL_RESPONSE"
+            ]
+          },
+          "step_id": "lookup_purchase_order",
+          "terminal_state": null,
+          "tool_requirements": [
+            "lookup_purchase_order"
+          ]
+        },
+        {
+          "approval_checkpoints": [],
+          "dependencies": [
+            "lookup_purchase_order"
+          ],
+          "policy_checkpoints": [],
+          "retry_rule": {
+            "max_retries": 2,
+            "retryable_conditions": [
+              "TOOL_TIMEOUT",
+              "MALFORMED_TOOL_RESPONSE"
+            ]
+          },
+          "step_id": "check_duplicate",
+          "terminal_state": null,
+          "tool_requirements": [
+            "check_duplicate"
+          ]
+        },
+        {
+          "approval_checkpoints": [],
+          "dependencies": [
+            "check_duplicate"
+          ],
+          "policy_checkpoints": [],
+          "retry_rule": {
+            "max_retries": 2,
+            "retryable_conditions": [
+              "TOOL_TIMEOUT",
+              "MALFORMED_TOOL_RESPONSE"
+            ]
+          },
+          "step_id": "retrieve_policy",
+          "terminal_state": null,
+          "tool_requirements": [
+            "retrieve_policy"
+          ]
+        },
+        {
+          "approval_checkpoints": [],
+          "dependencies": [
+            "retrieve_policy"
+          ],
+          "policy_checkpoints": [],
+          "retry_rule": {
+            "max_retries": 0,
+            "retryable_conditions": []
+          },
+          "step_id": "stage_payment",
+          "terminal_state": null,
+          "tool_requirements": [
+            "stage_payment"
+          ]
+        }
+      ],
+      "terminal_failure_states": [
+        "FAILED",
+        "REJECTED"
+      ],
+      "terminal_success_state": "COMPLETED"
+    },
+    "final_outcome": {
+      "completed_at": "2026-09-09T21:04:33.126152Z",
+      "failure_conditions_triggered": [],
+      "intent_id": "INT-CLI-36EC6961F56A4977",
+      "intent_version": 1,
+      "outcome_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:outcome",
+      "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+      "status": "COMPLETED",
+      "success_conditions_satisfied": [
+        "invoice_validated",
+        "payment_authorized",
+        "audit_event_written"
+      ],
+      "summary": "Local payment staged; supported intent success conditions satisfied. No payment submitted and no external actions performed."
+    },
+    "gate_a": {
+      "blocking_fields": [],
+      "decision": "APPROVE",
+      "intent_id": "INT-CLI-36EC6961F56A4977",
+      "intent_version": 1,
+      "policy_version": "finance-v1",
+      "questions": [],
+      "reason_codes": [
+        "REQUEST_ADMISSIBLE"
+      ],
+      "required_approver": null
+    },
+    "human_approval": null,
+    "intent_id": "INT-CLI-36EC6961F56A4977",
+    "intent_spec": {
+      "actor": {
+        "id": "finance_agent",
+        "role": "automated_finance_operator"
+      },
+      "approval_rules": [
+        {
+          "require": "finance_manager",
+          "when": "amount > 10000"
+        }
+      ],
+      "assumptions": [],
+      "constraints": {
+        "currency": "USD",
+        "max_autonomous_payment_usd": "10000",
+        "permission_scope": "bounded",
+        "reversible": true,
+        "schema_version": "control-gate.intent.v1"
+      },
+      "failure_conditions": [
+        "vendor_missing",
+        "duplicate_invoice",
+        "purchase_order_mismatch",
+        "approval_denied"
+      ],
+      "goal": {
+        "type": "process_supplier_invoice"
+      },
+      "inputs": {
+        "amount": "7500.00",
+        "currency": "USD",
+        "duplicate_invoice": false,
+        "entity_candidates": {},
+        "invoice_id": "INV-1001",
+        "payment_validations_complete": true,
+        "policy_bypass_requested": false,
+        "purchase_order_id": "PO-1001",
+        "purchase_order_valid": true,
+        "supplier_exists": true,
+        "supplier_id": "SUP-1001"
+      },
+      "intent_id": "INT-CLI-36EC6961F56A4977",
+      "permissions": {
+        "allowed_tools": [
+          "invoice.parse",
+          "vendor.lookup",
+          "po.lookup",
+          "payment.submit"
+        ]
+      },
+      "prohibited_actions": [
+        "vendor.modify_bank_details",
+        "payment.bypass_approval"
+      ],
+      "requirements": [
+        "verify_vendor",
+        "validate_purchase_order",
+        "detect_duplicate_invoice",
+        "verify_amount"
+      ],
+      "risk_level": "medium",
+      "rollback_strategy": [
+        "cancel_unsubmitted_payment"
+      ],
+      "source_request": "finance_agent process invoice INV-1001 from supplier SUP-1001 under PO-1001 for USD 7500.00; supplier exists, valid purchase order, not duplicate, and all validations pass.",
+      "success_conditions": [
+        "invoice_validated",
+        "payment_authorized",
+        "audit_event_written"
+      ],
+      "version": 1
+    },
+    "intent_version": 1,
+    "objective": "process_supplier_invoice",
+    "observations": [
+      {
+        "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:0",
+        "output": {
+          "amount": "7500.00",
+          "currency": "USD",
+          "invoice_id": "INV-1001",
+          "purchase_order_id": "PO-1001",
+          "status": "VALIDATED",
+          "supplier_id": "SUP-1001",
+          "validations_complete": true
+        },
+        "tool": "inspect_invoice"
+      },
+      {
+        "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:1",
+        "output": {
+          "active": true,
+          "approved_currencies": [
+            "USD"
+          ],
+          "legal_name": "Northstar Office Supplies",
+          "supplier_id": "SUP-1001"
+        },
+        "tool": "lookup_supplier"
+      },
+      {
+        "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:2",
+        "output": {
+          "currency": "USD",
+          "purchase_order_id": "PO-1001",
+          "remaining_amount": "7500.00",
+          "status": "OPEN",
+          "supplier_id": "SUP-1001",
+          "total_amount": "7500.00"
+        },
+        "tool": "lookup_purchase_order"
+      },
+      {
+        "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:3",
+        "output": {
+          "invoice_id": "INV-1001",
+          "is_duplicate": false,
+          "matching_invoice_id": null
+        },
+        "tool": "check_duplicate"
+      },
+      {
+        "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:4",
+        "output": {
+          "agent_may_modify_vendor_bank_details": false,
+          "bypass_approval_decision": "REJECT",
+          "duplicate_invoice_decision": "REJECT",
+          "max_autonomous_payment_usd": "10000",
+          "payment_requires_all_validations": true,
+          "policy_version": "finance-v1",
+          "required_approver_above_limit": "finance_manager",
+          "rule_ids": [
+            "P1",
+            "P2",
+            "P3",
+            "P4",
+            "P5",
+            "P6",
+            "P7",
+            "P8",
+            "P9",
+            "P10"
+          ],
+          "transient_read_max_retries": 2,
+          "uncertain_payment_auto_retry": false,
+          "valid_purchase_order_required": true,
+          "vendor_must_exist": true
+        },
+        "tool": "retrieve_policy"
+      },
+      {
+        "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:5",
+        "output": {
+          "amount": "7500.00",
+          "currency": "USD",
+          "external_actions_performed": 0,
+          "invoice_id": "INV-1001",
+          "purchase_order_id": "PO-1001",
+          "stage_id": "STAGE-INV-1001",
+          "status": "STAGED_FOR_LOCAL_SIMULATION",
+          "supplier_id": "SUP-1001"
+        },
+        "tool": "stage_payment"
+      }
+    ],
+    "parent_run_id": null,
+    "pending_questions": [],
+    "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan",
+    "proposed_action": {
+      "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:5",
+      "actor_id": "finance_agent",
+      "actor_role": "automated_finance_operator",
+      "arguments": {
+        "amount": "7500.00",
+        "currency": "USD",
+        "invoice_id": "INV-1001",
+        "purchase_order_id": "PO-1001"
+      },
+      "assumptions": [],
+      "goal": "process_supplier_invoice",
+      "intent_id": "INT-CLI-36EC6961F56A4977",
+      "intent_version": 1,
+      "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan",
+      "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+      "tool": "stage_payment"
+    },
+    "retry_state": {
+      "attempts": 0
+    },
+    "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+    "runtime_decision": {
+      "action_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:5",
+      "decision": "APPROVE",
+      "intent_id": "INT-CLI-36EC6961F56A4977",
+      "intent_version": 1,
+      "plan_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:plan",
+      "reason_codes": [
+        "RUNTIME_ACTION_ADMISSIBLE"
+      ],
+      "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6"
+    },
+    "state": "COMPLETED",
+    "token_count": 0,
+    "tool_history": [
+      "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:0",
+      "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:1",
+      "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:2",
+      "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:3",
+      "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:4",
+      "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6:action:5"
+    ]
+  },
+  "run_id": "RUN-4183c4fd-49c2-421a-a84b-4606d65443d6",
+  "run_rows": 1,
+  "run_sha256": "a958fd2499a3f641841126ae24c0c30dd72bdaf9f2c550660db6396c2b75e343",
+  "service_paths": [
+    "/health",
+    "/v1/runs",
+    "/v1/runs/{run_id}",
+    "/v1/runs/{run_id}/events"
+  ],
+  "sqlite_integrity": "ok",
+  "state": "COMPLETED"
+}
