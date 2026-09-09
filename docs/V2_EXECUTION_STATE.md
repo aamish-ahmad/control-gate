@@ -3,10 +3,10 @@
 Updated: 2026-09-09 (Asia/Kolkata)
 
 ## Controller status
-Status: C4_AUTHORIZED_IN_PROGRESS
-Completed phase: C3 — Gate B over the existing C2 trajectory
-Verified implementation checkpoint: `6ef6f96b88650a192241b85c1148cf4a6142ac9d`
-Active phase: C4 — effective human control, explicitly authorized by the user
+Status: C4_PASS_AWAITING_CONTROLLER
+Completed phase: C4 — effective human control over the C3 trajectory
+Verified implementation checkpoint: `3853d8b49817d0eebc9b96d3b47c01b718d861f9`
+Active phase: none; C4 authority ends at the shared checkpoint
 Next phase: C5 requires separate controller authorization
 Execution branch: `v2-closure-execution`
 Frozen baseline `main` SHA: `6c48d6449080b0e036025cb305b2c590b00737a4`
@@ -256,3 +256,13 @@ If a gate fails, preserve evidence and return BLOCKED without expanding scope.
 - Frozen benchmark: PASS, 48/48 decisions/reasons/repeats, macro-F1 1.000, zero unsafe approvals/external actions. Input SHA-256 remains `4db513e6798f8975ad04aec3c457eeca0ec401d2cc1f02e2d63ce8f7d843f503`.
 - Proof: `python reports/c4/build_proof.py` → nine saved acceptance trajectories: two completed after human intervention and seven blocked/cancelled, with exact before/after parent, child, human decision and actual call observations. Six consumed-parent replay attempts add zero calls. `reports/c4/human_control_proof.json` SHA-256: `fc279503808d8946825b463bef5ca7efbb66a65afde32b4195333c6fc9241d60`.
 - Full original tests, V1 compiler/validator/Gate A, frozen benchmark, dependency manifest and prior evidence remain unchanged. No external actions, C5, service/deployment or experiment work. Independent candidate certification and shared push remain required.
+
+### C4 final independent verification and shared handoff — 2026-09-09
+
+- Independent verdict: **VERIFIED**, bound to implementation `3853d8b49817d0eebc9b96d3b47c01b718d861f9` and precommitted C4 V1–V5. Source/test blob hashes match the independently tested candidate.
+- Certificate: `reports/c4/INDEPENDENT_VERIFICATION.md`. Independent full suite: 205 passed in 10.20s; focused C4 suite: 64 passed in 4.83s; frozen benchmark: 48/48 decisions/reasons/repeats/intent links, macro-F1 1.000, zero unsafe approvals/external actions.
+- Independent proof audit confirms nine cases, two human-enabled completions and seven blocked/cancelled trajectories, six zero-call replays, linked immutable parents/versioned children, human actors, approval context, serialization and complete event/action joins. Proof hash remains `fc279503808d8946825b463bef5ca7efbb66a65afde32b4195333c6fc9241d60`.
+- All 141 prior tests, V1 gate code, frozen benchmark, dependencies and prior evidence remain unchanged. Current-state adversarial probes demonstrate explicit approval cannot bypass duplicates, inactive suppliers, closed POs or incomplete validation.
+- A remote read was temporarily rejected by automatic approval review because of a usage limit. After the user's explicit continuation, the same authorized check succeeded: remote execution branch remained at C3 and main at the frozen baseline. No alternate execution route was used.
+- Shared handoff: this documentation-only checkpoint, whose parent is the verified implementation, is pushed to `v2-closure-execution`. Its exact SHA is returned with completion and recoverable from the branch. C4 is PASS only once that push and exact remote readback succeed.
+- Stop at shared C4. C5 remains unauthorized; no main merge, recovery/memory, service/deployment or experiments are included.
