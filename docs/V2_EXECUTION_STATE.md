@@ -3,7 +3,7 @@
 Updated: 2026-09-09 (Asia/Kolkata)
 
 ## Controller status
-Status: C5_AUTHORIZED
+Status: C5_CANDIDATE_AWAITING_INDEPENDENT_VERIFICATION
 Completed phase: C4 — effective human control over the C3 trajectory
 Verified implementation checkpoint: `3853d8b49817d0eebc9b96d3b47c01b718d861f9`
 Active phase: C5 — bounded recovery and same-episode memory/context
@@ -281,3 +281,16 @@ If a gate fails, preserve evidence and return BLOCKED without expanding scope.
 - V4: Gate B evaluates every attempt afresh. Forged retry counters, missing/tampered failure or retry events, changed arguments/resources, a prior non-APPROVE runtime decision, unresolved clarification/escalation, human denial/cancellation, terminal state or exhausted cap cannot dispatch a tool. No retry becomes authority.
 - V5: focused C5 tests exercise every required failure-matrix row and positive recovery, complete suite and frozen benchmark pass, the saved proof readbacks and shows zero external actions, protected hashes remain unchanged, an independent verifier returns `VERIFIED`, and the exact C5 checkpoint is pushed/read back from `origin/v2-closure-execution`.
 - STOP: VERIFIED + PUSHED C5, or a genuine trajectory-changing BLOCKER. C6 remains unauthorized.
+
+### C5 implementation evidence — 2026-09-09
+
+- Precommitted bounded C5 contract: `e04e9954fad1b99e3110e1ac13a96ec9b38881dd`; pushed and read back from `origin/v2-closure-execution` before implementation.
+- The fixed C4 controller now gives the five idempotent read steps the existing `finance-v1` cap of two retries for exactly `TOOL_TIMEOUT` and `MALFORMED_TOOL_RESPONSE`. `stage_payment` retains zero automatic retries. Generic/unclassified exceptions, permission denial and business-rule failures remain terminal.
+- Each retry is a new linked action attempt in the same run/intent version/plan. Existing `retry_state`, evidence, tool history, observations and events retain the episode context. Gate B validates all policy-check/start/failure/retry/completion joins and re-evaluates the frozen proposal on every attempt; malformed output is never admitted as evidence.
+- Deterministic local injection supports timeout, malformed response and permission denial without an external service or side effect. Missing record, PO/invoice contradiction, duplicate invoice, exhausted retries, a staging timeout, permission denial, a changed retry resource and explicit human denial all stop without staging or implicit authority.
+- Focused C5 command: `python -m pytest -q tests/test_recovery.py --tb=short` -> **24 passed in 3.59s**. This includes worst-case successful recovery at the cap for all five reads: 16 total attempts, 10 retry events, one local staged record and zero external actions.
+- Complete candidate suite: `python -m pytest -q --tb=short` -> **229 passed in 17.24s**. No existing C0-C4 test was edited.
+- Frozen benchmark: PASS; 48/48 decision matches, reason-code matches and deterministic repeats; macro-F1 1.000; zero unsafe approvals and zero external actions. Input SHA-256 remains `4db513e6798f8975ad04aec3c457eeca0ec401d2cc1f02e2d63ce8f7d843f503`.
+- `python reports/c5/build_proof.py` -> ten bounded cases: two recovered completions and eight safe stops, with zero external actions. JSON readback passes. `reports/c5/recovery_proof.json` SHA-256: `de1a67a47fefc5918d76b16869ba409bafebf4830cfe6d5efab308d75e65f1d2`.
+- `python -m pip check` reports no broken requirements; Python compile checks pass. Protected evidence remains byte-identical: C2 trace `c03230b0fbf7e8e1b25292219c89ee09133a2cad228c160b1852d06a54718083`, C2 certificate `36581ba53d06dfaa7c437a6154406090f1b89b91dec51bb3615f038a7ddcdcbc`, C3 proof `61dd150fbfe910008a83c5ccff52a3d4807eb48b64954715bcbad180937b0b2f`, C3 certificate `4bb1ba998cc6a049c383d2285b9d967c053cf0b5df6b14030bc5df7dde03a9ed`, C4 proof `fc279503808d8946825b463bef5ca7efbb66a65afde32b4195333c6fc9241d60`, and C4 certificate `4aaba5f1136d66b2766c74db62d8f9f53e8dbf0d52914fcb416bda7ca19ce49e`.
+- No persistence/database, RetrievalOps/RAG, new dependency, service/deployment/CI, experiment, packaging, external business action, main merge or C6 work is included. Independent verification and the shared final C5 checkpoint remain pending.

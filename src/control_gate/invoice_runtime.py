@@ -1,4 +1,4 @@
-"""Stateful local invoice trajectory with Gate B and bounded human continuation."""
+"""Governed invoice trajectory with human control and bounded read recovery."""
 
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ from langgraph.graph import END, START, StateGraph
 from langsmith import tracing_context
 from control_gate.admissibility import decide
 from control_gate.contracts import (
-    Decision, EventType, ExecutionPlan, ExecutionRun, IntentSpec, PlanStep,
+    FINANCE_V1_POLICY, Decision, EventType, ExecutionPlan, ExecutionRun, IntentSpec, PlanStep,
     PolicySet, RetryRule, RunOutcome, RunState, TrajectoryEvent, HumanAction, HumanIntervention,
 )
 from control_gate.evaluation import compile_request
@@ -24,7 +24,8 @@ from control_gate.runtime_admissibility import INVOICE_TOOLS, decide_runtime
 from control_gate.human_control import approved_run, changed_intent, intent_digest, scope, scoped_approval
 from control_gate.tool_environment import (
     DuplicateCheckResult, InvoiceRecord, LocalToolError, PurchaseOrderRecord,
-    StagedPayment, SupplierInvoiceToolEnvironment, SupplierRecord, build_local_tool_environment,
+    RetryableLocalToolError, StagedPayment, SupplierInvoiceToolEnvironment, SupplierRecord,
+    build_local_tool_environment,
 )
 
 
@@ -50,6 +51,10 @@ class _PauseContext(dict):
         # A copied run shares this consumed capability but never its owner
         # identity. Do not copy the retained tool environment or its effects.
         return self
+
+
+class _MalformedToolResponse(ValueError):
+    pass
 
 
 def _now() -> datetime:
@@ -120,7 +125,7 @@ def _finish(run: ExecutionRun, *, reason: str | None = None,
             if reason is None else
             f"Parent consumed by human decision; continuation: {run.continuation_run_id}."
             if reason == "HUMAN_CONTINUATION_CREATED" else
-            f"Execution stopped: {reason}. No retry or continuation.",
+            f"Execution stopped: {reason}. No further automatic retry or continuation.",
     )
     _event(run, EventType.RUN_COMPLETED if status is RunState.COMPLETED else EventType.RUN_FAILED,
            before=before, status=status.value, metadata={
@@ -214,21 +219,44 @@ def _dispatch(run: ExecutionRun, environment: SupplierInvoiceToolEnvironment,
             arguments["approval"] = run.human_approval
         observation = getattr(environment, tool)(**arguments)
         if not isinstance(observation, _RESULT_TYPES[tool]):
-            raise ValueError("Local tool did not return its expected contract record")
+            raise _MalformedToolResponse(
+                "Local tool did not return its expected contract record")
         output = observation.model_dump(mode="json")
-    except (LocalToolError, ValueError, TypeError, TimeoutError) as error:
-        reason = error.code.value if isinstance(error, LocalToolError) else "TOOL_EXECUTION_FAILED"
+    except (LocalToolError, ValueError, TypeError, TimeoutError, PermissionError) as error:
+        reason = (error.code.value if isinstance(error, LocalToolError)
+                  else "MALFORMED_TOOL_RESPONSE" if isinstance(error, _MalformedToolResponse)
+                  else "PERMISSION_DENIED" if isinstance(error, PermissionError)
+                  else "TOOL_EXECUTION_FAILED")
         observed = {"action_id": action_id, "tool": tool,
                     "error_type": type(error).__name__, "reason_codes": [reason]}
         run.observations = (*run.model_dump(mode="json", include={"observations"})["observations"], observed)
         _event(run, EventType.TOOL_CALL_FAILED, tool=tool, status="failed",
-               latency_ms=max(0, int((perf_counter() - started) * 1000)), metadata=observed)
+                latency_ms=max(0, int((perf_counter() - started) * 1000)), metadata=observed)
+        step = next(step for step in run.execution_plan.steps if step.step_id == tool)
+        rule = step.retry_rule
+        retry = run.retry_state
+        attempts = (retry.get("attempts", 0) if retry.get("tool") == tool else 0)
+        explicitly_retryable = (isinstance(error, RetryableLocalToolError)
+                                or isinstance(error, _MalformedToolResponse))
+        if (explicitly_retryable and rule is not None
+                and reason in rule.retryable_conditions and attempts < rule.max_retries):
+            attempts += 1
+            next_action_id = f"{run.run_id}:action:{len(run.tool_history)}"
+            run.retry_state = {"attempts": attempts, "tool": tool,
+                "last_error": reason, "failed_action_id": action_id,
+                "max_retries": rule.max_retries}
+            _event(run, EventType.RETRY_SCHEDULED, tool=tool, status="scheduled",
+                   retry_count=attempts, metadata={"failed_action_id": action_id,
+                       "next_action_id": next_action_id, "reason_codes": [reason],
+                       "max_retries": rule.max_retries})
+            return
         _finish(run, reason=reason)
         return
     prior = run.model_dump(mode="json", include={"evidence", "observations"})
     run.evidence = {**prior["evidence"], tool: output}
     run.observations = (*prior["observations"],
                         {"action_id": action_id, "tool": tool, "output": output})
+    run.retry_state = {"attempts": 0}
     _event(run, EventType.TOOL_CALL_COMPLETED, tool=tool,
            tool_output_digest=_digest(output),
            latency_ms=max(0, int((perf_counter() - started) * 1000)),
@@ -280,7 +308,12 @@ def _execute(intent: IntentSpec, local: SupplierInvoiceToolEnvironment, *,
         plan_id=plan_id, intent_id=intent.intent_id, intent_version=intent.version,
         steps=tuple(PlanStep(
             step_id=tool, dependencies=(_TOOLS[index - 1],) if index else (),
-            tool_requirements=(tool,), retry_rule=RetryRule(max_retries=0),
+            tool_requirements=(tool,), retry_rule=RetryRule(
+                max_retries=(0 if tool == "stage_payment"
+                             else FINANCE_V1_POLICY.transient_read_max_retries),
+                retryable_conditions=(() if tool == "stage_payment" else
+                    ("TOOL_TIMEOUT", "MALFORMED_TOOL_RESPONSE")),
+            ),
         ) for index, tool in enumerate(_TOOLS)),
         terminal_success_state=RunState.COMPLETED,
         terminal_failure_states=(RunState.FAILED, RunState.REJECTED),
@@ -325,9 +358,10 @@ def _execute(intent: IntentSpec, local: SupplierInvoiceToolEnvironment, *,
     graph.add_conditional_edges("advance", lambda state:
         "advance" if state["run"].state is RunState.RUNNING else END,
         {"advance": "advance", END: END})
-    # No persistence, interrupt, retries, model calls, or external tracing.
+    # Same-episode state only: no persistence, model calls, or external tracing.
     with tracing_context(enabled=False):
-        result = graph.compile().invoke({"run": run}, {"recursion_limit": len(_TOOLS) + 3})
+        limit = sum(1 + step.retry_rule.max_retries for step in plan.steps) + 3
+        result = graph.compile().invoke({"run": run}, {"recursion_limit": limit})
     run = result["run"]
     _pause(run, local, used_ids)
     return run

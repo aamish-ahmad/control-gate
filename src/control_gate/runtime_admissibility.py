@@ -54,38 +54,129 @@ def _amount(value: object) -> Decimal | None:
 
 
 def _evidence_problem(run: ExecutionRun, required: tuple[str, ...]) -> str | None:
-    """Accept only typed observations joined to this run's actual approved calls."""
+    """Validate successful evidence plus every earlier failed/retried attempt."""
     if not set(required) <= set(run.evidence):
         return "RUNTIME_EVIDENCE_MISSING"
-    if set(run.evidence) != set(required) or len(run.tool_history) != len(required):
+    if set(run.evidence) != set(required):
         return "RUNTIME_ACTION_REPLAY"
+    history = list(run.tool_history)
+    if (len(history) != len(set(history)) or any(
+            action_id != f"{run.run_id}:action:{index}"
+            for index, action_id in enumerate(history))):
+        return "RUNTIME_ACTION_REPLAY"
+    history_set = set(history)
+    for event in run.events:
+        if event.event_type not in {
+                EventType.RUNTIME_POLICY_CHECK, EventType.TOOL_CALL_STARTED,
+                EventType.TOOL_CALL_COMPLETED, EventType.TOOL_CALL_FAILED}:
+            continue
+        action_id = event.metadata.get("action_id")
+        if action_id not in history_set:
+            return ("RUNTIME_PRIOR_TOOL_FAILURE" if event.event_type is EventType.TOOL_CALL_FAILED
+                    else "RUNTIME_EVIDENCE_INVALID")
     evidence = run.model_dump(mode="json", include={"evidence"})["evidence"]
-    for index, tool in enumerate(required):
-        action_id = run.tool_history[index]
+    completed_tools: list[str] = []
+    consecutive_failures = 0
+    for index, action_id in enumerate(history):
         checks = [e for e in run.events if e.event_type is EventType.RUNTIME_POLICY_CHECK
                   and e.metadata.get("action_id") == action_id]
         starts = [e for e in run.events if e.event_type is EventType.TOOL_CALL_STARTED
                   and e.metadata.get("action_id") == action_id]
-        ends = [e for e in run.events if e.event_type is EventType.TOOL_CALL_COMPLETED
+        completed = [e for e in run.events if e.event_type is EventType.TOOL_CALL_COMPLETED
                 and e.metadata.get("action_id") == action_id]
+        failed = [e for e in run.events if e.event_type is EventType.TOOL_CALL_FAILED
+                  and e.metadata.get("action_id") == action_id]
         observations = [o for o in run.observations if o.get("action_id") == action_id]
-        if not (len(checks) == len(starts) == len(ends) == len(observations) == 1):
+        if not (len(checks) == len(starts) == len(observations) == 1
+                and len(completed) + len(failed) == 1):
             return "RUNTIME_EVIDENCE_INVALID"
-        check, start, end, observation = checks[0], starts[0], ends[0], observations[0]
+        check, start, observation = checks[0], starts[0], observations[0]
+        end = (completed or failed)[0]
+        if len(completed_tools) >= len(INVOICE_TOOLS):
+            return "RUNTIME_ACTION_REPLAY"
+        tool = INVOICE_TOOLS[len(completed_tools)]
         if (check.decision != Decision.APPROVE.value
                 or not check.sequence_number < start.sequence_number < end.sequence_number
                 or any(e.tool != tool for e in (check, start, end))
                 or observation.get("tool") != tool
-                or observation.get("output") != run.evidence[tool]
-                or end.metadata.get("observation") != run.evidence[tool]
                 or check.metadata.get("proposal") != start.metadata.get("proposal")
                 or check.metadata.get("runtime_decision") != start.metadata.get("runtime_decision")):
             return "RUNTIME_EVIDENCE_INVALID"
-        try:
-            _EVIDENCE_MODELS[tool].model_validate(evidence[tool])
-        except (ValidationError, TypeError):
-            return "RUNTIME_EVIDENCE_INVALID"
+        schedules = [e for e in run.events if e.event_type is EventType.RETRY_SCHEDULED
+                     and e.metadata.get("failed_action_id") == action_id]
+        if completed:
+            if (schedules or tool not in evidence
+                    or observation.get("output") != run.evidence[tool]
+                    or end.metadata.get("observation") != run.evidence[tool]):
+                return "RUNTIME_EVIDENCE_INVALID"
+            try:
+                _EVIDENCE_MODELS[tool].model_validate(evidence[tool])
+            except (ValidationError, TypeError):
+                return "RUNTIME_EVIDENCE_INVALID"
+            completed_tools.append(tool)
+            consecutive_failures = 0
+            continue
+        consecutive_failures += 1
+        step = run.execution_plan.steps[len(completed_tools)]
+        rule = step.retry_rule
+        reasons = observation.get("reason_codes")
+        if (len(schedules) != 1 or rule is None or not isinstance(reasons, (tuple, list))
+                or len(reasons) != 1 or reasons[0] not in rule.retryable_conditions
+                or end.metadata != observation or consecutive_failures > rule.max_retries):
+            return "RUNTIME_PRIOR_TOOL_FAILURE"
+        schedule = schedules[0]
+        if (not end.sequence_number < schedule.sequence_number
+                or schedule.tool != tool or schedule.retry_count != consecutive_failures
+                or tuple(schedule.metadata.get("reason_codes", ())) != tuple(reasons)
+                or schedule.metadata.get("max_retries") != rule.max_retries
+                or schedule.metadata.get("next_action_id") !=
+                    f"{run.run_id}:action:{index + 1}"):
+            return "RUNTIME_PRIOR_TOOL_FAILURE"
+    if tuple(completed_tools) != required:
+        return "RUNTIME_EVIDENCE_INVALID"
     return None
+
+
+def _retry_problem(run: ExecutionRun, tool: str) -> str | None:
+    """Accept only the live retry state derived from the last recorded failure."""
+    state = run.model_dump(mode="json", include={"retry_state"})["retry_state"]
+    if state == {"attempts": 0}:
+        if run.tool_history:
+            last = run.tool_history[-1]
+            if any(e.event_type is EventType.TOOL_CALL_FAILED
+                   and e.metadata.get("action_id") == last for e in run.events):
+                return "RUNTIME_PRIOR_TOOL_FAILURE"
+        return None
+    if set(state) != {"attempts", "tool", "last_error", "failed_action_id", "max_retries"}:
+        return "RUNTIME_RETRY_NOT_AUTHORIZED"
+    attempts = state["attempts"]
+    step = next((step for step in run.execution_plan.steps if step.step_id == tool), None)
+    rule = step.retry_rule if step else None
+    if (isinstance(attempts, bool) or not isinstance(attempts, int) or attempts < 1
+            or state["tool"] != tool or rule is None
+            or state["last_error"] not in rule.retryable_conditions
+            or state["max_retries"] != rule.max_retries or attempts > rule.max_retries
+            or not run.tool_history or state["failed_action_id"] != run.tool_history[-1]):
+        return "RUNTIME_RETRY_NOT_AUTHORIZED"
+    action_id = run.tool_history[-1]
+    failures = [e for e in run.events if e.event_type is EventType.TOOL_CALL_FAILED
+                and e.metadata.get("action_id") == action_id]
+    schedules = [e for e in run.events if e.event_type is EventType.RETRY_SCHEDULED
+                 and e.metadata.get("failed_action_id") == action_id]
+    if (len(failures) != 1 or len(schedules) != 1 or run.events[-1] != schedules[0]
+            or schedules[0].retry_count != attempts
+            or tuple(schedules[0].metadata.get("reason_codes", ())) != (state["last_error"],)
+            or schedules[0].metadata.get("next_action_id") !=
+                f"{run.run_id}:action:{len(run.tool_history)}"):
+        return "RUNTIME_RETRY_NOT_AUTHORIZED"
+    consecutive = 0
+    for prior_id in reversed(run.tool_history):
+        if any(e.event_type is EventType.TOOL_CALL_FAILED and e.tool == tool
+               and e.metadata.get("action_id") == prior_id for e in run.events):
+            consecutive += 1
+        else:
+            break
+    return None if consecutive == attempts else "RUNTIME_RETRY_NOT_AUTHORIZED"
 
 
 def decide_runtime(run: ExecutionRun, proposal: Mapping[str, object]) -> RuntimeDecision:
@@ -151,10 +242,6 @@ def decide_runtime(run: ExecutionRun, proposal: Mapping[str, object]) -> Runtime
             or any(e.event_type is EventType.RUNTIME_POLICY_CHECK and e.decision != "APPROVE"
                    for e in run.events)):
         return result("RUNTIME_PRIOR_CONTROL_STOP")
-    if any(e.event_type is EventType.TOOL_CALL_FAILED for e in run.events):
-        return result("RUNTIME_PRIOR_TOOL_FAILURE")
-    if run.retry_state != {"attempts": 0}:
-        return result("RUNTIME_RETRY_NOT_AUTHORIZED")
     if run.pending_questions:
         return result("RUNTIME_CLARIFICATION_PENDING", Decision.CLARIFY)
     # A status string alone never conveys authority. C4's immutable scoped
@@ -168,10 +255,16 @@ def decide_runtime(run: ExecutionRun, proposal: Mapping[str, object]) -> Runtime
             or any(s.tool_requirements != (s.step_id,)
                    or s.dependencies != ((INVOICE_TOOLS[i - 1],) if i else ())
                    or s.policy_checkpoints or s.approval_checkpoints
-                   or s.retry_rule is None or s.retry_rule.max_retries != 0
-                   or s.retry_rule.retryable_conditions
+                   or s.retry_rule is None
+                   or s.retry_rule.max_retries != (0 if s.step_id == "stage_payment"
+                       else FINANCE_V1_POLICY.transient_read_max_retries)
+                   or s.retry_rule.retryable_conditions != (() if s.step_id == "stage_payment"
+                       else ("TOOL_TIMEOUT", "MALFORMED_TOOL_RESPONSE"))
                    for i, s in enumerate(plan.steps))):
         return result("RUNTIME_PLAN_MISMATCH")
+    retry_problem = _retry_problem(run, tool)
+    if retry_problem:
+        return result(retry_problem)
     required = INVOICE_TOOLS[:INVOICE_TOOLS.index(tool)]
     problem = _evidence_problem(run, required)
     if problem:

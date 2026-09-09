@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from decimal import Decimal, InvalidOperation
 from enum import Enum
+from collections.abc import Mapping
 from typing import Literal, TypeVar
 
 from pydantic import Field, model_validator
@@ -42,6 +43,9 @@ class LocalToolErrorCode(str, Enum):
     CURRENCY_MISMATCH = "CURRENCY_MISMATCH"
     DUPLICATE_INVOICE = "DUPLICATE_INVOICE"
     APPROVAL_REQUIRED = "APPROVAL_REQUIRED"
+    TOOL_TIMEOUT = "TOOL_TIMEOUT"
+    MALFORMED_TOOL_RESPONSE = "MALFORMED_TOOL_RESPONSE"
+    PERMISSION_DENIED = "PERMISSION_DENIED"
 
 
 class LocalToolError(RuntimeError):
@@ -51,6 +55,18 @@ class LocalToolError(RuntimeError):
         super().__init__(message)
         self.tool = tool
         self.code = code
+
+
+class RetryableLocalToolError(LocalToolError):
+    """Explicitly classified replay-safe failure; generic exceptions stay terminal."""
+
+
+class InjectedFailureMode(str, Enum):
+    """Deterministic C5 failure modes for the bounded local environment."""
+
+    TOOL_TIMEOUT = "TOOL_TIMEOUT"
+    MALFORMED_TOOL_RESPONSE = "MALFORMED_TOOL_RESPONSE"
+    PERMISSION_DENIED = "PERMISSION_DENIED"
 
 
 class SupplierRecord(FrozenModel):
@@ -420,6 +436,62 @@ class SupplierInvoiceToolEnvironment:
         )
         if unknown_duplicate_matches:
             raise ValueError("duplicate index references an unknown matching invoice")
+
+
+class FailureInjectingToolEnvironment:
+    """Wrap local tools with a finite deterministic failure script.
+
+    The wrapper adds no external behavior and never changes the wrapped records.
+    Each configured entry is consumed once, in order, before the real tool call.
+    """
+
+    _TOOLS = frozenset({
+        "inspect_invoice", "lookup_supplier", "lookup_purchase_order",
+        "check_duplicate", "retrieve_policy", "stage_payment",
+    })
+
+    def __init__(self, environment: SupplierInvoiceToolEnvironment, *,
+                 failures: Mapping[str, tuple[InjectedFailureMode | str, ...]]) -> None:
+        unknown = set(failures) - self._TOOLS
+        if unknown:
+            raise ValueError(f"Unknown failure-injection tools: {sorted(unknown)}")
+        self._environment = environment
+        self._failures = {
+            tool: [InjectedFailureMode(mode) for mode in modes]
+            for tool, modes in failures.items()
+        }
+
+    @property
+    def staged_payments(self) -> tuple[StagedPayment, ...]:
+        return self._environment.staged_payments
+
+    @property
+    def approval_requests(self) -> tuple[HumanApprovalRequest, ...]:
+        return self._environment.approval_requests
+
+    def __getattr__(self, tool: str):
+        target = getattr(self._environment, tool)
+        if tool not in self._TOOLS:
+            return target
+
+        def invoke(**arguments: object) -> object:
+            script = self._failures.get(tool, [])
+            if not script:
+                return target(**arguments)
+            mode = script.pop(0)
+            if mode is InjectedFailureMode.TOOL_TIMEOUT:
+                raise RetryableLocalToolError(
+                    tool, LocalToolErrorCode.TOOL_TIMEOUT,
+                    f"injected timeout before {tool}",
+                )
+            if mode is InjectedFailureMode.PERMISSION_DENIED:
+                raise LocalToolError(
+                    tool, LocalToolErrorCode.PERMISSION_DENIED,
+                    f"injected permission denial before {tool}",
+                )
+            return {"malformed": True}
+
+        return invoke
 
 
 def build_local_tool_environment() -> SupplierInvoiceToolEnvironment:
