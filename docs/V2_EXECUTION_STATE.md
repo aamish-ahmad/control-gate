@@ -3,11 +3,11 @@
 Updated: 2026-09-09 (Asia/Kolkata)
 
 ## Controller status
-Status: C5_PASS_AWAITING_CONTROLLER
+Status: C6_AUTHORIZED_IN_PROGRESS
 Completed phase: C5 — bounded recovery and same-episode memory/context
 Verified implementation checkpoint: `51e7b6ef30d85380204ea224592f076e5cd57ab0`
-Active phase: none; C5 authority ends at the shared checkpoint
-Next phase: C6 requires separate controller authorization
+Active phase: C6 — structured trajectory persistence and engineering-proof service boundary
+Next phase: none; C7 is not authorized
 Execution branch: `v2-closure-execution`
 Frozen baseline `main` SHA: `6c48d6449080b0e036025cb305b2c590b00737a4`
 
@@ -305,3 +305,18 @@ If a gate fails, preserve evidence and return BLOCKED without expanding scope.
 - Frozen benchmark input and all C2-C4 evidence hashes remain byte-identical to the C5 entry record. No existing test, prior evidence, dependency, README, service/deployment/CI surface, experiment or packaging file changed.
 - Shared handoff: this documentation/certificate checkpoint has verified implementation `51e7b6ef30d85380204ea224592f076e5cd57ab0` as its parent and is pushed to `v2-closure-execution`; its exact SHA is recoverable from the branch and returned at completion.
 - Stop at shared C5. C6 remains unauthorized; no main merge, persistence/service, experiment, packaging or deployment work is included.
+
+## C6 phase contract — committed before implementation
+
+- Entry: the clean local and fetched remote `v2-closure-execution` branch both resolve to the independently verified C5 shared checkpoint `0f132f6c670ec2113691c1c1170f470b2601e613`; frozen `origin/main` remains `6c48d6449080b0e036025cb305b2c590b00737a4`. The live Notion Build Order marks C6 authorized over the verified C5 trajectory, and the user's explicit C6 instruction supersedes older stale Notion transition text. Entry verification is 229 passed in 11.62s; the frozen benchmark remains 48/48 decisions, reasons and deterministic repeats, macro-F1 1.000, zero unsafe approvals and zero external actions.
+- SOURCE_SCOPE: the existing `ExecutionRun` and `TrajectoryEvent` serialization boundary without semantic modification; additive persistence and FastAPI modules under `src/control_gate/`; service/development dependencies in `pyproject.toml`; additive focused C6 tests; `Dockerfile`, `.dockerignore`, `.github/workflows/ci.yml`; this ledger and `reports/c6/`. Existing V1-C5 source, tests, benchmark inputs, outputs and evidence are protected and remain unedited.
+- D: every execution performed through the C6 service is stored transactionally as the complete validated `ExecutionRun` plus ordered, individually inspectable structured `TrajectoryEvent` records; a FastAPI boundary can create and retrieve deterministic local runs; the same persisted run is readable after process/store re-creation; Docker and CI reproduce the service and regression gates without changing V1-C5 execution semantics.
+- ALLOWED: reuse the existing structured runtime events and Pydantic serialization; add a standard-library SQLite run store with exact-idempotent writes and conflict/corruption rejection; add a thin FastAPI create/get/events/health boundary over `execute_invoice`; add only FastAPI/Uvicorn and HTTP test dependencies; add focused persistence/service/adversarial tests, a compact deterministic C6 proof, Docker build metadata and CI that runs the full suite, frozen benchmark and container build; independently verify, update this ledger, commit and push C6.
+- FORBIDDEN: changes to compiler, validator, Gate A, Gate B, controller, human-control, retry/recovery, local-tool or event-generation semantics; edits to existing C0-C5 tests, frozen benchmark inputs, prior outputs/evidence/certificates or README; database-backed resume authority, reconstructed live pause handles, authentication, real external/financial effects, MCP, deployment/publication, experiment episodes/metrics/charts, packaging/closure work, dashboards, multi-agent product work, new domain/framework, main merge, or C7.
+- OUTPUT: additive persistence/service implementation, focused `tests/test_persistence.py` and `tests/test_service.py`, deterministic `reports/c6/engineering_proof.json` with its builder, Docker/CI surfaces, independent `reports/c6/INDEPENDENT_VERIFICATION.md`, and this updated ledger on the pushed execution branch.
+- V1: all 229 entry tests and the frozen 48-case benchmark pass without edits; `benchmarks/requests.jsonl` remains SHA-256 `4db513e6798f8975ad04aec3c457eeca0ec401d2cc1f02e2d63ce8f7d843f503`; C2-C5 evidence files remain byte-identical to their recorded entry hashes.
+- V2: an HTTP-created run uses the unchanged C5 `execute_invoice` path, performs zero external actions, persists its full validated JSON and every event as a contiguous ordered record, and round-trips identically through a newly constructed store. Health and OpenAPI surfaces are available; unknown runs return 404 and malformed requests cannot create a run.
+- V3: persistence is transactional and exact-idempotent. A reused run ID with changed content, non-contiguous/mismatched events, invalid serialized contracts, or database payload/event divergence is rejected rather than silently overwritten or reported as valid evidence.
+- V4: the service exposes no resume/authorization bypass and no external business operation. SQLite state is configurable outside the image, the container runs the FastAPI application as a non-root user with a persistent `/data` boundary, and CI executes tests, the frozen benchmark and Docker build.
+- V5: focused C6 tests, complete suite, frozen benchmark, deterministic proof readback, protected-hash checks, Python compile/import checks, Docker build when locally available, and independent verifier review all pass; the exact C6 shared checkpoint is pushed and read back from `origin/v2-closure-execution`.
+- STOP: VERIFIED + PUSHED C6, or a genuine trajectory-changing BLOCKER. C7 is not authorized.
