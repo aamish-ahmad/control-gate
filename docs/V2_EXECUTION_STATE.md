@@ -3,11 +3,11 @@
 Updated: 2026-09-10 (Asia/Kolkata)
 
 ## Controller status
-Status: C7_AUTHORIZED_IN_PROGRESS
-Completed phase: C6 — structured trajectory persistence and engineering-proof service boundary
-Verified implementation checkpoint: `8e16b498656a24d18e8fc055a35d42a211b8d480`
-Active phase: C7 — frozen same-agent governed-versus-ungoverned experiment
-Next phase: none; C8 is not authorized
+Status: C7_PASS_AWAITING_CONTROLLER
+Completed phase: C7 — frozen same-agent governed-versus-ungoverned experiment
+Verified implementation checkpoint: `9d81162abce9561c75f2e1e987e4db317520d4de`
+Active phase: none
+Next phase: none; C8 requires separate controller authorization
 Execution branch: `v2-closure-execution`
 Frozen baseline `main` SHA: `6c48d6449080b0e036025cb305b2c590b00737a4`
 
@@ -358,3 +358,20 @@ If a gate fails, preserve evidence and return BLOCKED without expanding scope.
 - V4: every saved metric and comparison is independently recomputable from the raw episode rows and frozen task oracles; the report includes all failures and denominators, the chart data equals the saved comparison, latency order is balanced, recorded token/cost limitations are explicit, and no result-dependent task, oracle, exclusion, metric or system change occurs. Strong, weak, adverse or null results are all PASS-eligible if measured faithfully.
 - V5: focused C7 tests, complete suite, frozen benchmark, canonical command rerun, raw/result schema and checksum checks, protected-hash checks, figure dimensions/content inspection and independent statistical/trajectory review pass; an independent verifier returns VERIFIED; the exact C7 checkpoint is pushed/read back from `origin/v2-closure-execution`.
 - STOP: VERIFIED + PUSHED C7, or a genuine trajectory-changing BLOCKER. C8 is not authorized.
+
+## C7 execution evidence
+
+Observed on 2026-09-10 from `v2-closure-execution`:
+
+- The C7 contract was committed before implementation at `8ae1b5d5175ef4e34734b83537770af94628bcf0`. The final independently verified implementation candidate is `9d81162abce9561c75f2e1e987e4db317520d4de`, pushed and read back exactly from `origin/v2-closure-execution`.
+- The frozen task set contains exactly 50 tasks with the precommitted family distribution, and `outputs/c7/episodes.jsonl` contains exactly 100 rows: one GATED and one UNGATED episode per task, 25 pairs in each arm order, identical paired component digests, no hidden exclusions, and zero external actions.
+- Frozen C7 SHA-256 values are: `benchmarks/agent_tasks.jsonl` = `c69c891dce03f111684f5237fbd94a6e3352e7685da1c1a82737b1062f6e5276`; `outputs/c7/episodes.jsonl` = `771e7ad35648436bf20e62082283f983d5d2d1300b5e74743882c536974940f3`; `outputs/c7/summary.json` = `f353bd2a7d9006587e705aaeacf130a1ce9d320c660149caeb4ae3e69d416a7c`; `reports/c7/comparison.csv` = `88edd4fad867bcf55785f50b8bcc4113ba1c37b168357bd940fa1ed48d87ffa6`; and `reports/c7/RESULTS.md` = `3d97b901ebd3155d70f801ee07a6e0d3fda7ab5006f3a31fec0c5db8e6c38f36`.
+- Primary comparison: task success was 50/50 GATED versus 23/50 UNGATED (paired difference +54 percentage points, exact two-sided p = `1.4901161193847656e-08`); unsafe action was 0/50 versus 23/50 (-46 points, p = `2.384185791015625e-07`); runtime contract violation was 0/50 versus 22/50 (-44 points, p = `4.76837158203125e-07`). Clarification utility and escalation utility were each 8/8 GATED versus 0/8 UNGATED; recovery success was 5/5 in both arms; unnecessary block was 0/15 in both arms.
+- Operational comparison: mean tool-call attempts were 4.12 GATED versus 4.64 UNGATED. Frozen local mean latency was `188.0072 ms` GATED versus `241.945576 ms` UNGATED, a paired mean GATED-minus-UNGATED difference of `-53.938376 ms` (`-22.2936%`); this noisy single-machine measurement is descriptive only. Recorded token and cost counters were zero in both deterministic no-model arms and do not estimate model-mediated overhead.
+- The chart is generated only from the frozen comparison CSV with Matplotlib and has normal fonts, direct labels, no clipping, colorblind-safe arm colors, and publication-size PNG plus SVG/PDF. Chart SHA-256 values are PNG `0299a05c904715919328774e2282e23d0aa04c49aa36842074e8b637917ee9d8`, SVG `396b9ba8dc641b547625b17dbf1873b19e7e23ef43ab9f6558337437b6126331`, and PDF `abe45c48b2bc9383ce130d93a735f077e4f84d8513724b8b42906c6b6be1a61b`. Two chart-only regenerations were byte-identical and did not change tasks, episodes, metrics, comparison, or report conclusions.
+- Focused C7 verification passed 14 tests; the complete Windows suite passed 254 tests with one pre-existing Starlette deprecation warning; Python compile and `pip check` passed; and the frozen benchmark remained 48/48 decision matches, 48/48 reason-code matches, 48/48 deterministic repeats, macro-F1 1.000, zero unsafe approvals, and zero external actions. All protected benchmark and C2-C6 evidence hashes remain byte-identical to the C7 entry record.
+- Linux non-editable-wheel reproduction initially exposed the same project-root error seen in CI. The bounded repair resolves only the C7 evidence root from the checkout, after which an independent Ubuntu non-editable install passed all 254 tests. Earlier GitHub Actions runs `34493396397` and `34495832216` failed only during this bounded chart-test/install-path hardening; final GitHub Actions run `34499135146` succeeded for dependency installation, the full suite, frozen benchmark, and Docker build at candidate `9d81162abce9561c75f2e1e987e4db317520d4de`.
+- Independent verdict: **VERIFIED**. Certificate `reports/c7/INDEPENDENT_VERIFICATION.md` is bound to the precommitted contract and final candidate; SHA-256 `07bdaa1658d8e389ee145ade842a08298eb28b53e2e52c732f79dbec2b40387c`.
+- No experiment evidence was rerun or remeasured during the chart-only and CI hardening steps. No V1-C6 semantics, frozen benchmark input, prior evidence, real external business action, C8 packaging/closure surface, deployment/publication, main merge, or C8 work is included.
+
+C7 is PASS. Stop at the shared C7 checkpoint; C8 remains unauthorized unless the controller separately advances the ledger.
