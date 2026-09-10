@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="1008pt" height="612pt" viewBox="0 0 1008 612" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2000-01-01T00:00:00+00:00</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Control Gate C7</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 612
+L 1008 612
+L 1008 0
+L 0 0
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 72.40464 219.71138
+L 346.67136 219.71138
+Q 365.01696 219.71138 365.01696 217.667023
+L 365.01696 131.39517
+Q 365.01696 129.350813 346.67136 129.350813
+L 72.40464 129.350813
+Q 54.05904 129.350813 54.05904 131.39517
+L 54.05904 217.667023
+Q 54.05904 219.71138 72.40464 219.71138
+z
+" clip-path="url(#p03fabc9c00)" style="fill: #f5f8fa; stroke: #d9e1e8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_3">
+    <path d="M 379.69344 219.71138
+L 653.96016 219.71138
+Q 672.30576 219.71138 672.30576 217.667023
+L 672.30576 131.39517
+Q 672.30576 129.350813 653.96016 129.350813
+L 379.69344 129.350813
+Q 361.34784 129.350813 361.34784 131.39517
+L 361.34784 217.667023
+Q 361.34784 219.71138 379.69344 219.71138
+z
+" clip-path="url(#p03fabc9c00)" style="fill: #f5f8fa; stroke: #d9e1e8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 686.98224 219.71138
+L 961.24896 219.71138
+Q 979.59456 219.71138 979.59456 217.667023
+L 979.59456 131.39517
+Q 979.59456 129.350813 961.24896 129.350813
+L 686.98224 129.350813
+Q 668.63664 129.350813 668.63664 131.39517
+L 668.63664 217.667023
+Q 668.63664 219.71138 686.98224 219.71138
+z
+" clip-path="url(#p03fabc9c00)" style="fill: #f5f8fa; stroke: #d9e1e8; stroke-linejoin: miter"/>
+   </g>
+   <g id="text_1">
+    <text style="font-weight: 700; font-size: 12px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #152536" x="83.412" y="154.006049" transform="rotate(-0 83.412 154.006049)">Task success</text>
+   </g>
+   <g id="text_2">
+    <text style="font-weight: 700; font-size: 21px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0072b2" x="83.412" y="181.008353" transform="rotate(-0 83.412 181.008353)">GATED  100%</text>
+   </g>
+   <g id="text_3">
+    <text style="font-weight: 700; font-size: 13px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #e69f00" x="83.412" y="202.44033" transform="rotate(-0 83.412 202.44033)">UNGATED  46%</text>
+   </g>
+   <g id="text_4">
+    <text style="font-size: 8.5px; font-family: 'DejaVu Sans'; text-anchor: end; fill: #536577" x="335.664" y="209.287525" transform="rotate(-0 335.664 209.287525)">Higher is better</text>
+   </g>
+   <g id="text_5">
+    <text style="font-weight: 700; font-size: 12px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #152536" x="390.7008" y="154.006049" transform="rotate(-0 390.7008 154.006049)">Unsafe actions</text>
+   </g>
+   <g id="text_6">
+    <text style="font-weight: 700; font-size: 21px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0072b2" x="390.7008" y="181.008353" transform="rotate(-0 390.7008 181.008353)">GATED  0%</text>
+   </g>
+   <g id="text_7">
+    <text style="font-weight: 700; font-size: 13px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #e69f00" x="390.7008" y="202.44033" transform="rotate(-0 390.7008 202.44033)">UNGATED  46%</text>
+   </g>
+   <g id="text_8">
+    <text style="font-size: 8.5px; font-family: 'DejaVu Sans'; text-anchor: end; fill: #536577" x="642.9528" y="209.287525" transform="rotate(-0 642.9528 209.287525)">Lower is better</text>
+   </g>
+   <g id="text_9">
+    <text style="font-weight: 700; font-size: 12px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #152536" x="697.9896" y="154.006049" transform="rotate(-0 697.9896 154.006049)">Contract violations</text>
+   </g>
+   <g id="text_10">
+    <text style="font-weight: 700; font-size: 21px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0072b2" x="697.9896" y="181.008353" transform="rotate(-0 697.9896 181.008353)">GATED  0%</text>
+   </g>
+   <g id="text_11">
+    <text style="font-weight: 700; font-size: 13px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #e69f00" x="697.9896" y="202.44033" transform="rotate(-0 697.9896 202.44033)">UNGATED  44%</text>
+   </g>
+   <g id="text_12">
+    <text style="font-size: 8.5px; font-family: 'DejaVu Sans'; text-anchor: end; fill: #536577" x="950.2416" y="209.287525" transform="rotate(-0 950.2416 209.287525)">Lower is better</text>
+   </g>
+  </g>
+  <g id="axes_2">
+   <g id="patch_5">
+    <path d="M 60.48 509.675799
+L 561.477021 509.675799
+L 561.477021 266.299999
+L 60.48 266.299999
+z
+" style="fill: #ffffff"/>
+   </g>
+   <g id="matplotlib.axis_1">
+    <g id="xtick_1">
+     <g id="line2d_1">
+      <defs>
+       <path id="m6ea4db438d" d="M 0 0
+L 0 3.5
+" style="stroke: #000000; stroke-width: 0.8"/>
+      </defs>
+      <g>
+       <use xlink:href="#m6ea4db438d" x="137.141931" y="509.675799" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_13">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: middle" x="137.141931" y="524.274237" transform="rotate(-0 137.141931 524.274237)">Task success</text>
+     </g>
+    </g>
+    <g id="xtick_2">
+     <g id="line2d_2">
+      <g>
+       <use xlink:href="#m6ea4db438d" x="310.97851" y="509.675799" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_14">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: middle" x="310.97851" y="524.274237" transform="rotate(-0 310.97851 524.274237)">Unsafe actions</text>
+     </g>
+    </g>
+    <g id="xtick_3">
+     <g id="line2d_3">
+      <g>
+       <use xlink:href="#m6ea4db438d" x="484.815089" y="509.675799" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_15">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans'" transform="translate(463.306496 525.274432)">Contract</text>
+      <text style="font-size: 10px; font-family: 'DejaVu Sans'" transform="translate(460.772121 537.277167)">violations</text>
+     </g>
+    </g>
+   </g>
+   <g id="matplotlib.axis_2">
+    <g id="ytick_1">
+     <g id="line2d_4">
+      <path d="M 60.48 509.675799
+L 561.477021 509.675799
+" clip-path="url(#p55d146f851)" style="fill: none; stroke: #d9e1e8; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_5"/>
+     <g id="text_16">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: end" x="56.98" y="513.474628" transform="rotate(-0 56.98 513.474628)">0</text>
+     </g>
+    </g>
+    <g id="ytick_2">
+     <g id="line2d_6">
+      <path d="M 60.48 455.350844
+L 561.477021 455.350844
+" clip-path="url(#p55d146f851)" style="fill: none; stroke: #d9e1e8; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_7"/>
+     <g id="text_17">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: end" x="56.98" y="459.149672" transform="rotate(-0 56.98 459.149672)">25</text>
+     </g>
+    </g>
+    <g id="ytick_3">
+     <g id="line2d_8">
+      <path d="M 60.48 401.025888
+L 561.477021 401.025888
+" clip-path="url(#p55d146f851)" style="fill: none; stroke: #d9e1e8; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_9"/>
+     <g id="text_18">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: end" x="56.98" y="404.824716" transform="rotate(-0 56.98 404.824716)">50</text>
+     </g>
+    </g>
+    <g id="ytick_4">
+     <g id="line2d_10">
+      <path d="M 60.48 346.700933
+L 561.477021 346.700933
+" clip-path="url(#p55d146f851)" style="fill: none; stroke: #d9e1e8; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_11"/>
+     <g id="text_19">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: end" x="56.98" y="350.499761" transform="rotate(-0 56.98 350.499761)">75</text>
+     </g>
+    </g>
+    <g id="ytick_5">
+     <g id="line2d_12">
+      <path d="M 60.48 292.375977
+L 561.477021 292.375977
+" clip-path="url(#p55d146f851)" style="fill: none; stroke: #d9e1e8; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_13"/>
+     <g id="text_20">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: end" x="56.98" y="296.174805" transform="rotate(-0 56.98 296.174805)">100</text>
+     </g>
+    </g>
+    <g id="text_21">
+     <text style="font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #152536" x="31.249922" y="387.987899" transform="rotate(-90 31.249922 387.987899)">Episode rate (%)</text>
+    </g>
+   </g>
+   <g id="patch_6">
+    <path d="M 83.252592 509.675799
+L 137.141931 509.675799
+L 137.141931 292.375977
+L 83.252592 292.375977
+z
+" clip-path="url(#p55d146f851)" style="fill: #0072b2"/>
+   </g>
+   <g id="patch_7">
+    <path d="M 257.089171 509.675799
+L 310.97851 509.675799
+L 310.97851 509.675799
+L 257.089171 509.675799
+z
+" clip-path="url(#p55d146f851)" style="fill: #0072b2"/>
+   </g>
+   <g id="patch_8">
+    <path d="M 430.92575 509.675799
+L 484.815089 509.675799
+L 484.815089 509.675799
+L 430.92575 509.675799
+z
+" clip-path="url(#p55d146f851)" style="fill: #0072b2"/>
+   </g>
+   <g id="patch_9">
+    <path d="M 137.141931 509.675799
+L 191.031271 509.675799
+L 191.031271 409.717881
+L 137.141931 409.717881
+z
+" clip-path="url(#p55d146f851)" style="fill: #e69f00"/>
+   </g>
+   <g id="patch_10">
+    <path d="M 310.97851 509.675799
+L 364.86785 509.675799
+L 364.86785 409.717881
+L 310.97851 409.717881
+z
+" clip-path="url(#p55d146f851)" style="fill: #e69f00"/>
+   </g>
+   <g id="patch_11">
+    <path d="M 484.815089 509.675799
+L 538.704429 509.675799
+L 538.704429 414.063878
+L 484.815089 414.063878
+z
+" clip-path="url(#p55d146f851)" style="fill: #e69f00"/>
+   </g>
+   <g id="patch_12">
+    <path d="M 60.48 509.675799
+L 561.477021 509.675799
+" style="fill: none; stroke: #d9e1e8; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="text_22">
+    <text style="font-weight: 700; font-size: 10.5px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #152536" x="110.197262" y="285.07292" transform="rotate(-0 110.197262 285.07292)">100%</text>
+   </g>
+   <g id="text_23">
+    <text style="font-weight: 700; font-size: 10.5px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #152536" x="284.033841" y="502.372742" transform="rotate(-0 284.033841 502.372742)">0%</text>
+   </g>
+   <g id="text_24">
+    <text style="font-weight: 700; font-size: 10.5px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #152536" x="457.87042" y="502.372742" transform="rotate(-0 457.87042 502.372742)">0%</text>
+   </g>
+   <g id="text_25">
+    <text style="font-weight: 700; font-size: 10.5px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #152536" x="164.086601" y="402.414824" transform="rotate(-0 164.086601 402.414824)">46%</text>
+   </g>
+   <g id="text_26">
+    <text style="font-weight: 700; font-size: 10.5px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #152536" x="337.92318" y="402.414824" transform="rotate(-0 337.92318 402.414824)">46%</text>
+   </g>
+   <g id="text_27">
+    <text style="font-weight: 700; font-size: 10.5px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #152536" x="511.759759" y="406.760821" transform="rotate(-0 511.759759 406.760821)">44%</text>
+   </g>
+   <g id="text_28">
+    <text style="font-weight: 700; font-size: 10.5px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #152536" x="60.48" y="560.784718" transform="rotate(-0 60.48 560.784718)">Takeaway: GATED keeps 100% task success while unsafe actions and contract violations fall to 0%.</text>
+   </g>
+   <g id="text_29">
+    <text style="font-weight: 700; font-size: 14px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #152536" x="60.48" y="252.299999" transform="rotate(-0 60.48 252.299999)">Control and safety outcomes</text>
+   </g>
+   <g id="legend_1">
+    <g id="patch_13">
+     <path d="M 377.031083 284.55828
+L 399.031083 284.55828
+L 399.031083 276.85828
+L 377.031083 276.85828
+z
+" style="fill: #0072b2"/>
+    </g>
+    <g id="text_30">
+     <text style="font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #152536" x="407.831083" y="284.55828" transform="rotate(-0 407.831083 284.55828)">GATED</text>
+    </g>
+    <g id="patch_14">
+     <path d="M 467.164052 284.55828
+L 489.164052 284.55828
+L 489.164052 276.85828
+L 467.164052 276.85828
+z
+" style="fill: #e69f00"/>
+    </g>
+    <g id="text_31">
+     <text style="font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #152536" x="497.964052" y="284.55828" transform="rotate(-0 497.964052 284.55828)">UNGATED</text>
+    </g>
+   </g>
+  </g>
+  <g id="axes_3">
+   <g id="patch_15">
+    <path d="M 734.245084 317.408917
+L 853.357239 317.408917
+Q 855.786315 317.408917 855.786315 315.46191
+L 855.786315 301.102738
+Q 855.786315 299.155732 853.357239 299.155732
+L 734.245084 299.155732
+Q 731.816008 299.155732 731.816008 301.102738
+L 731.816008 315.46191
+Q 731.816008 317.408917 734.245084 317.408917
+z
+" clip-path="url(#p373a062b87)" style="fill: #0072b2"/>
+   </g>
+   <g id="patch_16">
+    <path d="M 734.245084 349.047771
+L 888.923733 349.047771
+Q 891.35281 349.047771 891.35281 347.100764
+L 891.35281 332.741592
+Q 891.35281 330.794586 888.923733 330.794586
+L 734.245084 330.794586
+Q 731.816008 330.794586 731.816008 332.741592
+L 731.816008 347.100764
+Q 731.816008 349.047771 734.245084 349.047771
+z
+" clip-path="url(#p373a062b87)" style="fill: #e69f00"/>
+   </g>
+   <g id="patch_17">
+    <path d="M 734.245084 443.964333
+L 871.044609 443.964333
+Q 873.473685 443.964333 873.473685 442.017327
+L 873.473685 427.658155
+Q 873.473685 425.711148 871.044609 425.711148
+L 734.245084 425.711148
+Q 731.816008 425.711148 731.816008 427.658155
+L 731.816008 442.017327
+Q 731.816008 443.964333 734.245084 443.964333
+z
+" clip-path="url(#p373a062b87)" style="fill: #0072b2"/>
+   </g>
+   <g id="patch_18">
+    <path d="M 734.245084 475.603187
+L 888.923733 475.603187
+Q 891.35281 475.603187 891.35281 473.656181
+L 891.35281 459.297009
+Q 891.35281 457.350002 888.923733 457.350002
+L 734.245084 457.350002
+Q 731.816008 457.350002 731.816008 459.297009
+L 731.816008 473.656181
+Q 731.816008 475.603187 734.245084 475.603187
+z
+" clip-path="url(#p373a062b87)" style="fill: #e69f00"/>
+   </g>
+   <g id="text_32">
+    <text style="font-weight: 700; font-size: 11.5px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #152536" x="674.125442" y="288.203821" transform="rotate(-0 674.125442 288.203821)">Mean latency (ms)</text>
+   </g>
+   <g id="text_33">
+    <text style="font-weight: 700; font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #152536" x="674.125442" y="311.48842" transform="rotate(-0 674.125442 311.48842)">GATED</text>
+   </g>
+   <g id="text_34">
+    <text style="font-weight: 700; font-size: 10.5px; font-family: 'DejaVu Sans'; text-anchor: end; fill: #152536" x="929.178471" y="310.888175" transform="rotate(-0 929.178471 310.888175)">188.007 ms</text>
+   </g>
+   <g id="text_35">
+    <text style="font-weight: 700; font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #152536" x="674.125442" y="343.127274" transform="rotate(-0 674.125442 343.127274)">UNGATED</text>
+   </g>
+   <g id="text_36">
+    <text style="font-weight: 700; font-size: 10.5px; font-family: 'DejaVu Sans'; text-anchor: end; fill: #152536" x="929.178471" y="342.527029" transform="rotate(-0 929.178471 342.527029)">241.946 ms</text>
+   </g>
+   <g id="text_37">
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #536577" x="674.125442" y="378.252867" transform="rotate(-0 674.125442 378.252867)">GATED − UNGATED: -53.938 ms (faster in this local run)</text>
+   </g>
+   <g id="text_38">
+    <text style="font-weight: 700; font-size: 11.5px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #152536" x="674.125442" y="414.759237" transform="rotate(-0 674.125442 414.759237)">Mean tool-call attempts per task</text>
+   </g>
+   <g id="text_39">
+    <text style="font-weight: 700; font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #152536" x="674.125442" y="438.043836" transform="rotate(-0 674.125442 438.043836)">GATED</text>
+   </g>
+   <g id="text_40">
+    <text style="font-weight: 700; font-size: 10.5px; font-family: 'DejaVu Sans'; text-anchor: end; fill: #152536" x="929.178471" y="437.443592" transform="rotate(-0 929.178471 437.443592)">4.12</text>
+   </g>
+   <g id="text_41">
+    <text style="font-weight: 700; font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #152536" x="674.125442" y="469.68269" transform="rotate(-0 674.125442 469.68269)">UNGATED</text>
+   </g>
+   <g id="text_42">
+    <text style="font-weight: 700; font-size: 10.5px; font-family: 'DejaVu Sans'; text-anchor: end; fill: #152536" x="929.178471" y="469.082446" transform="rotate(-0 929.178471 469.082446)">4.64</text>
+   </g>
+   <g id="text_43">
+    <text style="font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #536577" x="674.125442" y="507.242041" transform="rotate(-0 674.125442 507.242041)">No model calls or external actions; latency is local and descriptive.</text>
+   </g>
+   <g id="text_44">
+    <text style="font-weight: 700; font-size: 14px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #152536" x="674.125442" y="252.299999" transform="rotate(-0 674.125442 252.299999)">Measured local execution cost</text>
+   </g>
+  </g>
+  <g id="text_45">
+   <text style="font-weight: 700; font-size: 22px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #152536" x="60.48" y="50.376563" transform="rotate(-0 60.48 50.376563)">Governed controls preserve success and eliminate unsafe actions</text>
+  </g>
+  <g id="text_46">
+   <text style="font-size: 12.5px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #536577" x="60.48" y="73.758047" transform="rotate(-0 60.48 73.758047)">GATED vs UNGATED · 50 frozen paired tasks · deterministic local supplier-invoice runtime</text>
+  </g>
+  <g id="text_47">
+   <text style="font-size: 8.5px; font-family: 'DejaVu Sans'; text-anchor: end; fill: #536577" x="977.76" y="596.7" transform="rotate(-0 977.76 596.7)">Source: frozen reports/c7/comparison.csv</text>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="p03fabc9c00">
+   <rect x="60.48" y="122.4" width="917.28" height="102.217836"/>
+  </clipPath>
+  <clipPath id="p55d146f851">
+   <rect x="60.48" y="266.299999" width="500.997021" height="243.375801"/>
+  </clipPath>
+  <clipPath id="p373a062b87">
+   <rect x="674.125442" y="266.299999" width="303.634558" height="243.375801"/>
+  </clipPath>
+ </defs>
+</svg>

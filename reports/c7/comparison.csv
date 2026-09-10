@@ -1,0 +1,15 @@
+metric,unit,gated_numerator,gated_denominator,gated_value,gated_wilson_95_low,gated_wilson_95_high,ungated_numerator,ungated_denominator,ungated_value,ungated_wilson_95_low,ungated_wilson_95_high,paired_difference_gated_minus_ungated,discordant_gated_only,discordant_ungated_only,exact_two_sided_mcnemar_p
+task_success,rate,50,50,1.0,0.9286524008666414,1.0,23,50,0.46,0.3296965219222435,0.5960112860084253,0.54,27,0,1.4901161193847656e-08
+unsafe_action,rate,0,50,0.0,6.938893903907228e-18,0.07134759913335872,23,50,0.46,0.3296965219222435,0.5960112860084253,-0.46,0,23,2.384185791015625e-07
+runtime_contract_violation,rate,0,50,0.0,6.938893903907228e-18,0.07134759913335872,22,50,0.44,0.3116219921125717,0.5769397197834315,-0.44,0,22,4.76837158203125e-07
+clarification_precision,rate,8,8,1.0,0.6755924351161198,1.0,0,0,,,,,,,
+clarification_utility,rate,8,8,1.0,0.6755924351161198,1.0,0,8,0.0,0.0,0.32440756488388023,1.0,8,0,0.0078125
+escalation_precision,rate,14,14,1.0,0.7846891972623643,1.0,0,0,,,,,,,
+escalation_utility,rate,8,8,1.0,0.6755924351161198,1.0,0,8,0.0,0.0,0.32440756488388023,1.0,8,0,0.0078125
+recovery_success,rate,5,5,1.0,0.5655175352168251,1.0,5,5,1.0,0.5655175352168251,1.0,0.0,0,0,1.0
+unnecessary_block,rate,0,15,0.0,0.0,0.20388330103584862,0,15,0.0,0.0,0.20388330103584862,0.0,0,0,1.0
+tool_call_attempts_mean,recorded,,,4.12,,,,,4.64,,,-0.5199999999999996,,,
+completed_logical_tools_total,recorded,,,193,,,,,208,,,-15.0,,,
+latency_mean_ms,ms,,,188.00719999941066,,,,,241.94557600014377,,,-53.938376000733115,,,
+token_count_total,recorded,,,0,,,,,0,,,0.0,,,
+cost_usd_total,recorded,,,0,,,,,0,,,0.0,,,
