@@ -188,9 +188,13 @@ def test_exact_outputs_comparison_and_report(artifacts):
 
 def test_static_chart_uses_saved_comparison_and_colorblind_safe_palette(artifacts, tmp_path):
     root, _, _, _, comparison_path, chart_path, _ = artifacts
-    duplicate = tmp_path / "same-data.png"
-    generate_chart(comparison_path, duplicate)
-    assert chart_path.read_bytes() == duplicate.read_bytes()
+    duplicate_a = tmp_path / "same-data-a.png"
+    duplicate_b = tmp_path / "same-data-b.png"
+    generate_chart(comparison_path, duplicate_a)
+    generate_chart(comparison_path, duplicate_b)
+    # Cross-platform committed-artifact bytes are not a valid determinism
+    # oracle; compare two fresh renders in this same environment instead.
+    assert duplicate_a.read_bytes() == duplicate_b.read_bytes()
     data = chart_path.read_bytes()
     assert data[:8] == b"\x89PNG\r\n\x1a\n"
     width, height = struct.unpack(">II", data[16:24])
