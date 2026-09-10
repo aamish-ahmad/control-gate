@@ -27,6 +27,7 @@ from control_gate.agent_benchmark import (
     recompute_summary,
     regenerate_chart_only,
     run_episode,
+    _resolve_project_root,
     scoped_runtime_configuration,
     task_digests,
     validate_pairing,
@@ -51,6 +52,12 @@ def artifacts():
     computed = json.loads(summary.read_text(encoding="utf-8"))
     rows = [json.loads(line) for line in episode.read_text(encoding="utf-8").splitlines()]
     return root, computed, rows, summary, comparison, chart, results
+
+
+def test_installed_module_prefers_checkout_root():
+    checkout = TASK_PATH.parents[1]
+    installed_module = checkout / ".venv" / "Lib" / "site-packages" / "control_gate" / "agent_benchmark.py"
+    assert _resolve_project_root(installed_module, cwd=checkout) == checkout
 
 
 def test_frozen_task_distribution_schema_and_digests(tasks):

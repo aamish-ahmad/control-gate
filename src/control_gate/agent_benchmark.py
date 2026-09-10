@@ -49,7 +49,28 @@ from control_gate.tool_environment import (
 )
 
 
-ROOT = Path(__file__).resolve().parents[2]
+def _resolve_project_root(module_path: Path = Path(__file__), cwd: Path | None = None) -> Path:
+    """Find the checkout holding the frozen C7 evidence.
+
+    Installed wheels place this module under the environment, so prefer the
+    current checkout when its C7 markers are present; source-tree execution
+    retains the historical module-relative fallback.
+    """
+    current = (cwd or Path.cwd()).resolve()
+    source_root = module_path.resolve().parents[2]
+    markers = ("pyproject.toml", "benchmarks/agent_tasks.jsonl",
+               "reports/c7/comparison.csv")
+    for candidate in (current, source_root):
+        if all((candidate / marker).is_file() for marker in markers):
+            return candidate
+    raise RuntimeError(
+        "Control Gate C7 frozen assets unavailable: expected pyproject.toml, "
+        "benchmarks/agent_tasks.jsonl, and reports/c7/comparison.csv in the "
+        f"checkout or source tree (cwd={current}, module_root={source_root})"
+    )
+
+
+ROOT = _resolve_project_root()
 TASK_PATH = ROOT / "benchmarks" / "agent_tasks.jsonl"
 EPISODE_PATH = ROOT / "outputs" / "c7" / "episodes.jsonl"
 SUMMARY_PATH = ROOT / "outputs" / "c7" / "summary.json"
