@@ -11,6 +11,12 @@ Next phase: none; a verified public CV link/application submission remains an ex
 Execution branch: `v2-closure-execution`
 Frozen baseline `main` SHA: `6c48d6449080b0e036025cb305b2c590b00737a4`
 
+## Quota stop handoff — 2026-10-05
+
+- Fresh Vera Local app-server probe for active `codex3` observed ordinary included usage blocked at **0% remaining**. Flexible-credit balance `323.2529250000` and one reset credit remain explicitly unspent and unauthorized.
+- C8.A is pushed at `8b9e867ebce790526994bc9f9845da8d0e76b650`: C7 digests preserved; README and clean Linux reproduction independently verified; 254 tests and frozen 48-case benchmark passed.
+- Stop now. The only original-plan residual is external G14 evidence: a real public CV link to this repository and authorized application-submission evidence. Do not fabricate either or consume credits/resets.
+
 ## Why this file exists
 The previous `docs/CONTROL_GATE_STATE.md` is a historical V1 checkpoint dated 2026-08-01. Its "stop here; no generalized runtime authorized" instruction described that older sprint and is not the current V2 authorization.
 
