@@ -1,13 +1,13 @@
 # Control Gate V2 Execution State
 
-Updated: 2026-09-10 (Asia/Kolkata)
+Updated: 2026-10-05 (Asia/Kolkata)
 
 ## Controller status
-Status: C7_PASS_AWAITING_CONTROLLER
-Completed phase: C7 — frozen same-agent governed-versus-ungoverned experiment
-Verified implementation checkpoint: `9d81162abce9561c75f2e1e987e4db317520d4de`
+Status: C8A_PORTFOLIO_READINESS_PASS_AWAITING_CV_LINK
+Completed phase: C8.A — truthful V2 README and clean-environment reproducibility
+Verified implementation checkpoint: `7038dee75bdd34c876407b4fdd2f8ebd42f45f42` plus the C8.A README candidate
 Active phase: none
-Next phase: none; C8 requires separate controller authorization
+Next phase: none; a verified public CV link/application submission remains an external G14 acceptance boundary
 Execution branch: `v2-closure-execution`
 Frozen baseline `main` SHA: `6c48d6449080b0e036025cb305b2c590b00737a4`
 
@@ -375,3 +375,21 @@ Observed on 2026-09-10 from `v2-closure-execution`:
 - No experiment evidence was rerun or remeasured during the chart-only and CI hardening steps. No V1-C6 semantics, frozen benchmark input, prior evidence, real external business action, C8 packaging/closure surface, deployment/publication, main merge, or C8 work is included.
 
 C7 is PASS. Stop at the shared C7 checkpoint; C8 remains unauthorized unless the controller separately advances the ledger.
+
+## C8.A portfolio-readiness contract — committed before implementation
+
+- Entry: `v2-closure-execution` and `origin/v2-closure-execution` both resolved to independently verified C7 checkpoint `7038dee75bdd34c876407b4fdd2f8ebd42f45f42`; `main` remained the older V1 public surface. The canonical Notion portfolio-live-state page explicitly selected clean-environment reproducibility and application-readiness evidence as the next bounded residual, with the original `docs/internal/application-plan.md` as the acceptance contract.
+- SOURCE_SCOPE: `README.md` and this ledger only. C7 task, episode, summary, comparison, chart, report, certificate and all C0-C6 sources/evidence were evidence-locked and read-only.
+- D: replace the stale V1 README with an accurate, recruiter-readable C0-C7 account: bounded C7 findings and limitations, current Gate A/Gate B/runtime/HITL/retry/persistence/service surfaces, reproducible Linux and Windows commands, and direct evidence/code links.
+- ALLOWED: README correction from committed source/evidence, disposable clean Linux virtual-environment verification, exact C7 digest checking, independent read-only verification, this ledger update, and a bounded branch checkpoint push.
+- FORBIDDEN: C7 rerun/remeasurement; runtime/test/dependency/evidence edits; new architecture, MCP-server claim, production/general-agent claim, real business action, licence/IP clearance claim, CV-link fabrication, application submission, merge/release/publication, or main-branch change.
+- V: all README relative evidence/code links resolve; claims match source and C2-C7 reports; clean Linux environment installs `.[runtime,service,dev]`, passes the full suite and frozen 48-case benchmark; `pip check` passes; all six C7 protected digest values match; independent verifier returns `VERIFIED`.
+- STOP: push the C8.A checkpoint, then stop. G14 requires a real verified public CV link and application submission; neither is a repository claim that may be invented.
+
+### C8.A verification evidence — 2026-10-05
+
+- Vera Local fresh app-server resource refresh for active `codex3` observed ordinary included-quota use allowed with 84% remaining. Flexible credit balance `327.2651200000` and one reset credit remained excluded; no credit or reset authorization occurred.
+- A disposable Linux virtual environment installed `.[runtime,service,dev]` without modifying the checkout. `python -m pytest -q --tb=short -p no:cacheprovider` -> **254 passed in 52.59s**. `python -m control_gate benchmark` -> **PASS**, 48/48 decisions, 48/48 reason codes, 48/48 deterministic repeats, macro-F1 1.000, zero unsafe approvals, zero external actions. `python -m pip check` -> **No broken requirements found**.
+- C7 was not rerun. Current protected worktree SHA-256 values matched the frozen C7 record exactly: episodes `771e7ad35648436bf20e62082283f983d5d2d1300b5e74743882c536974940f3`; summary `f353bd2a7d9006587e705aaeacf130a1ce9d320c660149caeb4ae3e69d416a7c`; comparison `88edd4fad867bcf55785f50b8bcc4113ba1c37b168357bd940fa1ed48d87ffa6`; RESULTS `3d97b901ebd3155d70f801ee07a6e0d3fda7ab5006f3a31fec0c5db8e6c38f36`; SVG `396b9ba8dc641b547625b17dbf1873b19e7e23ef43ab9f6558337437b6126331`; certificate `07bdaa1658d8e389ee145ade842a08298eb28b53e2e52c732f79dbec2b40387c`.
+- Independent verdict: **VERIFIED**. A separate read-only Terra verifier captured the README candidate snapshot, resolved every relative Markdown target, compared all C7 digests, and checked C7 metrics/limitations, service endpoints, SQLite, Gate A/B, and zero-external-effect claims against the committed repository/evidence. It made no repository changes.
+- G14 is only partially evidenced: the public GitHub repository was visible logged out, but no real CV URL/link or application-submission evidence is present in the repository or provided state. C8.A therefore does not claim final original-portfolio closure.

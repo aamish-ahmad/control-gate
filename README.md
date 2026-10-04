@@ -1,264 +1,120 @@
 # Control Gate
 
-Control Gate converts ambiguous business requests into typed intent specifications, applies deterministic policy checks, and decides whether an agent action may proceed, needs clarification, requires human approval, or must be rejected.
+Autonomous agents should not execute directly from ambiguous language.
 
-| Verification / Metric | Result |
-| :--- | :--- |
-| **Automated Tests** | 36 passing tests |
-| **Admissibility Decision Matches** | 48/48 |
-| **Reason-Code Matches** | 48/48 |
-| **Decision Macro-F1** | 1.000 |
-| **Unsafe Approvals** | 0/24 critical cases |
-| **External Actions Performed** | 0 |
+Control Gate compiles a supplier-invoice request into a typed, versioned execution contract; Gate A decides whether work may begin and Gate B rechecks every consequential action as `APPROVE`, `CLARIFY`, `ESCALATE`, or `REJECT` during the trajectory.
 
-## Why it exists
+It is a deterministic, local research and portfolio artifact. It uses fictional supplier data, stages only reversible local payment records, and never sends payments or performs external business actions.
 
-Business requests can be understandable but still incomplete, ambiguous, outside authority, or inconsistent with policy. Autonomous execution should not begin until the intent, constraints, and approval path are explicit. Control Gate implements a pre-execution safety boundary, resolving these issues before any downstream action is executed.
+## Verified result
 
-The current reference implementation uses a fictional supplier-invoice processing workflow with local deterministic components so that every decision can be reproduced, tested, and audited.
+The frozen C7 comparison holds the compiler, controller, tools, retry logic, human-control logic, task set, and local environment fixed. The UNGATED arm replaces only Gate A and Gate B decisions with linked deterministic approvals.
+
+| Metric | GATED | UNGATED |
+|---|---:|---:|
+| Task success | 100% (50/50) | 46% (23/50) |
+| Unsafe action | 0% (0/50) | 46% (23/50) |
+| Runtime contract violation | 0% (0/50) | 44% (22/50) |
+| Clarification utility | 100% (8/8) | 0% (0/8) |
+| Escalation utility | 100% (8/8) | 0% (0/8) |
+| Recovery success | 100% (5/5) | 100% (5/5) |
+
+The canonical run contains 100 saved episodes across 50 frozen logical tasks. It made zero model calls and zero external actions. This is controlled evidence in one deterministic supplier-invoice domain, not a production-traffic or general-agent claim. See the [result analysis](reports/c7/RESULTS.md), [raw episodes](outputs/c7/episodes.jsonl), [canonical comparison](reports/c7/comparison.csv), [chart](reports/c7/safety_control_vs_overhead.png), and [independent verification](reports/c7/INDEPENDENT_VERIFICATION.md).
 
 ## How it works
 
-Control Gate processes incoming requests through a deterministic pipeline:
-
 ```mermaid
-flowchart TD
-    A["Business request"] --> B["Intent compilation"]
-    B --> C["Typed intent specification"]
-    C --> D["Static policy validation"]
-    D --> E["Governed routing"]
-    E --> F["APPROVE → local fictional staging handoff"]
-    E --> G["CLARIFY → questions"]
-    E --> H["ESCALATE → approval requirement"]
-    E --> I["REJECT → blocked"]
+flowchart LR
+    A[Business request] --> B[Compile IntentSpec]
+    B --> C[Validate constraints]
+    C --> D{Gate A}
+    D -->|APPROVE| E[ExecutionPlan]
+    D -->|CLARIFY| Q[Acquire missing state]
+    D -->|ESCALATE| H[Explicit human decision]
+    D -->|REJECT| X[Safe stop]
+    E --> F[Propose action]
+    F --> G{Gate B}
+    G -->|APPROVE| T[Bounded local tool]
+    G -->|CLARIFY / ESCALATE / REJECT| S[Pause or safe stop]
+    T --> O[Observation and trace]
+    O --> F
 ```
 
-## Quick start
+| Decision | Meaning | Execution effect |
+|---|---|---|
+| `APPROVE` | Contract is admissible | Creates a bounded plan; each tool call still needs Gate B approval. |
+| `CLARIFY` | Material information is missing | Records questions and updates state; no unauthorized tool call proceeds. |
+| `ESCALATE` | Explicit human authority is required | Pauses with an inspectable intervention request; only the linked decision can resume. |
+| `REJECT` | Request or action violates policy | Blocks before dispatch. |
 
-To install dependencies and run the Control Gate locally in Windows PowerShell, execute:
+## What is implemented
+
+- Typed, immutable `IntentSpec`, execution-plan, run, decision, intervention, event, and outcome contracts.
+- Deterministic local supplier, purchase-order, invoice, duplicate, policy, staging, and approval-request functions.
+- Gate A and per-action Gate B enforcement with stable reason codes and run/intent/plan/action linkage.
+- Stateful LangGraph supplier-invoice controller, bounded read retries, human clarification/escalation/rejection behavior, and structured trajectory events.
+- SQLite persistence and a FastAPI service for `GET /health`, `POST /v1/runs`, `GET /v1/runs/{run_id}`, and `GET /v1/runs/{run_id}/events`.
+- Docker and GitHub Actions regression surfaces; the service and all tools remain local and side-effect-free.
+
+## Reproduce
+
+The following clean Linux environment was verified against this branch with **254 tests passing**, the frozen 48-case benchmark passing, and `pip check` reporting no broken requirements.
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install ".[runtime,service,dev]"
+python -m pytest -q --tb=short
+python -m control_gate benchmark
+```
+
+Windows PowerShell:
 
 ```powershell
 python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -e ".[dev]"
+.\.venv\Scripts\python.exe -m pip install ".[runtime,service,dev]"
 $env:PYTHONPATH = "$PWD\src"
-.\.venv\Scripts\python.exe -m control_gate evaluate --request "<request>"
-.\.venv\Scripts\python.exe -m control_gate benchmark
-.\.venv\Scripts\python.exe examples\governed_execution_handoff.py
-.\.venv\Scripts\python.exe -m pytest -q
-```
-
-## Governed execution handoff
-
-The reference implementation demonstrates how to route approved actions to downstream code.
-Run the handoff simulation:
-
-```powershell
-$env:PYTHONPATH = "$PWD\src"
-.\.venv\Scripts\python.exe examples\governed_execution_handoff.py
-```
-
-### Handoff output for `APPROVE` route
-```json
-{
-  "decision": {
-    "approval_requirement": null,
-    "clarification_questions": [],
-    "intent_id": "INT-CLI-43B44A6C253C4FEF",
-    "intent_version": 1,
-    "outcome": "APPROVE",
-    "reason_codes": [
-      "REQUEST_ADMISSIBLE"
-    ]
-  },
-  "external_actions_performed": 0,
-  "intent": {
-    "intent_id": "INT-CLI-43B44A6C253C4FEF",
-    "intent_version": 1
-  },
-  "original_request": "finance_agent process invoice INV-9001 from supplier SUP-9001 under PO-9001 for USD 7500.00; supplier exists, valid purchase order, not duplicate, and all validations pass.",
-  "routing": {
-    "handoff": {
-      "external_actions_performed": 0,
-      "intent_id": "INT-CLI-43B44A6C253C4FEF",
-      "intent_version": 1,
-      "invoice_id": "INV-9001",
-      "operation": "stage_invoice_locally",
-      "simulation": "LOCAL_FICTIONAL_SUPPLIER_INVOICE",
-      "status": "STAGED_FOR_LOCAL_SIMULATION"
-    },
-    "staging_invoked": true
-  },
-  "simulation": "LOCAL_FICTIONAL_SUPPLIER_INVOICE"
-}
-```
-
-*Note: Only `APPROVE` invokes the local fictional in-memory staging handoff function (`stage_invoice_locally`). The `CLARIFY`, `ESCALATE`, and `REJECT` routes return control decisions and routing metadata without execution, performing exactly 0 external actions.*
-
-## Decision examples
-
-These examples show selected fields from the actual local CLI JSON output. Use the following commands to evaluate different scenarios:
-
-### 1. APPROVE
-**Request:**
-```powershell
-.\.venv\Scripts\python.exe -m control_gate evaluate --request "finance_agent process invoice INV-9001 from supplier SUP-9001 under PO-9001 for USD 7500.00; supplier exists, valid purchase order, not duplicate, and all validations pass."
-```
-**JSON output:**
-```json
-{
-  "decision": {
-    "decision": "APPROVE",
-    "intent_id": "INT-CLI-43B44A6C253C4FEF",
-    "intent_version": 1,
-    "reason_codes": ["REQUEST_ADMISSIBLE"]
-  },
-  "approval_requirements": null,
-  "clarification_questions": [],
-  "intent_id": "INT-CLI-43B44A6C253C4FEF",
-  "intent_version": 1,
-  "external_actions_performed": 0
-}
-```
-
-### 2. CLARIFY
-**Request:**
-```powershell
-.\.venv\Scripts\python.exe -m control_gate evaluate --request "Process this invoice."
-```
-**JSON output:**
-```json
-{
-  "decision": {
-    "decision": "CLARIFY",
-    "intent_id": "INT-CLI-96010C6DF2C29864",
-    "intent_version": 1,
-    "reason_codes": ["REQUIRED_FIELD_MISSING"]
-  },
-  "approval_requirements": null,
-  "clarification_questions": [
-    "Provide actor.",
-    "Provide inputs.amount.",
-    "Provide inputs.currency.",
-    "Provide inputs.invoice_id.",
-    "Provide inputs.purchase_order_id.",
-    "Provide inputs.supplier_id."
-  ],
-  "intent_id": "INT-CLI-96010C6DF2C29864",
-  "intent_version": 1,
-  "external_actions_performed": 0
-}
-```
-
-### 3. ESCALATE
-**Request:**
-```powershell
-.\.venv\Scripts\python.exe -m control_gate evaluate --request "finance_agent process invoice INV-9001 from supplier SUP-9001 under PO-9001 for USD 18400.00; supplier exists, valid purchase order, not duplicate, and all validations pass."
-```
-**JSON output:**
-```json
-{
-  "decision": {
-    "decision": "ESCALATE",
-    "intent_id": "INT-CLI-1A1DE0B0758CB016",
-    "intent_version": 1,
-    "reason_codes": ["PAYMENT_ABOVE_AUTONOMOUS_LIMIT"]
-  },
-  "approval_requirements": {
-    "required_approver": "finance_manager"
-  },
-  "clarification_questions": [],
-  "intent_id": "INT-CLI-1A1DE0B0758CB016",
-  "intent_version": 1,
-  "external_actions_performed": 0
-}
-```
-
-### 4. REJECT
-**Request:**
-```powershell
-.\.venv\Scripts\python.exe -m control_gate evaluate --request "Change the vendor bank account and pay immediately without approval."
-```
-**JSON output:**
-```json
-{
-  "decision": {
-    "decision": "REJECT",
-    "intent_id": "INT-CLI-7AEA45ABFFC3E7F6",
-    "intent_version": 1,
-    "reason_codes": ["VENDOR_BANK_DETAILS_MODIFICATION_PROHIBITED"]
-  },
-  "approval_requirements": null,
-  "clarification_questions": [],
-  "intent_id": "INT-CLI-7AEA45ABFFC3E7F6",
-  "intent_version": 1,
-  "external_actions_performed": 0
-}
-```
-
-## Benchmark evidence
-
-The repository includes a committed 48-scenario admissibility benchmark that contains synthetic, structured fixture requests (12 per public decision). This benchmark accurately validates the deterministic structured-intent mapping and admissibility behavior; it does not evaluate natural-language compilation, as the compiler directly consumes the structured context rather than the natural-language strings during testing.
-
-To execute the benchmark evaluation:
-```powershell
+.\.venv\Scripts\python.exe -m pytest -q --tb=short
 .\.venv\Scripts\python.exe -m control_gate benchmark
 ```
 
-### Verified Benchmark Performance Metrics
-* **Decision matches**: 48/48
-* **Reason-code matches**: 48/48
-* **Deterministic repeats**: 48/48
-* **Decision macro-F1**: 1.000
-* **Unsafe approvals**: 0/24 critical cases
-* **External actions**: 0
-* **Automated tests**: 36 passing
+Run a deterministic invoice trajectory:
 
-### Dynamic AI/QE Evaluations
-
-In addition to the static baseline, the engine is verified using deterministic dynamic evaluations:
-
-* **Metamorphic Testing (96 cases):** Proves that non-semantic request string mutations (48 cases) and safe assumption additions (12 cases) preserve baseline decisions. Boundary testing (36 cases) proves amounts strictly below ($9999.99) and exactly at ($10000.00) the limit remain `APPROVE`, while amounts strictly above ($10000.01) immediately trigger `ESCALATE`. (0 failures)
-* **Differential / Back-to-Back Testing:** Proves the current runtime identically matches the serialized frozen reference baseline, yielding 48/48 decision agreement, 48/48 reason-code agreement, 0 changed cases, and 0 unsafe regressions.
-* **Controlled Synthetic Drift:**
-  * *Inflation drift* (10x amount multiplier) safely shifted 11 of 12 `APPROVE` cases to `ESCALATE`, correctly leaving the single $250.00 base case as `APPROVE`.
-  * *Vendor attrition drift* (forced `supplier_exists=False`) safely forced all 48 cases to `REJECT` due to strict policy precedence.
-  * *Unexpected regressions:* 0.
-
-Evaluation evidence for the original static benchmark is saved under [outputs/phase_3/](outputs/phase_3/) (results, failures, and summary) and the human-readable summary under [reports/phase_3_report.md](reports/phase_3_report.md); the new metamorphic, differential/back-to-back, and controlled-drift evaluations are currently executable test evidence and are not stored in those Phase 3 artifacts.
-
-## Implemented components
-
-* **Pydantic contracts**: Immutable intent specifications and schema versioning logic.
-* **Deterministic compiler**: Converts natural language requests to typed intents based on explicit domain identifiers.
-* **Static validator**: Evaluates rules (missing fields, duplicate check, policy conflicts).
-* **Admissibility engine**: Computes admission decisions (APPROVE, CLARIFY, ESCALATE, REJECT) with stable reason codes.
-* **Governed handoff adapter**: Staging function invoked only for approved intents.
-* **CLI & Evaluation tools**: Enables interactive command execution and batch benchmark evaluation.
-
-## Repository structure
-
-```text
-benchmarks/            frozen 48-case JSONL corpus
-docs/                  architectural checkpoint documents
-docs/internal/         internal planning, parser, and assumption records
-examples/              local governed execution handoff examples
-outputs/phase_2/       compiler and validator evidence
-outputs/phase_3/       admissibility evidence
-reports/               benchmark evaluation reports
-src/control_gate/      deterministic contracts, compiler, validator, gate, and CLI
-tests/                 automated contract, benchmark, gate, and CLI tests
+```bash
+python -m control_gate.invoice_runtime
 ```
 
-## Design decisions and trade-offs
+Run the local service:
 
-* **Deterministic rules over LLM-based policy checking**: Ensures 100% reproducibility and clear audit trails for security-critical pathways.
-* **Strict intent specs & versioning**: Every decision is explicitly tied to an immutable schema version and intent ID.
-* **Conservative admissibility**: Missing information always defaults to CLARIFY rather than risk guessing.
-* **No side-effects at gate level**: Evaluates requests in a read-only manner before triggering downstream tool actions.
+```bash
+uvicorn control_gate.service:app --host 127.0.0.1 --port 8000
+```
 
-## Limitations and deferred integrations
+The C7 command is available as `python -m control_gate.agent_benchmark`; its checked-in evidence is frozen and should not be rerun merely for presentation.
 
-* **Fictional supplier-invoice domain**: The current reference implementation operates only on a synthetic invoice domain.
-* **No external state/services**: Does not interact with databases, live payment APIs, or actual vendor systems.
-* **Integrations deferred**: LangGraph, MCP, function-calling frameworks, FastAPI, and production runners are downstream boundary targets and are not implemented.
-* **Pre-execution checkpoint**: This repository is designed as a governable gateway checkpoint, not a production-ready application server.
+## Verification surfaces
+
+| Surface | Current evidence |
+|---|---|
+| Frozen admissibility benchmark | [48/48 decisions and reason codes; macro-F1 1.000](outputs/phase_3/benchmark_summary.json) |
+| Runtime Gate B | [Adversarial trajectory proof](reports/c3/gate_b_proof.json) |
+| Human control | [Clarify/escalate/reject proof](reports/c4/human_control_proof.json) |
+| Retry and fail-safe behavior | [Recovery proof](reports/c5/recovery_proof.json) |
+| Persistence and API | [Engineering proof](reports/c6/engineering_proof.json) |
+| Governed comparison | [C7 results](reports/c7/RESULTS.md) and [independent certificate](reports/c7/INDEPENDENT_VERIFICATION.md) |
+| Tests | [Focused and regression tests](tests/) |
+| CI and container | [Workflow](.github/workflows/ci.yml) and [Dockerfile](Dockerfile) |
+
+The frozen benchmark retains 48/48 decisions, 48/48 reason codes, deterministic repeats, macro-F1 1.000, zero unsafe approvals, and zero external actions. C7’s evidence digests and independent certificate are preserved on `v2-closure-execution` at `7038dee75bdd34c876407b4fdd2f8ebd42f45f42`.
+
+## Reviewer path
+
+Start with the [contracts](src/control_gate/contracts.py), [Gate A](src/control_gate/admissibility.py), [Gate B](src/control_gate/runtime_admissibility.py), [stateful controller](src/control_gate/invoice_runtime.py), [human control](src/control_gate/human_control.py), [persistence](src/control_gate/persistence.py), and [service boundary](src/control_gate/service.py). Then inspect the C2–C7 evidence linked above.
+
+## Boundaries and limitations
+
+- One deterministic, synthetic supplier-invoice domain; no real payment, ERP, authentication, or external side effect.
+- Local function tools are the implemented connectivity boundary. This repository does not claim to ship an MCP server.
+- C7 is a fixed finite task set, so its statistics are descriptive of the controlled comparison rather than a population or production claim.
+- Latency is local and descriptive. The experiment contains no LLM calls and cannot estimate model-mediated token or cost overhead.
+- This is not an enterprise governance platform, dashboard, general workflow engine, or multi-agent system.
