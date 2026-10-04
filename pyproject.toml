@@ -13,7 +13,16 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+runtime = [
+    "langgraph==1.2.11",
+]
+service = [
+    "fastapi>=0.115,<1",
+    "uvicorn>=0.30,<1",
+]
 dev = [
+    "httpx>=0.27,<1",
+    "matplotlib>=3.9,<4",
     "pytest>=8,<9",
 ]
 

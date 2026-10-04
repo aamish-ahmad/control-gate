@@ -15,7 +15,10 @@ from pydantic import (
     ConfigDict,
     Field,
     JsonValue,
+    PrivateAttr,
     PlainSerializer,
+    ValidationInfo,
+    field_validator,
     model_validator,
 )
 
@@ -254,11 +257,79 @@ class ExecutionPlan(FrozenModel):
 class ExecutionRun(StrictModel):
     """Mutable runtime state with an immutable authorizing contract link."""
 
+    model_config = ConfigDict(extra="forbid", validate_assignment=True)
+
     run_id: Annotated[str, Field(min_length=1, frozen=True)]
     intent_id: Annotated[str, Field(min_length=1, frozen=True)]
     intent_version: Annotated[int, Field(ge=1, frozen=True)]
     plan_id: Annotated[str, Field(min_length=1, frozen=True)]
     state: RunState
+
+    # C2 additive state. V1 callers may still construct the original five fields.
+    objective: str = Field(default="", frozen=True)
+    intent_spec: IntentSpec | None = Field(default=None, frozen=True)
+    execution_plan: ExecutionPlan | None = Field(default=None, frozen=True)
+    gate_a: ControlDecision | None = Field(default=None, frozen=True)
+    evidence: FrozenJsonObject = Field(default_factory=dict)
+    tool_history: tuple[str, ...] = ()
+    pending_questions: tuple[NonEmptyString, ...] = ()
+    approval_state: str = "NOT_REQUESTED"
+    retry_state: FrozenJsonObject = Field(default_factory=lambda: {"attempts": 0})
+    token_count: Annotated[int, Field(ge=0)] = 0
+    cost_usd: Annotated[Decimal, Field(ge=0)] = Decimal("0")
+    proposed_action: FrozenJsonObject | None = None
+    runtime_decision: RuntimeDecision | None = None
+    observations: tuple[FrozenJsonObject, ...] = ()
+    events: tuple[TrajectoryEvent, ...] = ()
+    final_outcome: RunOutcome | None = None
+    # C4 links a new version to the consumed pause; the original contract stays frozen.
+    parent_run_id: NonEmptyString | None = Field(default=None, frozen=True)
+    human_approval: HumanIntervention | None = Field(default=None, frozen=True)
+    continuation_run_id: NonEmptyString | None = None
+    _pause_context: object = PrivateAttr(default=None)
+
+    @field_validator("human_approval")
+    @classmethod
+    def require_parent_approval_link(cls, value: HumanIntervention | None,
+                                     info: ValidationInfo) -> HumanIntervention | None:
+        if value is not None and (
+                value.run_id != info.data.get("parent_run_id")
+                or value.intent_id != info.data.get("intent_id")
+                or value.intent_version + 1 != info.data.get("intent_version")
+                or value.action is not HumanAction.APPROVE):
+            raise ValueError("Human approval must link the prior intent version and parent run")
+        return value
+
+    @field_validator("intent_spec", "execution_plan", "gate_a", "runtime_decision",
+                     "final_outcome", "events")
+    @classmethod
+    def require_consistent_links(cls, value: object, info: ValidationInfo) -> object:
+        # Validate before assignment commits, so a rejected update cannot leave
+        # an otherwise valid run holding another run's evidence or outcome.
+        records = value if info.field_name == "events" else (value,)
+        for record in records:
+            if record is None:
+                continue
+            version = record.version if isinstance(record, IntentSpec) else record.intent_version
+            if (record.intent_id, version) != (info.data.get("intent_id"), info.data.get("intent_version")):
+                raise ValueError("ExecutionRun intent linkage mismatch")
+            if hasattr(record, "run_id") and record.run_id != info.data.get("run_id"):
+                raise ValueError("ExecutionRun run linkage mismatch")
+            if hasattr(record, "plan_id") and record.plan_id != info.data.get("plan_id"):
+                raise ValueError("ExecutionRun plan linkage mismatch")
+        return value
+
+
+class RuntimeDecision(FrozenModel):
+    """Intent/run/action-linked C3 interface; C2 does not evaluate Gate B."""
+
+    run_id: NonEmptyString
+    intent_id: NonEmptyString
+    intent_version: PositiveVersion
+    plan_id: NonEmptyString
+    action_id: NonEmptyString
+    decision: Decision
+    reason_codes: tuple[NonEmptyString, ...] = Field(min_length=1)
 
 
 class TrajectoryEvent(FrozenModel):
