@@ -3,11 +3,11 @@
 Updated: 2026-10-05 (Asia/Kolkata)
 
 ## Controller status
-Status: C8A_PORTFOLIO_READINESS_PASS_AWAITING_CV_LINK
-Completed phase: C8.A — truthful V2 README and clean-environment reproducibility
-Verified implementation checkpoint: `7038dee75bdd34c876407b4fdd2f8ebd42f45f42` plus the C8.A README candidate
+Status: C8B_PUBLIC_DEFAULT_BRANCH_PASS
+Completed phase: C8.B — verified V2 promotion to the public default branch
+Verified implementation checkpoint: public `main` merge `842d9f20150dfd20f59814628cb1c46bb340340a`, carrying C7 checkpoint `7038dee75bdd34c876407b4fdd2f8ebd42f45f42` and C8.A readiness evidence
 Active phase: none
-Next phase: none; a verified public CV link/application submission remains an external G14 acceptance boundary
+Next phase: none; the repository/public-GitHub closure is complete. A licence, release, CV, or application action requires separate authorization.
 Execution branch: `v2-closure-execution`
 Frozen baseline `main` SHA: `6c48d6449080b0e036025cb305b2c590b00737a4`
 
@@ -20,6 +20,14 @@ Frozen baseline `main` SHA: `6c48d6449080b0e036025cb305b2c590b00737a4`
 - FORBIDDEN: C7 rerun or digest/content change; implementation, dependency, benchmark, test, result, README, licence, release, topic, CV, application, or architecture change; force push; branch deletion; credit/reset use; deployment or external business action.
 - V: GitHub reports `main` at the merged V2 candidate; its post-merge CI succeeds; the public unauthenticated repository exposes the V2 README and C7 evidence links; current protected C7 worktree digests remain equal to their frozen record.
 - STOP: success at the verified public-main boundary, or any merge/CI/public-visibility/digest failure. A licence or release decision remains a separate, unchosen trajectory.
+
+### C8.B observed verification evidence — 2026-10-05
+
+- Pull request [#2](https://github.com/aamish-ahmad/control-gate/pull/2) promoted the pushed V2 candidate `219c6702908b0b208ffcd8b66bc72dd94b251284` to public `main` as merge commit `842d9f20150dfd20f59814628cb1c46bb340340a`; the V2 evidence branch was retained.
+- GitHub independently passed the pull-request CI on the candidate and the post-merge [main CI run](https://github.com/aamish-ahmad/control-gate/actions/runs/37242193389): install, complete test suite, frozen 48-case benchmark, and Docker build all succeeded.
+- An unauthenticated GitHub read confirmed that public `main` serves the V2 [README](https://github.com/aamish-ahmad/control-gate/blob/main/README.md) and the frozen [C7 independent certificate](https://github.com/aamish-ahmad/control-gate/blob/main/reports/c7/INDEPENDENT_VERIFICATION.md).
+- C7 was not rerun. Protected worktree SHA-256 values still equal the frozen record: episodes `771e7ad35648436bf20e62082283f983d5d2d1300b5e74743882c536974940f3`; summary `f353bd2a7d9006587e705aaeacf130a1ce9d320c660149caeb4ae3e69d416a7c`; comparison `88edd4fad867bcf55785f50b8bcc4113ba1c37b168357bd940fa1ed48d87ffa6`; RESULTS `3d97b901ebd3155d70f801ee07a6e0d3fda7ab5006f3a31fec0c5db8e6c38f36`; SVG `396b9ba8dc641b547625b17dbf1873b19e7e23ef43ab9f6558337437b6126331`; certificate `07bdaa1658d8e389ee145ade842a08298eb28b53e2e52c732f79dbec2b40387c`.
+- The public surface was audited for packaging and claims. No licence or release existed or was claimed, so neither was fabricated; both remain separate ownership decisions.
 
 ## Quota stop handoff — 2026-10-05
 
