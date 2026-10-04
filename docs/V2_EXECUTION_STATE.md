@@ -11,6 +11,16 @@ Next phase: none; a verified public CV link/application submission remains an ex
 Execution branch: `v2-closure-execution`
 Frozen baseline `main` SHA: `6c48d6449080b0e036025cb305b2c590b00737a4`
 
+## C8.B public-default-branch promotion contract — 2026-10-05
+
+- Entry: `origin/v2-closure-execution` is the independently verified C8.A/hand-off candidate `075f1a7fbf672ffed40b23114b1490e3a0ef4caf`; public `origin/main` is the historical V1 checkpoint `6c48d6449080b0e036025cb305b2c590b00737a4`; the candidate is cleanly mergeable; the repository is public; `main` has no branch-protection requirement; and CI passed on the exact candidate.
+- D: make the public default branch expose exactly the already-verified V2 candidate, without modifying C7 or implementation content.
+- SOURCE_SCOPE: the existing pushed V2 candidate, GitHub pull-request/default-branch state, GitHub Actions evidence, this ledger, and the canonical live-state page. No source, test, benchmark, or frozen evidence content is in scope for modification.
+- ALLOWED: record this committed promotion boundary; open and merge the candidate pull request into `main` without deleting the evidence branch; inspect the resulting public default-branch commit and GitHub Actions run; update the ledger/live state with observed outcome only.
+- FORBIDDEN: C7 rerun or digest/content change; implementation, dependency, benchmark, test, result, README, licence, release, topic, CV, application, or architecture change; force push; branch deletion; credit/reset use; deployment or external business action.
+- V: GitHub reports `main` at the merged V2 candidate; its post-merge CI succeeds; the public unauthenticated repository exposes the V2 README and C7 evidence links; current protected C7 worktree digests remain equal to their frozen record.
+- STOP: success at the verified public-main boundary, or any merge/CI/public-visibility/digest failure. A licence or release decision remains a separate, unchosen trajectory.
+
 ## Quota stop handoff — 2026-10-05
 
 - Fresh Vera Local app-server probe for active `codex3` observed ordinary included usage blocked at **0% remaining**. Flexible-credit balance `323.2529250000` and one reset credit remain explicitly unspent and unauthorized.
