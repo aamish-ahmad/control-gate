@@ -1,0 +1,15 @@
+{
+  "now": "2026-10-23T20:00:00+05:30",
+  "intent": {
+    "statement": "I want to change my job situation",
+    "status": "ambiguous",
+    "candidates": [
+      {"purpose": "improve income", "action_alignment": "supports"},
+      {"purpose": "improve mobility", "action_alignment": "supports"}
+    ]
+  },
+  "action": {"tool": "read_listing", "impact": "low", "irreversible": false, "requires_open_window": false, "estimated_seconds": 5, "expected_revision": 4},
+  "permissions": {"allowed_tools": ["read_listing"], "human_approved": false},
+  "world": {"revision": 4, "observed_at": "2026-10-23T19:59:30+05:30", "max_age_seconds": 600, "closure": "unknown"},
+  "probe": {"available": true, "estimated_seconds": 120}
+}

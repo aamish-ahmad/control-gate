@@ -1,0 +1,15 @@
+{
+  "now": "2026-10-23T20:00:00+05:30",
+  "intent": {
+    "statement": "I want a better job",
+    "status": "ambiguous",
+    "candidates": [
+      {"purpose": "financial continuity", "action_alignment": "supports"},
+      {"purpose": "international mobility", "action_alignment": "unknown"}
+    ]
+  },
+  "action": {"tool": "submit_application", "impact": "medium", "irreversible": false, "requires_open_window": true, "estimated_seconds": 60, "expected_revision": 4},
+  "permissions": {"allowed_tools": ["submit_application", "read_listing"], "hard_prohibited": false, "approval_required": false, "human_approved": false},
+  "world": {"revision": 4, "observed_at": "2026-10-23T19:59:30+05:30", "max_age_seconds": 600, "closure": "open", "deadline": "2026-10-23T22:00:00+05:30", "deadline_verified_hard": true, "material_evidence_conflict": false},
+  "probe": {"available": true, "estimated_seconds": 120}
+}

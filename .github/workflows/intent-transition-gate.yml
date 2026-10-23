@@ -1,0 +1,22 @@
+name: Intent transition gate
+on:
+  push:
+    branches: [main]
+    paths: ['transition_gate/**', '.github/workflows/intent-transition-gate.yml']
+  pull_request:
+    paths: ['transition_gate/**', '.github/workflows/intent-transition-gate.yml']
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Unit tests (no network or model calls)
+        run: PYTHONPATH=transition_gate/src python -m unittest discover -s transition_gate/tests -v
+      - name: Deterministic scenarios
+        run: |
+          PYTHONPATH=transition_gate/src python -m purpose_gate transition_gate/examples/ambiguous_goal.json
+          PYTHONPATH=transition_gate/src python -m purpose_gate transition_gate/examples/shared_safe_action.json
+          PYTHONPATH=transition_gate/src python -m purpose_gate transition_gate/examples/observed_closure.json

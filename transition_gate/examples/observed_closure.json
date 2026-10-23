@@ -1,0 +1,8 @@
+{
+  "now": "2026-10-23T20:00:00+05:30",
+  "intent": {"statement": "Preserve my chance to apply", "status": "confirmed", "candidates": [{"purpose": "retain a reachable application option", "action_alignment": "supports"}]},
+  "action": {"tool": "submit_application", "impact": "medium", "irreversible": false, "requires_open_window": true, "estimated_seconds": 120, "expected_revision": 5},
+  "permissions": {"allowed_tools": ["submit_application", "read_official_notice"], "human_approved": false},
+  "world": {"revision": 5, "observed_at": "2026-10-23T19:59:30+05:30", "max_age_seconds": 600, "closure": "observed_closed", "material_evidence_conflict": false},
+  "probe": {"available": true, "estimated_seconds": 60}
+}
